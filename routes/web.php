@@ -57,9 +57,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/generate-document-number', [UploadController::class, 'generateDocumentNumber']);
 
         Route::get('/upload/editarchive', [UploadController::class, 'indexEditArchive'])->name('index.editarchive');
+        Route::put('/archive/{archive}', [UploadController::class, 'update'])->name('archive.update');
 
         Route::get('/upload/deletearchive', [UploadController::class, 'indexDeleteArchive'])->name('index.deletearchive');
-        Route::post('/softDelete/{id}', [UploadController::class, 'softDelete'])->name('archives.softDelete');
+        Route::delete('/upload/delete/{id}', [UploadController::class, 'destroy'])->name('upload.destroy');
     });
 });
 

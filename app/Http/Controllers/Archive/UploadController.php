@@ -137,19 +137,25 @@ class UploadController extends Controller
         return view('pages.archive.document.index_delete', compact('archives', 'deps', 'subDeps', 'perPage'));
     }
 
-    public function softDelete(Request $request, $id)
+    public function destroy($id)
     {
-        $archive = Archive::findOrFail($id);
-        $archive->active_y_n = 'N';
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $archive = Archive::find($id);
+
+        if (!$archive) {
+            return response()->json(['success' => false, 'message' => 'archive item not found'], 404);
+        }
+
+        $archive->active_y_n = "N";
         $archive->save();
 
-        return redirect()->route('index.deletearchive')->with('success', 'Archive has been deactivated successfully.');
+        return response()->json(['success' => true, 'message' => 'archive item deactivated successfully']);
     }
-    // public function getSubDepartments($id)
-    // {
-    //     $subDepartments = MSubdepartment::where('p_id_dept', $id)->get();
-    //     return response()->json($subDepartments);
-    // }
+
+
 
     public function store(Request $request)
     {
@@ -244,5 +250,40 @@ class UploadController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $filename . '"'
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'id_department' => 'required|exists:m_department,id',
+            'tipe_docs' => 'required|string',
+            'no_docs' => 'required|string',
+            'description' => 'nullable|string',
+            'files' => 'nullable|array',
+            'files.*' => 'file|mimes:pdf|max:25000',
+        ]);
+
+        $archive = Archive::findOrFail($id);
+        $archive->update([
+            'date' => $validatedData['date'],
+            'id_department' => $validatedData['id_department'],
+            'tipe_docs' => $validatedData['tipe_docs'],
+            'no_docs' => $validatedData['no_docs'],
+            'description' => $validatedData['description'] ?? $archive->description,
+        ]);
+
+        if ($request->hasFile('files')) {
+            $file = $request->file('files')[0];
+
+            if ($file->getSize() === 0) {
+                return redirect()->back()->withErrors(['files' => 'The uploaded file cannot be empty.'])->withInput();
+            }
+
+            $filePath = $file->store('archives', 'public');
+            $archive->update(['pdf_jpg' => $filePath]);
+        }
+
+        return redirect()->route('index.editarchive')->with('success', 'Archive updated successfully.');
     }
 }

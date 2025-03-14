@@ -11,7 +11,18 @@ class Archive extends Model
 
     protected $table = 't_archive';
     protected $primaryKey = 'id_archive';
-    protected $fillable = [];
+    protected $fillable = [
+        'date',
+        'id_department',
+        'tipe_docs',
+        'no_docs',
+        'description',
+        'pdf_jpg',
+        'file_name',
+        'active_y_n',
+        'created_by',
+        'updated_by'
+    ];
 
     public function ajus()
     {
@@ -21,10 +32,5 @@ class Archive extends Model
     public function department()
     {
         return $this->belongsTo(MDepartment::class, 'id_department', 'id');
-    }
-
-    public function softDelete()
-    {
-        $this->update(['active_y_n' => 'n']);
     }
 }

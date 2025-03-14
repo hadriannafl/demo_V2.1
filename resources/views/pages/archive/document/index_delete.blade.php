@@ -20,29 +20,44 @@
                 <table id="documentTable" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Type</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Number</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                No</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Document Type</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Document Number</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Created At</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($archives as $index => $archive)
-                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
+                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white" data-id="{{ $archive->id_archive }}">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $archive->department->name ?? 'N/A' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $archive->tipe_docs }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $archive->no_docs }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($archive->created_at)->format('Y-m-d') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" type="button" onclick="openPdfInNewTab('{{ route('archives.pdf', $archive) }}')">View</button>
-                                    <form action="{{ route('archives.softDelete', $archive->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('POST') <!-- Change method to POST -->
-                                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" onclick="return confirm('Are you sure you want to deactivate this archive?')">Deactivate</button>
-                                    </form>
+                                    {{ $archive->department->name ?? 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $archive->tipe_docs }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $archive->no_docs }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ \Carbon\Carbon::parse($archive->created_at)->format('Y-m-d') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                        type="button"
+                                        onclick="openPdfInNewTab('{{ route('archives.pdf', $archive) }}')">View</button>
+                                    <button onclick="confirmDelete('{{ $archive->id_archive }}')"
+                                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -54,7 +69,8 @@
                     <form method="GET" action="{{ route('index.upload') }}">
                         <div class="flex items-center">
                             <label for="per_page" class="mr-2">Show:</label>
-                            <select name="per_page" id="per_page" onchange="this.form.submit()" class="border border-gray-300 rounded px-4 py-2 w-32">
+                            <select name="per_page" id="per_page" onchange="this.form.submit()"
+                                class="border border-gray-300 rounded px-4 py-2 w-32">
                                 <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
                                 <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
                                 <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
@@ -74,6 +90,59 @@
     <script>
         function openPdfInNewTab(url) {
             window.open(url, '_blank');
+        }
+
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteArchive(id);
+                }
+            });
+        }
+
+        function deleteArchive(id) {
+            fetch(`/archive/upload/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your archive item has been deleted.',
+                            'success'
+                        );
+                        // Remove the row from the table
+                        document.querySelector(`tr[data-id="${id}"]`).remove();
+                        // location.reload();
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Failed to delete archive item.',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire(
+                        'Error!',
+                        'An error occurred while deleting the archive item.',
+                        'error'
+                    );
+                });
         }
     </script>
 </x-app-layout>
