@@ -58,7 +58,7 @@
                                             class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150"
                                             type="button" @click.prevent="modalOpenDetail = true;"
                                             aria-controls="feedback-modal1">
-                                            View
+                                            Add Document
                                         </button>
                                         <!-- Modal backdrop -->
                                         <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity"
@@ -150,7 +150,7 @@
                                                                         <span>to upload</span>
                                                                     </label>
                                                                 </h3>
-                                                                <p class="mt-1 text-xs text-gray-500">PDF up to 10MB
+                                                                <p class="mt-1 text-xs text-gray-500">PDF up to 25MB
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -232,10 +232,140 @@
                     {{ $archives->links() }}
                 </div>
             </div>
-          
+
         </div>
     </div>
+    @if (session('success'))
+        <script>
+            Toastify({
+                text: "{{ session('success') }}",
+                duration: 3000,
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            }).showToast();
+        </script>
+    @endif
     <script>
-       
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('modal', () => ({
+                modalOpenDetail: false,
+                modalData: {},
+                files: [],
+                isDragging: false,
+
+                handleFiles(event) {
+                    const files = event.target.files;
+                    this.processFiles(files);
+                },
+
+                handleDrop(event) {
+                    event.preventDefault();
+                    const files = event.dataTransfer.files;
+                    this.processFiles(files);
+                    this.isDragging = false;
+                },
+
+                processFiles(files) {
+                    for (let file of files) {
+                        if (file.type === 'application/pdf' && file.size <= 25 * 1024 * 1024) {
+                            this.files.push(file);
+                        } else {
+                            alert(`File ${file.name} is not a valid PDF or exceeds 25MB.`);
+                        }
+                    }
+                },
+
+
+                removeFile(index) {
+                    this.files.splice(index, 1);
+                }
+            }));
+        });
+
+        function displayFileNames(files) {
+            const fileNamesContainer = document.getElementById('file-names');
+            fileNamesContainer.innerHTML = ''; // Clear previous file names
+
+            if (files.length > 0) {
+                const fileNames = Array.from(files).map(file => file.name).join(', ');
+                fileNamesContainer.innerHTML = `<strong>Selected Files:</strong> ${fileNames}`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Set tanggal hari ini sebagai nilai default
+            let today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(function(input) {
+                input.value = today;
+            });
+
+            // Fungsi untuk menghasilkan nomor AJU
+            function generateAjuNumber(date) {
+                const dateObj = new Date(date);
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                return `AJU-${year}${month}${day}`;
+            }
+
+            // Event listener untuk input date
+            document.querySelectorAll('input[type="date"]').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    const ajuNumber = generateAjuNumber(this.value);
+                    const idAjuInput = document.getElementById('id_aju');
+                    if (idAjuInput) {
+                        idAjuInput.value = ajuNumber;
+                    }
+                });
+            });
+
+            // Set nilai awal untuk nomor AJU berdasarkan tanggal default
+            const initialAjuNumber = generateAjuNumber(today);
+            const idAjuInput = document.getElementById('id_aju');
+            if (idAjuInput) {
+                idAjuInput.value = initialAjuNumber;
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fungsi untuk menghasilkan nomor AJU
+            function generateAjuNumber(date) {
+                const dateObj = new Date(date);
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                return `AJU-${year}${month}${day}`;
+            }
+
+            // Loop melalui semua input date
+            document.querySelectorAll('input[type="date"]').forEach(function(input) {
+
+                // Set nilai default untuk tanggal hari ini
+                const today = new Date().toISOString().split('T')[0];
+                input.value = today;
+
+                // Ambil ID unik dari input date (misal: date-1 -> 1)
+                const id = input.id.split('-')[1]; // Asumsi ID date adalah "date-{{ $archive->no_docs }}"
+
+                // Set nilai default untuk nomor AJU
+                const idAjuInput = document.getElementById(`id_aju-${id}`);
+                if (idAjuInput) {
+                    idAjuInput.value = generateAjuNumber(today);
+                }
+
+                // Tambahkan event listener untuk perubahan tanggal
+                input.addEventListener('change', function() {
+                    const id = this.id.split('-')[1]; // Ambil ID unik dari input date
+                    const ajuNumber = generateAjuNumber(this.value);
+
+                    // Temukan input id_aju yang sesuai
+                    const idAjuInput = document.getElementById(`id_aju-${id}`);
+                    if (idAjuInput) {
+                        idAjuInput.value = ajuNumber;
+                    }
+                });
+            });
+        });
     </script>
 </x-app-layout>

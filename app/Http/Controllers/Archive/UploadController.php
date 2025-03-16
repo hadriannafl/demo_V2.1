@@ -213,6 +213,7 @@ class UploadController extends Controller
 
     public function generateDocumentNumber(Request $request)
     {
+
         $type = $request->input('type');
         $today = now()->format('Ymd');
 
@@ -254,6 +255,7 @@ class UploadController extends Controller
 
     public function update(Request $request, $id)
     {
+        dd($request->all());
         $validatedData = $request->validate([
             'date' => 'required|date',
             'id_department' => 'required|exists:m_department,id',
@@ -261,29 +263,34 @@ class UploadController extends Controller
             'no_docs' => 'required|string',
             'description' => 'nullable|string',
             'files' => 'nullable|array',
-            'files.*' => 'file|mimes:pdf|max:25000',
+            'files.*' => 'file|mimes:pdf,jpg,jpeg|max:25000', // 25MB max
         ]);
-
+        dd($validatedData);
         $archive = Archive::findOrFail($id);
-        $archive->update([
-            'date' => $validatedData['date'],
-            'id_department' => $validatedData['id_department'],
-            'tipe_docs' => $validatedData['tipe_docs'],
-            'no_docs' => $validatedData['no_docs'],
-            'description' => $validatedData['description'] ?? $archive->description,
-        ]);
 
+        // Update the archive data
+        $archive->date = $validatedData['date'];
+        $archive->id_department = $validatedData['id_department'];
+        $archive->tipe_docs = $validatedData['tipe_docs'];
+        $archive->no_docs = $validatedData['no_docs'];
+        $archive->description = $validatedData['description'];
+
+        // Handle file upload if a new file is provided
         if ($request->hasFile('files')) {
-            $file = $request->file('files')[0];
+            foreach ($request->file('files') as $file) {
+                // Convert file to base64
+                $filePath = $file->store('uploads', 'public');
+                $fileContent = Storage::disk('public')->get($filePath);
+                $base64 = base64_encode($fileContent);
 
-            if ($file->getSize() === 0) {
-                return redirect()->back()->withErrors(['files' => 'The uploaded file cannot be empty.'])->withInput();
+                // Save base64 string to the database
+                $archive->pdf_jpg = $base64;
+                $archive->file_name = $file->getClientOriginalName();
             }
-
-            $filePath = $file->store('archives', 'public');
-            $archive->update(['pdf_jpg' => $filePath]);
         }
 
-        return redirect()->route('index.editarchive')->with('success', 'Archive updated successfully.');
+        $archive->save();
+
+        return redirect()->route('index.upload')->with('success', 'Archive updated successfully!');
     }
 }

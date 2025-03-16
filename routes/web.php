@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Archive\AjuController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\DashboardController;
@@ -52,15 +53,25 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/upload', [UploadController::class, 'index'])->name('index.upload');
         Route::get('/archives/{archive}/pdf', [UploadController::class, 'showPdf'])->name('archives.pdf');
 
-        Route::get('/upload/newarchive', [UploadController::class, 'indexNewArchive'])->name('index.newarchive');
+        Route::get('/upload/newArchive', [UploadController::class, 'indexNewArchive'])->name('index.newarchive');
         Route::post('/upload/new', [UploadController::class, 'store'])->name('archives.store');
         Route::get('/generate-document-number', [UploadController::class, 'generateDocumentNumber']);
 
-        Route::get('/upload/editarchive', [UploadController::class, 'indexEditArchive'])->name('index.editarchive');
-        Route::put('/archive/{archive}', [UploadController::class, 'update'])->name('archive.update');
+        Route::get('/upload/editArchive', [UploadController::class, 'indexEditArchive'])->name('index.editarchive');
+        Route::put('/archive/{id}', [UploadController::class, 'update'])->name('archive.update');
 
-        Route::get('/upload/deletearchive', [UploadController::class, 'indexDeleteArchive'])->name('index.deletearchive');
+
+        Route::get('/upload/deleteArchive', [UploadController::class, 'indexDeleteArchive'])->name('index.deletearchive');
         Route::delete('/upload/delete/{id}', [UploadController::class, 'destroy'])->name('upload.destroy');
+
+        Route::get('/aju', [AjuController::class, 'index'])->name('index.aju');
+
+        Route::get('/aju/newAju', [AjuController::class, 'indexNewAju'])->name('index.newaju');
+        Route::post('/aju/new', [AjuController::class, 'store'])->name('aju.store');        
+
+        Route::get('/aju/editAju', [AjuController::class, 'indexEditAju'])->name('index.editaju');
+
+        Route::get('/aju/deleteAju', [AjuController::class, 'indexDeleteAju'])->name('index.deleteaju');
     });
 });
 

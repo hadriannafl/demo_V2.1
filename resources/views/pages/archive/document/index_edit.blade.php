@@ -1,12 +1,12 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">Archive Management</h2>
+            <h2 class="text-3xl font-semibold">Document Management</h2>
         </div>
 
         <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">Archive List</h2>
+                <h2 class="text-lg font-semibold text-gray-900">Document List</h2>
                 <div class="flex items-center">
                     <form method="GET" action="{{ route('index.upload') }}">
                         <label for="search" class="mr-2">Search:</label>
@@ -43,7 +43,8 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($archives as $index => $archive)
                             <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $archive->id_archive }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $archive->department->name ?? 'N/A' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $archive->tipe_docs }}
@@ -57,38 +58,37 @@
                                         <button
                                             class="inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150"
                                             type="button"
-                                            @click.prevent="openModal({{ $archive->id_archive }}, '{{ $archive->date }}', '{{ $archive->id_department }}', '{{ $archive->tipe_docs }}', '{{ $archive->no_docs }}', '{{ $archive->description }}', '{{ $archive->pdf_jpg }}', '{{ $archive->file_name }}')"
-                                            aria-controls="feedback-modal1">
+                                            @click.prevent="openModal({{ $archive->id_archive }}, '{{ $archive->date }}', '{{ $archive->id_department }}', '{{ $archive->tipe_docs }}', '{{ $archive->no_docs }}', '{{ $archive->description }}', '{{ $archive->pdf_jpg }}', '{{ $archive->file_name }}', 'feedback-modal{{ $archive->id_archive }}')"
+                                            aria-controls="feedback-modal{{ $archive->id_archive }}">
                                             Edit
                                         </button>
 
                                         <!-- Modal backdrop -->
                                         <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity"
-                                            x-show="modalOpenDetail"
+                                            x-show="modalOpenDetail === 'feedback-modal{{ $archive->id_archive }}'"
                                             x-transition:enter="transition ease-out duration-200"
                                             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                                             x-transition:leave="transition ease-out duration-100"
                                             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                                             aria-hidden="true" x-cloak></div>
                                         <!-- Modal dialog -->
-                                        <div id="feedback-modal1"
+                                        <div id="feedback-modal{{ $archive->id_archive }}"
                                             class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6"
-                                            role="dialog" aria-modal="true" x-show="modalOpenDetail"
+                                            role="dialog" aria-modal="true"
+                                            x-show="modalOpenDetail === 'feedback-modal{{ $archive->id_archive }}'"
                                             x-transition:enter="transition ease-in-out duration-200"
                                             x-transition:enter-start="opacity-0 translate-y-4"
                                             x-transition:enter-end="opacity-100 translate-y-0"
                                             x-transition:leave="transition ease-in-out duration-200"
                                             x-transition:leave-start="opacity-100 translate-y-0"
                                             x-transition:leave-end="opacity-0 translate-y-4" x-cloak>
-
                                             <div class="bg-white rounded shadow-lg overflow-auto w-3/4 max-h-full"
                                                 @click.outside="modalOpenDetail = false"
                                                 @keydown.escape.window="modalOpenDetail = false">
                                                 <!-- Modal header -->
                                                 <div class="px-5 py-3 border-b border-slate-200" id="modalAddLpjDetail">
                                                     <div class="flex justify-between items-center">
-                                                        <div class="font-semibold text-slate-800">Edit archive
-                                                        </div>
+                                                        <div class="font-semibold text-slate-800">Edit archive</div>
                                                         <button type="button"
                                                             class="text-slate-400 hover:text-slate-500"
                                                             @click="modalOpenDetail = false">
@@ -102,7 +102,6 @@
                                                 </div>
                                                 <!-- Modal content -->
                                                 <div class="modal-content text-xs px-5 py-4">
-
                                                     <form method="POST"
                                                         action="{{ route('archive.update', $archive->id_archive) }}"
                                                         enctype="multipart/form-data">
@@ -120,8 +119,9 @@
                                                                 </label>
                                                             </div>
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="no_docs" id="no_docs" autocomplete="off"
-                                                                    readonly
+                                                                <input name="no_docs"
+                                                                    id="no_docs_{{ $archive->id_archive }}"
+                                                                    autocomplete="off" readonly
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     placeholder=" " x-model="modalData.no_docs"
                                                                     readonly />
@@ -138,19 +138,18 @@
                                                                     x-model="modalData.id_dept">
                                                                     <option value="" disabled selected>Select
                                                                         Department</option>
-                                                                    <!-- Loop through the brands and add them as options -->
                                                                     @foreach ($deps as $department)
                                                                         <option value="{{ $department->id }}"
                                                                             {{ $department->id == $archive->id_department ? 'selected' : '' }}>
                                                                             {{ $department->name }}</option>
                                                                     @endforeach
                                                                 </select>
-
                                                                 <label for="id_department"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Department</label>
                                                             </div>
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <select name="tipe_docs" id="tipe_docs"
+                                                                <select name="type_docs_modal"
+                                                                    id="type_docs_modal_{{ $archive->id_archive }}"
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     x-model="modalData.type">
                                                                     <option value="" data-code="">Select
@@ -212,12 +211,11 @@
                                                                         Legal Document
                                                                     </option>
                                                                 </select>
-                                                                <label for="tipe_docs"
+                                                                <label for="type_docs_modal"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                                                     Type Document
                                                                 </label>
                                                             </div>
-
                                                         </div>
                                                         <div class="flex items-center space-x-2 w-full mb-5">
                                                             <div class="relative z-0 w-full group">
@@ -231,13 +229,48 @@
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                        <input type="hidden" name="file_names" id="file_names_input"
-                                                            value="" x-model="modalData.file_name">
+                                                        <!-- Display existing file if available -->
+                                                        <div id="existing-file" class="mt-4 text-sm text-gray-700"
+                                                            x-show="modalData.pdf_jpg">
+                                                            <div
+                                                                class="relative w-full h-20 flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9] shadow-md">
+                                                                <!-- Bagian Kiri: Icon Folder -->
+                                                                <div class="flex items-center space-x-4">
+                                                                    <svg class="w-10 h-10 text-[#1976d2]"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none" viewBox="0 0 24 24"
+                                                                        stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                                                                    </svg>
+                                                                    <!-- Nama File -->
+                                                                    <span
+                                                                        class="truncate text-sm font-medium text-[#07074D]"
+                                                                        x-text="modalData.file_name"></span>
+                                                                </div>
+                                                                <!-- Tombol Hapus -->
+                                                                <button type="button"
+                                                                    class="text-[#d32f2f] hover:text-red-700"
+                                                                    @click="removeExistingFile()">
+                                                                    <svg width="16" height="16"
+                                                                        viewBox="0 0 10 10" fill="none"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                            d="M0.279337 0.279338C0.651787 -0.0931121 1.25565 -0.0931121 1.6281 0.279338L9.72066 8.3719C10.0931 8.74435 10.0931 9.34821 9.72066 9.72066C9.34821 10.0931 8.74435 10.0931 8.3719 9.72066L0.279337 1.6281C-0.0931125 1.25565 -0.0931125 0.651788 0.279337 0.279338Z"
+                                                                            fill="currentColor" />
+                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                            d="M0.279337 9.72066C-0.0931125 9.34821 -0.0931125 8.74435 0.279337 8.3719L8.3719 0.279338C8.74435 -0.0931127 9.34821 -0.0931123 9.72066 0.279338C10.0931 0.651787 10.0931 1.25565 9.72066 1.6281L1.6281 9.72066C1.25565 10.0931 0.651787 10.0931 0.279337 9.72066Z"
+                                                                            fill="currentColor" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
                                                         <!-- Dropzone for file uploads -->
                                                         <div class="relative z-0 w-full mb-5 group border-2 border-gray-300 border-dashed rounded-lg p-6"
                                                             id="dropzone" @dragover.prevent @dragenter.prevent
-                                                            @dragleave.prevent @drop.prevent="isDragging = false"
-                                                            @drop.prevent="handleDrop($event)"
+                                                            @dragleave.prevent @drop.prevent="handleDrop($event)"
                                                             x-bind:class="{ 'border-blue-500': isDragging }"
                                                             x-show="!fileUploaded">
                                                             <input type="file" name="files[]" id="files"
@@ -255,23 +288,39 @@
                                                                         <span>to upload</span>
                                                                     </label>
                                                                 </h3>
-                                                                <p class="mt-1 text-xs text-gray-500">
-                                                                    PDF up to 25MB
+                                                                <p class="mt-1 text-xs text-gray-500">PDF up to 25MB
                                                                 </p>
                                                             </div>
                                                         </div>
+
                                                         <!-- Display selected file names -->
-                                                        <div id="file-names" class="mt-4 text-sm text-gray-700" x-show="modalData.pdf">
+                                                        <div id="file-names" class="mt-4 text-sm text-gray-700">
                                                             <template x-for="(file, index) in files"
                                                                 :key="index">
                                                                 <div
-                                                                    class="relative w-24 h-24 flex flex-col items-center justify-center rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9]">
+                                                                    class="relative w-full flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9]">
 
-                                                                    <!-- Tombol Hapus (pojok kanan atas) -->
+                                                                    <!-- Icon Folder -->
+                                                                    <svg class="w-8 h-8 text-[#1976d2] mr-4"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none" viewBox="0 0 24 24"
+                                                                        stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                                                                    </svg>
+
+                                                                    <!-- Nama File -->
+                                                                    <span
+                                                                        class="truncate text-sm font-medium text-[#07074D] flex-1">
+                                                                        <span x-text="file.name"></span>
+                                                                    </span>
+
+                                                                    <!-- Tombol Hapus -->
                                                                     <button
-                                                                        class="absolute top-1 right-1 text-[#d32f2f] hover:text-red-700"
+                                                                        class="text-[#d32f2f] hover:text-red-700 ml-4"
                                                                         @click="removeFile(index)">
-                                                                        <svg width="14" height="14"
+                                                                        <svg width="16" height="16"
                                                                             viewBox="0 0 10 10" fill="none"
                                                                             xmlns="http://www.w3.org/2000/svg">
                                                                             <path fill-rule="evenodd"
@@ -284,25 +333,18 @@
                                                                                 fill="currentColor" />
                                                                         </svg>
                                                                     </button>
-
-                                                                    <!-- Icon Folder -->
-                                                                    <svg class="w-8 h-8 text-[#1976d2] mt-2"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        fill="none" viewBox="0 0 24 24"
-                                                                        stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-                                                                    </svg>
-
-                                                                    <!-- Nama File -->
-                                                                    <span
-                                                                        class="truncate text-xs font-medium text-[#07074D] text-center mt-2">
-                                                                        <span x-text="file.name"></span>
-                                                                    </span>
                                                                 </div>
                                                             </template>
                                                         </div>
+
+
+                                                        <!-- Hidden input to store file names -->
+                                                        <input type="hidden" name="file_name" id="file_name"
+                                                            value="">
+                                                        <!-- Hidden input to indicate file removal -->
+                                                        <input type="hidden" name="remove_file" id="remove_file"
+                                                            value="0" x-model="modalData.remove_file">
+
                                                         <!-- Modal footer -->
                                                         <div
                                                             class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
@@ -366,8 +408,8 @@
                 isDragging: false,
                 fileUploaded: false,
 
-                openModal(id, date, id_dept, type, no_docs, desc, pdf, file_name) {
-                    this.modalOpenDetail = true;
+                openModal(id, date, id_dept, type, no_docs, desc, pdf_jpg, file_name, modalId) {
+                    this.modalOpenDetail = modalId;
                     this.modalData = {
                         id,
                         date,
@@ -375,12 +417,26 @@
                         type,
                         no_docs,
                         desc,
-                        pdf,
-                        file_name
+                        pdf_jpg,
+                        file_name,
+                        remove_file: 0 // Initialize remove_file to 0
                     };
+                    this.files = []; // Reset files array
+                    this.fileUploaded = !!pdf_jpg; // Set fileUploaded to true if pdf_jpg exists
+                },
+
+                removeExistingFile() {
+                    this.modalData.pdf_jpg = null;
+                    this.modalData.file_name = null;
+                    this.fileUploaded = false;
+                    this.modalData.remove_file = 1; // Set to 1 to indicate file should be removed
                 },
 
                 handleFiles(event) {
+                    if (!event || !event.target || !event.target.files) {
+                        console.error("Event target or files are null");
+                        return;
+                    }
                     const files = event.target.files;
                     this.processFiles(files);
                 },
@@ -395,7 +451,8 @@
                 processFiles(files) {
                     let validFiles = [];
                     for (let file of files) {
-                        if (file.type === 'application/pdf' && file.size <= 25 * 1024 * 1024) { // Max 25MB
+                        if ((file.type === 'application/pdf' || file.type.startsWith('image/')) && file.size <= 25 * 1024 *
+                            1024) { // Max 25MB
                             validFiles.push(file);
                         } else {
                             // Error notification
@@ -457,7 +514,7 @@
 
                 updateFileNames() {
                     const fileNames = this.files.map(file => file.name).join(',');
-                    document.getElementById('file_names_input').value = fileNames;
+                    document.getElementById('file_name').value = fileNames;
                 }
             }
         }
@@ -468,22 +525,39 @@
             document.getElementById("date").value = formattedDate;
         });
 
-        document.getElementById("tipe_docs").addEventListener("change", function() {
-            let selectedOption = this.options[this.selectedIndex];
-            let code = selectedOption.getAttribute("data-code");
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fungsi untuk menangani perubahan pada type_docs_modal
+            function handleTypeDocsChange(event) {
+                const selectElement = event.target;
+                const idArchive = selectElement.id.split('_').pop(); // Ambil id_archive dari ID elemen
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const code = selectedOption.getAttribute("data-code");
 
-            if (code) {
-                fetch(`/archive/generate-document-number?type=${code}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById("no_docs").value = data.document_number;
-                    })
-                    .catch(error => {
-                        console.error('Error generating document number:', error);
-                    });
-            } else {
-                document.getElementById("no_docs").value = "";
+                if (code) {
+                    fetch(`/archive/generate-document-number?type=${code}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Temukan input no_docs yang sesuai berdasarkan id_archive
+                            const noDocsInput = document.getElementById(`no_docs_${idArchive}`);
+                            if (noDocsInput) {
+                                noDocsInput.value = data.document_number;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error generating document number:', error);
+                        });
+                } else {
+                    const noDocsInput = document.getElementById(`no_docs_${idArchive}`);
+                    if (noDocsInput) {
+                        noDocsInput.value = "";
+                    }
+                }
             }
+
+            // Tambahkan event listener untuk semua elemen type_docs_modal
+            document.querySelectorAll('[id^="type_docs_modal_"]').forEach(selectElement => {
+                selectElement.addEventListener('change', handleTypeDocsChange);
+            });
         });
     </script>
 </x-app-layout>

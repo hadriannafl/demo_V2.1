@@ -1,12 +1,12 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">Archive Management</h2>
+            <h2 class="text-3xl font-semibold">Document Management</h2>
             <div x-data="modal()">
                 <button
                     class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150"
                     type="button" @click.prevent="modalOpenDetail = true;" aria-controls="feedback-modal1">
-                    Add New Archive
+                    Add New Document
                 </button>
                 <!-- Modal backdrop -->
                 <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity" x-show="modalOpenDetail"
@@ -58,7 +58,7 @@
                                     <div class="relative z-0 w-full mb-5 group">
                                         <input name="id_docs" id="id_docs" autocomplete="off" readonly
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                            placeholder=" " required readonly/>
+                                            placeholder=" " required readonly />
                                         <label for="id_docs"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                             Document Number
@@ -166,12 +166,25 @@
                                 <div id="file-names" class="mt-4 text-sm text-gray-700">
                                     <template x-for="(file, index) in files" :key="index">
                                         <div
-                                            class="relative w-24 h-24 flex flex-col items-center justify-center rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9]">
+                                            class="relative w-full flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9]">
 
-                                            <!-- Tombol Hapus (pojok kanan atas) -->
-                                            <button class="absolute top-1 right-1 text-[#d32f2f] hover:text-red-700"
+                                            <!-- Icon Folder -->
+                                            <svg class="w-8 h-8 text-[#1976d2] mr-4"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                                            </svg>
+
+                                            <!-- Nama File -->
+                                            <span class="truncate text-sm font-medium text-[#07074D] flex-1">
+                                                <span x-text="file.name"></span>
+                                            </span>
+
+                                            <!-- Tombol Hapus -->
+                                            <button class="text-[#d32f2f] hover:text-red-700 ml-4"
                                                 @click="removeFile(index)">
-                                                <svg width="14" height="14" viewBox="0 0 10 10"
+                                                <svg width="16" height="16" viewBox="0 0 10 10"
                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" clip-rule="evenodd"
                                                         d="M0.279337 0.279338C0.651787 -0.0931121 1.25565 -0.0931121 1.6281 0.279338L9.72066 8.3719C10.0931 8.74435 10.0931 9.34821 9.72066 9.72066C9.34821 10.0931 8.74435 10.0931 8.3719 9.72066L0.279337 1.6281C-0.0931125 1.25565 -0.0931125 0.651788 0.279337 0.279338Z"
@@ -181,22 +194,10 @@
                                                         fill="currentColor" />
                                                 </svg>
                                             </button>
-
-                                            <!-- Icon Folder -->
-                                            <svg class="w-8 h-8 text-[#1976d2] mt-2"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-                                            </svg>
-
-                                            <!-- Nama File -->
-                                            <span class="truncate text-xs font-medium text-[#07074D] text-center mt-2">
-                                                <span x-text="file.name"></span>
-                                            </span>
                                         </div>
                                     </template>
                                 </div>
+
 
                                 <!-- Modal footer -->
                                 <div class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
@@ -212,7 +213,7 @@
 
         <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">Archive List</h2>
+                <h2 class="text-lg font-semibold text-gray-900">Document List</h2>
                 <div class="flex items-center">
                     <form method="GET" action="{{ route('index.upload') }}">
                         <label for="search" class="mr-2">Search:</label>

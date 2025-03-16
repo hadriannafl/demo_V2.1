@@ -1,12 +1,12 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">Archive Management</h2>
+            <h2 class="text-3xl font-semibold">Document Management</h2>
         </div>
 
         <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">Archive List</h2>
+                <h2 class="text-lg font-semibold text-gray-900">Document List</h2>
                 <div class="flex items-center">
                     <form method="GET" action="{{ route('index.upload') }}">
                         <label for="search" class="mr-2">Search:</label>

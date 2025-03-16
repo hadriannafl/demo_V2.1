@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('no_aju', 100);
             $table->unsignedBigInteger('id_archive');
+            $table->binary('pdf_jpg')->nullable();
             $table->char('active_y_n', 1)->default('Y');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();

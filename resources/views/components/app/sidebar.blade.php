@@ -996,7 +996,7 @@
                                 href="#0" @click.prevent="open = !open; sidebarExpanded = true">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
-                                       <svg class="shrink-0 fill-current @if (in_array(Request::segment(1), ['archive'])) {{ 'text-violet-500' }}@else{{ 'text-gray-400 dark:text-gray-500' }} @endif"
+                                        <svg class="shrink-0 fill-current @if (in_array(Request::segment(1), ['archive'])) {{ 'text-violet-500' }}@else{{ 'text-gray-400 dark:text-gray-500' }} @endif"
                                             xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
                                             width="16" height="16" viewBox="0 0 24 24">
                                             <path
@@ -1014,6 +1014,55 @@
                                     </div>
                                 </div>
                             </a>
+                            <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['archive'])) {{ 'hidden' }} @endif"
+                                    :class="open ? 'block!' : 'hidden'">
+                                    @can('view_inventory')
+                                        <li class="mb-1 last:mb-0" x-data="{ openAju: {{ in_array(Request::segment(2), ['aju']) ? 1 : 0 }} }">
+                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
+                                                href="#0" @click.prevent="openAju = !openAju">
+                                                <span
+                                                    class="text-sm font-medium @if (Route::is('index.aju', 'index.newaju', 'index.editaju', 'index.deleteaju')) {{ 'text-white' }} @endif">AJU</span>
+                                            </a>
+                                            <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['aju'])) {{ 'hidden' }} @endif"
+                                                :class="openAju ? 'block!' : 'hidden'">
+                                                @can('view_inventory')
+                                                    <li class="mb-1 last:mb-0">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.aju')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.aju')}}">
+                                                            <span class="text-sm font-medium">List</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('list_inventory')
+                                                    <li class="mb-1 last:mb-0">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.newaju')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.newaju')}}">
+                                                            <span class="text-sm font-medium">New</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('edit_inventory')
+                                                    <li class="mb-1 last:mb-0">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.editaju')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.editaju')}}">
+                                                            <span class="text-sm font-medium">Edit</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                                @can('delete_inventory')
+                                                    <li class="mb-1 last:mb-0">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.deleteaju')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.deleteaju')}}">
+                                                            <span class="text-sm font-medium">Delete</span>
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                            </ul>
+                                        </li>
+                                    @endcan
+                                </ul>
+                            </div>
                             <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
                                 <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['archive'])) {{ 'hidden' }} @endif"
                                     :class="open ? 'block!' : 'hidden'">
