@@ -1064,45 +1064,45 @@
                                 </ul>
                             </div>
                             <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                                <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['archive'])) {{ 'hidden' }} @endif"
+                                <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['document'])) {{ 'hidden' }} @endif"
                                     :class="open ? 'block!' : 'hidden'">
                                     @can('view_inventory')
-                                        <li class="mb-1 last:mb-0" x-data="{ openUpload: {{ in_array(Request::segment(2), ['upload']) ? 1 : 0 }} }">
+                                        <li class="mb-1 last:mb-0" x-data="{ openDocument: {{ in_array(Request::segment(2), ['document']) ? 1 : 0 }} }">
                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
-                                                href="#0" @click.prevent="openUpload = !openUpload">
+                                                href="#0" @click.prevent="openDocument = !openDocument">
                                                 <span
-                                                    class="text-sm font-medium @if (Route::is('index.upload', 'index.newarchive', 'index.editarchive', 'index.deletearchive')) {{ 'text-white' }} @endif">Document</span>
+                                                    class="text-sm font-medium @if (Route::is('index.document', 'index.newDocument', 'index.form', 'index.editDocument', 'index.formEdit', 'index.DeleteDocument','index.formDelete')) {{ 'text-white' }} @endif">Document</span>
                                             </a>
-                                            <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['upload'])) {{ 'hidden' }} @endif"
-                                                :class="openUpload ? 'block!' : 'hidden'">
+                                            <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['document'])) {{ 'hidden' }} @endif"
+                                                :class="openDocument ? 'block!' : 'hidden'">
                                                 @can('view_inventory')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.upload')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('index.upload') }}">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.document')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.document') }}">
                                                             <span class="text-sm font-medium">List</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('list_inventory')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.newarchive')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('index.newarchive') }}">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.newDocument', 'index.form')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.newDocument') }}">
                                                             <span class="text-sm font-medium">New</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('edit_inventory')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.editarchive')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('index.editarchive') }}">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.editDocument', 'index.formEdit')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.editDocument') }}">
                                                             <span class="text-sm font-medium">Edit</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('delete_inventory')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.deletearchive')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('index.deletearchive') }}">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.DeleteDocument', 'index.formDelete')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.DeleteDocument') }}">
                                                             <span class="text-sm font-medium">Delete</span>
                                                         </a>
                                                     </li>

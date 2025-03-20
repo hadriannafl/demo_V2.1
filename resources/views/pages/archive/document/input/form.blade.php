@@ -1,12 +1,12 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">AJU Management</h2>
+            <h2 class="text-3xl font-semibold">AJU Document Management</h2>
             <div x-data="modal()">
                 <button
                     class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150"
                     type="button" @click.prevent="modalOpenDetail = true;" aria-controls="feedback-modal1">
-                    Add New AJU
+                    Add New Document
                 </button>
                 <!-- Modal backdrop -->
                 <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity" x-show="modalOpenDetail"
@@ -29,7 +29,7 @@
                         <!-- Modal header -->
                         <div class="px-5 py-3 border-b border-slate-200" id="modalAddLpjDetail">
                             <div class="flex justify-between items-center">
-                                <div class="font-semibold text-slate-800">Add New AJU</div>
+                                <div class="font-semibold text-slate-800">New Document</div>
                                 <button type="button" class="text-slate-400 hover:text-slate-500"
                                     @click="modalOpenDetail = false">
                                     <div class="sr-only">Close</div>
@@ -43,8 +43,9 @@
                         <!-- Modal content -->
                         <div class="modal-content text-xs px-5 py-4">
 
-                            <form method="POST" action="{{ route('aju.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('document.store') }}" enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" name="id_aju" id="id_aju" value="{{ $ajuDocs->id_aju }}">
                                 <div class="grid md:grid-cols-2 md:gap-6">
                                     <!-- Input Date -->
                                     <div class="relative z-0 w-full mb-5 group">
@@ -60,88 +61,18 @@
                                     <!-- Input AJU Number + Button -->
                                     <div class="relative z-0 w-full mb-5 flex items-center space-x-2">
                                         <div class="w-full">
-                                            <input name="id_aju" id="id_aju" autocomplete="off"
+                                            <input name="no_archive" id="no_archive" autocomplete="off"
                                                 class="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                 placeholder=" " required />
-                                            <label for="id_aju"
+                                            <label for="no_archive"
                                                 class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                                AJU Number
+                                                Document Number
                                             </label>
                                         </div>
-                                        <button type="button" id="suggest_id_aju"
+                                        <button type="button" id="suggest_no_archive"
                                             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
                                             Suggest
                                         </button>
-                                    </div>
-                                </div>
-
-                                <div class="grid md:grid-cols-3 md:gap-6 mb-5">
-                                    <div class="relative z-0 w-full group">
-                                        <select name="dep" id="dep"
-                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                            required>
-                                            <option value="" disabled selected>Select Department</option>
-                                            <!-- Loop through the brands and add them as options -->
-                                            @foreach ($deps as $department)
-                                                <option value="{{ $department->id }}">{{ $department->name }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        <label for="dep"
-                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Department</label>
-                                    </div>
-                                    <div class="relative z-0 w-full group">
-                                        <select name="sub_dep" id="sub_dep"
-                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                            required>
-                                            <option value="" disabled selected>Select Sub Department</option>
-                                        </select>
-
-                                        <label for="sub_dep"
-                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Sub
-                                            Department</label>
-                                    </div>
-                                    <div class="relative z-0 w-full mb-5 group">
-                                        <select name="type_docs_modal" id="type_docs_modal"
-                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                            required>
-                                            <option value="" data-code="">Select Document Type</option>
-                                            <option value="Invoice" data-code="INV">Invoice</option>
-                                            <option value="Purchase Order" data-code="PO">Purchase Order</option>
-                                            <option value="Delivery Order" data-code="DO">Delivery Order</option>
-                                            <option value="Contract" data-code="CTR">Contract</option>
-                                            <option value="Proposal" data-code="PRP">Proposal</option>
-                                            <option value="Report" data-code="RPT">Report</option>
-                                            <option value="Memo" data-code="MMO">Memo</option>
-                                            <option value="Agreement" data-code="AGR">Agreement</option>
-                                            <option value="Receipt" data-code="RCT">Receipt</option>
-                                            <option value="Manual Guide" data-code="MGD">Manual Guide</option>
-                                            <option value="Policy Document" data-code="PLD">Policy Document
-                                            </option>
-                                            <option value="Technical Specification" data-code="TSP">Technical
-                                                Specification</option>
-                                            <option value="Meeting Minutes" data-code="MMT">Meeting Minutes
-                                            </option>
-                                            <option value="Certification" data-code="CRT">Certification</option>
-                                            <option value="Legal Document" data-code="LGD">Legal Document
-                                            </option>
-                                        </select>
-                                        <label for="type_docs_modal"
-                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                            Type Document
-                                        </label>
-                                    </div>
-
-                                </div>
-                                <div class="flex items-center space-x-2 w-full mb-5">
-                                    <div class="relative z-0 w-full group">
-                                        <input name="description" id="description" autocomplete="off"
-                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                            placeholder=" " required />
-                                        <label for="description"
-                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                            Description
-                                        </label>
                                     </div>
                                 </div>
                                 <input type="hidden" name="file_names" id="file_names_input" value="">
@@ -175,9 +106,8 @@
                                             class="relative w-full flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9]">
 
                                             <!-- Icon Folder -->
-                                            <svg class="w-8 h-8 text-[#1976d2] mr-4"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
+                                            <svg class="w-8 h-8 text-[#1976d2] mr-4" xmlns="http://www.w3.org/2000/svg"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
                                             </svg>
@@ -219,7 +149,7 @@
 
         <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">AJU List</h2>
+                <h2 class="text-lg font-semibold text-gray-900">AJU Number : {{ $ajuDocs->no_docs }}</h2>
                 <div class="flex items-center">
                     <form method="GET" action="{{ route('index.newaju') }}">
                         <label for="search" class="mr-2">Search:</label>
@@ -233,81 +163,41 @@
                 <table id="documentTable" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                No</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Department</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Document Type</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Document Number</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created At</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Document Number
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">File</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($ajus as $index => $aju)
-                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $aju->department->name ?? 'N/A' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $aju->tipe_docs }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $aju->no_docs }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ \Carbon\Carbon::parse($aju->created_at)->format('Y-m-d') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-
-                                    @if ($aju->pdf_jpg)
-                                        <button
-                                            class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150"
-                                            type="button"
-                                            onclick="openPdfInNewTab('{{ $aju->pdf_jpg ?? '' }}')">View
-                                        </button>
-                                    @else
-                                        <span class="bg-red-50 text-red-800 px-2 py-1 rounded text-sm">
-                                            No PDF available
-                                        </span>
-                                    @endif
-                                </td>
+                        @if ($archive->isEmpty())
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">No Data Available.</td>
                             </tr>
-                        @endforeach
+                        @else
+                            @foreach ($archive as $index)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index->date }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index->no_archive }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        @if (!empty($index->pdf_jpg))
+                                            <a onclick="openPdfInNewTab('{{ $index->pdf_jpg }}')"
+                                                class="text-indigo-600 hover:text-indigo-900 cursor-pointer">{{ $index->file_name }}</a>
+                                        @else
+                                            <span class="text-gray-400">No File</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
-            <div class="bg-gray-50 rounded p-4">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <form method="GET" action="{{ route('index.newaju') }}">
-                        <div class="flex items-center">
-                            <label for="per_page" class="mr-2">Show:</label>
-                            <select name="per_page" id="per_page" onchange="this.form.submit()"
-                                class="border border-gray-300 rounded px-4 py-2 w-32">
-                                <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
-                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
-                                <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
-                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="px-6 py-4">
-                    {{ $ajus->links() }}
-                </div>
-            </div>
 
         </div>
+
+
+    </div>
     </div>
     @if (session('success'))
         <script>
@@ -436,7 +326,6 @@
 
         function openPdfInNewTab(base64Data) {
             if (base64Data) {
-                // Convert base64 to a blob
                 const byteCharacters = atob(base64Data);
                 const byteNumbers = new Array(byteCharacters.length);
                 for (let i = 0; i < byteCharacters.length; i++) {
@@ -447,14 +336,11 @@
                     type: 'application/pdf'
                 });
 
-                // Create a blob URL and open it in a new tab
                 const blobUrl = URL.createObjectURL(blob);
                 window.open(blobUrl, '_blank');
 
-                // Revoke the blob URL after opening to free up memory
                 URL.revokeObjectURL(blobUrl);
             } else {
-                // Show an error message if the PDF data is missing or invalid
                 Toastify({
                     text: "PDF data is missing or invalid.",
                     duration: 3000,
@@ -470,51 +356,22 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const departmentSelect = document.getElementById('dep');
-            const subDepartmentSelect = document.getElementById('sub_dep');
-
-            departmentSelect.addEventListener('change', function() {
-                const departmentId = this.value;
-
-                // Clear existing options
-                subDepartmentSelect.innerHTML =
-                    '<option value="" disabled selected>Select Sub Department</option>';
-
-                if (departmentId) {
-                    fetch(`/archive/get-sub-departments/${departmentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            data.forEach(subDep => {
-                                const option = document.createElement('option');
-                                option.value = subDep.id;
-                                option.textContent = subDep.name;
-                                subDepartmentSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching sub-departments:', error);
-                        });
-                }
-            });
-        });
-
-        document.getElementById('id_aju').addEventListener('input', function() {
+        document.getElementById('no_archive').addEventListener('input', function() {
             const ajuNumber = this.value;
 
             if (ajuNumber) {
-                fetch(`/archive/check-aju-number?id_aju=${ajuNumber}`)
+                fetch(`/archive/check-document-number?id_aju=${ajuNumber}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.exists) {
-                            // Tampilkan pesan error menggunakan Toastify
+
                             Toastify({
                                 text: "AJU Number already exists! Please use a different number.",
                                 duration: 3000,
-                                gravity: "top", // Posisi notifikasi
-                                position: "right", // Bisa "left", "right", "center"
-                                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)", // Warna background
-                                stopOnFocus: true, // Berhenti otomatis saat user mengklik notifikasi
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                stopOnFocus: true,
                             }).showToast();
                         }
                     })
@@ -524,26 +381,22 @@
             }
         });
 
-        document.getElementById('suggest_id_aju').addEventListener('click', function() {
-            // Ambil nilai dari input date
+        document.getElementById('suggest_no_archive').addEventListener('click', function() {
             const dateInput = document.getElementById('date').value;
-
-            // Kirim data ke backend menggunakan fetch dengan method POST
-            fetch('/archive/suggest-aju-number', {
-                    method: 'POST', // Gunakan method POST
+            fetch('/archive/suggest-document-number', {
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json', // Tentukan tipe konten
+                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content') // Sertakan CSRF token
+                            'content')
                     },
                     body: JSON.stringify({
                         date: dateInput
-                    }) // Kirim data date dalam body request
+                    })
                 })
-                .then(response => response.json()) // Parse response sebagai JSON
+                .then(response => response.json())
                 .then(data => {
-                    // Set nilai AJU Number ke input id_aju
-                    document.getElementById('id_aju').value = data.suggested_id_aju;
+                    document.getElementById('no_archive').value = data.suggested_id_document;
                 })
                 .catch(error => {
                     console.error('Error suggesting AJU Number:', error);

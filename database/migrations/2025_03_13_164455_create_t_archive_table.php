@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('t_archive', function (Blueprint $table) {
-            $table->id('id_archive');
-            $table->date('date');
-            $table->unsignedBigInteger('id_department');
-            $table->string('tipe_docs', 50);
-            $table->string('no_docs', 100);
-            $table->text('description')->nullable();
+            $table->id('idrec');
+            $table->date('date')->nullable();
+            $table->string('no_archive', 100)->nullable();
+            $table->unsignedBigInteger('id_aju')->nullable();
             $table->binary('pdf_jpg')->nullable();
             $table->string('file_name', 255)->nullable();
             $table->char('active_y_n', 1)->default('Y');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_aju')->references('id_aju')->on('t_aju')->onDelete('cascade');
         });
     }
 
