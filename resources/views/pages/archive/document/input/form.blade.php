@@ -29,7 +29,7 @@
                         <!-- Modal header -->
                         <div class="px-5 py-3 border-b border-slate-200" id="modalAddLpjDetail">
                             <div class="flex justify-between items-center">
-                                <div class="font-semibold text-slate-800">New Document Form</div>
+                                <div class="font-semibold text-slate-800">New Document</div>
                                 <button type="button" class="text-slate-400 hover:text-slate-500"
                                     @click="modalOpenDetail = false">
                                     <div class="sr-only">Close</div>

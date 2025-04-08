@@ -4,7 +4,7 @@
         <h2 class="text-3xl font-semibold">User Access Management</h2>
 
         <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
-            <h2 class="px-6 py-4 bg-gray-50 text-lg font-semibold text-gray-900">Account New</h2>
+            <h2 class="px-6 py-4 bg-gray-50 text-lg font-semibold text-gray-900">Account</h2>
             <div class="table-responsive">
                 <table id="accountTable" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">

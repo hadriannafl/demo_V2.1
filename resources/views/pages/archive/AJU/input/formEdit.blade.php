@@ -7,7 +7,7 @@
         <!-- First Container: Input Fields -->
         <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">AJU # - Details Edit</h2>
+                <h2 class="text-lg font-semibold text-gray-900">AJU # - Details</h2>
             </div>
             <div class="modal-content text-xs px-5 py-4">
                 <form id="ajuForm" method="POST" action="{{ route('indexAju.update', $aju->no_docs ?? '') }}"

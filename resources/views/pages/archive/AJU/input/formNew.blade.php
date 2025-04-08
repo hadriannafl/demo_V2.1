@@ -121,7 +121,7 @@
         <!-- Second Container: Imported Documents Table -->
         <div id="containerDocuments" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">AJU - Documents New</h2>
+                <h2 class="text-lg font-semibold text-gray-900">AJU - Documents</h2>
                 <div class="flex gap-x-4">
                     <div x-data="{ modalOpenArchive: false }">
                         <!-- Trigger Button -->
