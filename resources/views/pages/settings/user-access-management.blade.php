@@ -7,7 +7,7 @@
                 <!-- Select User -->
                 <label for="userSelect" class="text-lg font-medium">User Name :</label>
                 <select id="userSelect" class="border border-gray-300 rounded-md text-lg px-2 py-0.5 w-64">
-                    <option value="">Select User</option>
+                    <option value="">Select User new</option>
                     @foreach ($users as $user)
                         <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
                     @endforeach
