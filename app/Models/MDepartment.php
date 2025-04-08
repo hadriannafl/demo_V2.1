@@ -10,14 +10,34 @@ class MDepartment extends Model
     use HasFactory;
 
     protected $table = 'm_department';
+    protected $primaryKey = 'id';
+    public $timestamps = true;
 
     protected $fillable = [
         'name',
-        'status',
+        'pid',
+        'status'
     ];
 
-    public function subdepartments()
+    // Relationship to parent department
+    public function parent()
     {
-        return $this->hasMany(MSubdepartment::class, 'p_id_dept', 'id');
+        return $this->belongsTo(MDepartment::class, 'pid');
+    }
+
+    // Relationship to child departments
+    public function children()
+    {
+        return $this->hasMany(MDepartment::class, 'pid');
+    }
+
+    public static function getDepartments()
+    {
+        return self::with('children')->where('pid', 0)->get();
+    }
+
+    public static function getSubDepartments()
+    {
+        return self::with('parent')->where('pid', '!=', 0)->get();
     }
 }

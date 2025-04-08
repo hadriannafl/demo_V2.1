@@ -16,8 +16,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            DashboardTableSeeder::class,
-            MWarehouseSeeder::class,
+            TAjuSeeder::class
         ]);
     }
 }
