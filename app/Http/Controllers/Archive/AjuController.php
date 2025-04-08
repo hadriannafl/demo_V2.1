@@ -92,7 +92,7 @@ class AjuController extends Controller
 
         $aju = TAju::where('id_aju', $request->input('id_aju'))->first();
 
-        return view('pages.archive.AJUUBAH.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
+        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
     }
 
 
