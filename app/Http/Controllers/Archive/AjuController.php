@@ -44,7 +44,7 @@ class AjuController extends Controller
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
-        return view('pages.archive.aju.index_list', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_list', compact('ajus', 'deps', 'subDeps', 'perPage'));
     }
 
 
@@ -78,7 +78,7 @@ class AjuController extends Controller
         $subDeps = MDepartment::getSubDepartments();
 
 
-        return view('pages.archive.aju.index_new', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_new', compact('ajus', 'deps', 'subDeps', 'perPage'));
     }
     public function formNew(Request $request)
     {
@@ -92,7 +92,7 @@ class AjuController extends Controller
 
         $aju = TAju::where('id_aju', $request->input('id_aju'))->first();
 
-        return view('pages.archive.aju.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
+        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
     }
 
 
@@ -111,7 +111,7 @@ class AjuController extends Controller
 
         $aju = TAju::where('id_aju', $idAju)->first();
 
-        return view('pages.archive.aju.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
+        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
     }
 
 
@@ -339,7 +339,7 @@ class AjuController extends Controller
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
-        return view('pages.archive.aju.index_edit', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_edit', compact('ajus', 'deps', 'subDeps', 'perPage'));
     }
 
     public function update(Request $request, $id)
@@ -408,7 +408,7 @@ class AjuController extends Controller
 
         $aju = TAju::where('id_aju', $idAju)->first();
 
-        return view('pages.archive.aju.input.formEdit', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
+        return view('pages.archive.AJU.input.formEdit', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
     }
 
     // DELETE
@@ -441,7 +441,7 @@ class AjuController extends Controller
         $subDeps = MDepartment::getSubDepartments();
 
 
-        return view('pages.archive.aju.index_delete', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_delete', compact('ajus', 'deps', 'subDeps', 'perPage'));
     }
 
     public function softDelete($id)
