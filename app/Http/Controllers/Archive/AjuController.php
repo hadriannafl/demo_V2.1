@@ -7,6 +7,7 @@ use App\Models\TAju;
 use App\Models\MDepartment;
 use App\Models\TAjuDetail;
 use App\Models\TArchive;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,9 @@ class AjuController extends Controller
         $perPage = $request->input('per_page', 5);
 
         // Ambil data dari model Aju dengan relasi ke Archive & Department
-        $ajus = TAju::with(['department', 'details', 'archives'])
+        $ajus = TAju::with(['department', 'details', 'archives' => function ($query) {
+            $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
+        }])
             ->where('active_y_n', 'Y')
             ->whereHas('archives', function ($query) {
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
@@ -92,7 +95,9 @@ class AjuController extends Controller
 
         $aju = TAju::where('id_aju', $request->input('id_aju'))->first();
 
-        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
+        $users = User::all();
+
+        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives', 'users'));
     }
 
 
@@ -199,10 +204,12 @@ class AjuController extends Controller
 
     public function storeModal(Request $request)
     {
+        // dd($request->all());
         // Validasi input
         $validator = Validator::make($request->all(), [
             'date_modal' => 'required|date',
             'type_docs_modal' => 'required|string',
+            'id_document' => 'required|string|max:255',
             'description_modal' => 'required|string',
             'files' => 'required|array',
             'files.*' => 'mimes:pdf|max:25600', // 25MB
@@ -244,11 +251,13 @@ class AjuController extends Controller
                     'id_archieve' => $idAju,
                     'date' => $request->date_modal,
                     'doc_type' => $request->type_docs_modal,
+                    'no_document' => $request->id_document,
+                    'sub_dep' => $request->sub_dep_modal,
                     'description' => $request->description_modal,
                     'file_name' => $fileName,
                     'pdfblob' => $base64EncodedData,
                     'active_y_n' => 'Y',
-                    'created_by' => Auth::id(),
+                    'created_by' => $request->user_email,
                     'created_at' => now(),
                 ]);
 
@@ -260,7 +269,7 @@ class AjuController extends Controller
             }
 
             // Redirect ke route setelah berhasil
-            return redirect()->route('index.formNew.GetData', ['id_aju' => $idAju])
+            return redirect()->route('index.formUpdate.GetData', ['id_aju' => $idAju])
                 ->with('success', 'Archive added successfully!');
         } catch (\Exception $e) {
             return response()->json([
@@ -400,15 +409,90 @@ class AjuController extends Controller
 
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
-        $archives = TArchive::paginate(10);
+        $search = $request->input('search');
+        $archives = TArchive::with('subDepartment.parent')
+            ->when($search, function ($query, $search) {
+                return $query->where('doc_type', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%")
+                    ->orWhere('no_document', 'like', "%$search%")
+                    ->orWhereHas('subDepartment', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('subDepartment.parent', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    });
+            })
+            ->get();
 
-        $ajuDetails = TAjuDetail::with(['archive'])
+        $ajuDetails = TAjuDetail::with(['archive.subDepartment.parent', 'archive.createdByUser'])
             ->where('id_aju', $idAju)
             ->get();
+        $users = User::all();
 
         $aju = TAju::where('id_aju', $idAju)->first();
 
-        return view('pages.archive.AJU.input.formEdit', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
+        return view('pages.archive.AJU.input.formEdit', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives', 'users'));
+    }
+
+    public function searchArchives(Request $request)
+    {
+        $search = $request->input('search');
+
+        $archives = TArchive::with('subDepartment.parent')
+            ->when($search, function ($query, $search) {
+                return $query->where('doc_type', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%")
+                    ->orWhere('no_document', 'like', "%$search%")
+                    ->orWhere('file_name', 'like', "%$search%")
+                    ->orWhereHas('subDepartment', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('subDepartment.parent', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    });
+            })
+            ->get()
+            ->map(function ($archive) {
+                return [
+                    'idrec' => $archive->idrec,
+                    'doc_type' => $archive->doc_type,
+                    'date' => $archive->date,
+                    'description' => $archive->description,
+                    'no_document' => $archive->no_document,
+                    'file_name' => $archive->file_name,
+                    'pdfblob' => $archive->pdfblob,
+                    'sub_department' => [
+                        'name' => $archive->subDepartment->name ?? null,
+                        'parent' => [
+                            'name' => $archive->subDepartment->parent->name ?? null
+                        ]
+                    ]
+                ];
+            });
+
+        return response()->json([
+            'archives' => $archives
+        ]);
+    }
+
+    public function storeModalArchiveUpdate(Request $request)
+    {
+        $request->validate([
+            'id_aju_modal_archive' => 'required',
+            'id_archieve' => 'required',
+        ]);
+
+        $idAju = DB::table('t_aju')
+            ->where('no_docs', $request->input('id_aju_modal_archive'))
+            ->value('id_aju');
+
+        TAjuDetail::create([
+            'id_aju' => $idAju,
+            'id_archieve' => $request->input('id_archieve'),
+        ]);
+
+        return redirect()->route('index.formUpdate.GetData', ['id_aju' => $idAju])
+            ->with('success', 'Archive added successfully!');
     }
 
     // DELETE

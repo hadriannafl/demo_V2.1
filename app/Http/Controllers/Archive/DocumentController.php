@@ -7,6 +7,7 @@ use App\Models\TAju;
 use App\Models\TArchive;
 use App\Models\MDepartment;
 use App\Models\MSubdepartment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -52,7 +53,7 @@ class DocumentController extends Controller
         $perPage = $request->input('per_page', 5);
 
         // Query untuk TArchive dengan relasi ajuDetails dan aju
-        $archives = TArchive::with(['ajuDetails', 'aju'])
+        $archives = TArchive::with(['ajuDetails', 'aju', 'subDepartment.parent'])
             ->where('active_y_n', 'Y');
 
         // Jika ada pencarian
@@ -72,33 +73,76 @@ class DocumentController extends Controller
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
-        return view('pages.archive.document.index_new', compact('archives', 'deps', 'subDeps', 'perPage'));
+        $users = User::all();
+
+        return view('pages.archive.document.index_new', compact('archives', 'deps', 'subDeps', 'perPage', 'users'));
     }
 
     public function checkDocumentNumber(Request $request)
     {
-        $documentNumber = $request->query('id_aju');
-        $exists = TArchive::where('no_archive', $documentNumber)->exists();
+        $documentNumber = $request->query('id_document');
+        $docType = $request->query('doc_type');
+
+        $exists = TArchive::where('no_document', $documentNumber)
+            ->where('doc_type', $docType)
+            ->where('active_y_n', 'Y')
+            ->exists();
 
         return response()->json(['exists' => $exists]);
     }
 
     public function suggestDocumentNumber(Request $request)
     {
-
         $date = $request->input('date');
+        $docType = $request->input('doc_type'); // Get document type from request
+
         if (!$date) {
             $date = now()->format('Y-m-d');
         }
 
         $year = date('Y', strtotime($date));
-        $monthDay = date('md', strtotime($date));
+        $month = date('m', strtotime($date));
+        $day = date('d', strtotime($date));
 
-        $lastDocument = TArchive::orderBy('idrec', 'desc')->first();
-        $lastNumber = $lastDocument ? intval(substr($lastDocument->no_archive, -3)) : 0;
+        // Get the document type code (default to DOC if not found)
+        $docTypeCode = 'DOC';
+        if ($docType) {
+            $docTypes = [
+                'Invoice' => 'INV',
+                'Purchase Order' => 'PO',
+                'Delivery Order' => 'DO',
+                'Contract' => 'CTR',
+                'Proposal' => 'PRP',
+                'Report' => 'RPT',
+                'Memo' => 'MMO',
+                'Agreement' => 'AGR',
+                'Receipt' => 'RCT',
+                'Manual Guide' => 'MGD',
+                'Policy Document' => 'PLD',
+                'Technical Specification' => 'TSP',
+                'Meeting Minutes' => 'MMT',
+                'Certification' => 'CRT',
+                'Legal Document' => 'LGD'
+            ];
+
+            $docTypeCode = $docTypes[$docType] ?? 'DOC';
+        }
+
+        // Get the latest document number with this prefix
+        $prefix = $docTypeCode . '-' . $day . '-' . $month . '-' . $year . '-';
+        $lastDocument = TArchive::where('no_document', 'like', $prefix . '%')
+            ->where('active_y_n', 'Y')
+            ->orderBy('idrec', 'desc')
+            ->first();
+
+
+        $lastNumber = 0;
+        if ($lastDocument) {
+            $lastNumber = intval(substr($lastDocument->no_document, strlen($prefix)));
+        }
 
         $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-        $suggestedDocumentNumber = 'DOCS-' . $year . '-' . $monthDay . '-' . $newNumber;
+        $suggestedDocumentNumber = $prefix . $newNumber;
 
         return response()->json(['suggested_id_document' => $suggestedDocumentNumber]);
     }
@@ -120,8 +164,8 @@ class DocumentController extends Controller
 
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'date' => 'required|date',
-            'id_aju' => 'required|string|max:255',
+            'date_modal' => 'required|date',
+            'id_document' => 'required|string|max:255',
             'files' => 'required|array',
             'files.*' => 'file|mimes:pdf,jpg,jpeg|max:25000', // 25MB
         ]);
@@ -154,19 +198,22 @@ class DocumentController extends Controller
         // Menyimpan data ke database
         try {
             DB::table('t_archive')->insert([
-                'date' => $request->input('date'),
-                'id_aju' => $request->input('id_aju'),
-                'no_archive' => $request->input('no_archive'),
-                'pdf_jpg' => $pdfJpgData,
+                'id_archieve' => 0,
+                'date' => $request->input('date_modal'),
+                'doc_type' => $request->input('type_docs_modal'),
+                'no_document' => $request->input('id_document'),
+                'sub_dep' => $request->input('sub_dep'),
+                'description' => $request->input('description_modal'),
+                'pdfblob' => $pdfJpgData,
                 'file_name' => implode(',', $fileNames),
                 'active_y_n' => 'Y',
-                'created_by' => Auth::id(),
+                'created_by' => $request->input('user_email'),
                 'updated_by' => Auth::id(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
-            return redirect()->back()->with('success', 'TArchive added successfully!');
+            return redirect()->back()->with('success', 'Document added successfully!');
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -180,6 +227,8 @@ class DocumentController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
+
+        $users = User::all();
 
         // Query untuk TArchive dengan relasi ajuDetails dan aju
         $archives = TArchive::with(['ajuDetails', 'aju'])
@@ -203,7 +252,7 @@ class DocumentController extends Controller
         $subDeps = MDepartment::getSubDepartments();
 
 
-        return view('pages.archive.document.index_edit', compact('archives', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.document.index_edit', compact('archives', 'deps', 'subDeps', 'perPage', 'users'));
     }
 
     public function indexFormEdit($id_aju)
@@ -221,18 +270,25 @@ class DocumentController extends Controller
     {
         $validatedData = $request->validate([
             'date' => 'required|date',
+            'id_document' => 'required|string|max:255',
+            'dep' => 'required|exists:m_department,id',
+            'sub_dep' => 'required|exists:m_department,id',
             'type_docs_modal' => 'required|string',
             'description' => 'nullable|string',
             'files' => 'nullable|array',
             'files.*' => 'file|mimes:pdf,jpg,jpeg|max:25000', // 25MB max
+            'user_email' => 'required|exists:users,id',
         ]);
 
         $archive = TArchive::findOrFail($id);
 
         // Update the archive data
         $archive->date = $validatedData['date'];
+        $archive->no_document = $validatedData['id_document'];
+        $archive->sub_dep = $validatedData['sub_dep'];
         $archive->doc_type = $validatedData['type_docs_modal'];
         $archive->description = $validatedData['description'];
+
 
         // Handle file upload if a new file is provided
         if ($request->hasFile('files')) {
@@ -243,7 +299,7 @@ class DocumentController extends Controller
                 $base64 = base64_encode($fileContent);
 
                 // Save base64 string to the database
-                $archive->pdf_jpg = $base64;
+                $archive->pdfblob = $base64;
                 $archive->file_name = $file->getClientOriginalName();
             }
         }

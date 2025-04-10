@@ -17,6 +17,8 @@ class TArchive extends Model
         'id_archieve',
         'date',
         'doc_type',
+        'no_document',
+        'sub_dep',
         'description',
         'file_name',
         'pdfblob',
@@ -33,5 +35,15 @@ class TArchive extends Model
     public function aju()
     {
         return $this->belongsTo(TAju::class, 'id_archieve', 'id_aju');
+    }
+
+    public function subDepartment()
+    {
+        return $this->belongsTo(MDepartment::class, 'sub_dep', 'id');
+    }
+
+    public function createdByUser()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 }

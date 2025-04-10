@@ -54,7 +54,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button onclick="confirmDelete({{ $subDept->id }}, '{{ $subDept->name }}')"
-                                        class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+                                        class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded cursor-pointer">
                                         Delete
                                     </button>
                                 </td>

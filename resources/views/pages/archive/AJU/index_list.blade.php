@@ -43,7 +43,8 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($ajus as $index => $aju)
                             <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ($ajus->currentPage() - 1) * $ajus->perPage() + $index + 1 }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ ($ajus->currentPage() - 1) * $ajus->perPage() + $index + 1 }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $aju->department->name ?? 'N/A' }}
                                 </td>
@@ -198,26 +199,23 @@
                 files: [],
 
                 loadFiles(archives) {
-                    // Clear previous files
                     this.files = [];
-
-                    // Add PDF files to the files array
                     archives.forEach(archive => {
                         if (archive.pdfblob) {
                             this.files.push({
-                                file_name: archive
-                                    .file_name, // Nama file dari t_archive
-                                url: archive.pdfblob // URL file PDF
+                                file_name: archive.file_name,
+                                url: archive.pdfblob
                             });
                         }
                     });
+                    console.log(this.files); // Untuk debugging, pastikan semua file masuk
                 }
             }));
         });
 
         function openPdfInNewTab(base64Data) {
             if (base64Data) {
-                // Convert base64 to a blob
+
                 const byteCharacters = atob(base64Data);
                 const byteNumbers = new Array(byteCharacters.length);
                 for (let i = 0; i < byteCharacters.length; i++) {
@@ -228,14 +226,14 @@
                     type: 'application/pdf'
                 });
 
-                // Create a blob URL and open it in a new tab
+
                 const blobUrl = URL.createObjectURL(blob);
                 window.open(blobUrl, '_blank');
 
-                // Revoke the blob URL after opening to free up memory
+
                 URL.revokeObjectURL(blobUrl);
             } else {
-                // Show an error message if the PDF data is missing or invalid
+
                 Toastify({
                     text: "PDF data is missing or invalid.",
                     duration: 3000,

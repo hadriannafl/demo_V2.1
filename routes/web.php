@@ -68,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/aju/editAju', [AjuController::class, 'indexEditAju'])->name('index.editaju');
         Route::put('/aju/update/{idrec}', [AjuController::class, 'update'])->name('indexAju.update');
         Route::get('/aju/update/formNewGetData', [AjuController::class, 'formUpdateGetData'])->name('index.formUpdate.GetData');
+        Route::get('/aju/archive/search', [AjuController::class, 'searchArchives'])->name('aju.archive.search');
+        Route::post('/aju/update/storeModalArchive', [AjuController::class, 'storeModalArchiveUpdate'])->name('aju.storeModalArchive.update');
 
         Route::get('/aju/deleteAju', [AjuController::class, 'indexDeleteAju'])->name('index.deleteaju');
         Route::delete('/aju/delete/{id}', [AjuController::class, 'softDelete'])->name('aju.delete');
@@ -94,13 +96,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/department', [DepartmentController::class, 'index'])->name('index.department');
         Route::post('/department/store', [DepartmentController::class, 'store'])->name('department.store');
 
-        Route::get('/departmentNew', [DepartmentController::class, 'indexNew'])->name('index.departmentNew');
+        Route::get('/department/New', [DepartmentController::class, 'indexNew'])->name('indexNew.department');
         Route::put('/api/departments/{id}', [DepartmentController::class, 'updateDepartment']);
         Route::put('/api/sub-departments/{id}', [DepartmentController::class, 'updateSubDepartment']);
 
-        Route::get('/departmentEdit', [DepartmentController::class, 'indexEdit'])->name('index.departmentEdit');
+        Route::get('/department/Edit', [DepartmentController::class, 'indexEdit'])->name('indexEdit.department');
 
-        Route::get('/departmentDelete', [DepartmentController::class, 'indexDelete'])->name('index.departmentDelete');
+        Route::get('/department/Delete', [DepartmentController::class, 'indexDelete'])->name('indexDelete.department');
         Route::post('/department/{id}/delete', [DepartmentController::class, 'softDelete'])->name('departments.softDelete');
     });
 });

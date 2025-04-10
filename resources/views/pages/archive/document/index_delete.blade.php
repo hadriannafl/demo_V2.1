@@ -38,10 +38,19 @@
                                 Description</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Document Number</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Sub Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 File Name</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created At</th>
+                                Created by</th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions</th>
@@ -49,7 +58,6 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($archives as $index => $archive)
-                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
                             <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $index + $archives->firstItem() }}
@@ -64,11 +72,20 @@
                                     {{ $archive->description ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->no_document ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->subDepartment->parent->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->subDepartment->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <a onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
                                         class="text-indigo-600 hover:text-indigo-900 cursor-pointer">{{ $archive->file_name ?? '-' }}</a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->created_at->format('Y-m-d') }}
+                                    {{ $archive->createdByUser->name ?? '-' }}
                                 </td>
                                 <td
                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex justify-center space-x-2">
@@ -77,7 +94,7 @@
                                         @method('PUT')
                                         <button type="submit"
                                             onclick="return confirm('Are you sure you want to delete this document?')"
-                                            class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-800 flex items-center">
+                                            class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-800 flex items-center cursor-pointer">
                                             Delete
                                         </button>
                                     </form>

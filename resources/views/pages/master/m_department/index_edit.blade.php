@@ -56,136 +56,131 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div x-data="editModal({{ json_encode($subDept) }}, {{ json_encode($mainDepartments) }})">
                                         <button
-                                            class="inline-flex items-center px-3 py-1 bg-yellow-400 text-white text-xs font-semibold rounded hover:bg-yellow-500 transition duration-150"
+                                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded cursor-pointer"
                                             type="button" @click.prevent="openModal()">
                                             Edit
                                         </button>
 
-                                        <!-- Modal Edit -->
-                                        <div class="fixed inset-0 z-50 overflow-y-auto" x-show="isOpen" x-cloak>
-                                            <div
-                                                class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                                <!-- Background overlay -->
-                                                <div class="fixed inset-0 transition-opacity" aria-hidden="true"
-                                                    @click="closeModal()">
-                                                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                                        <!-- Modal backdrop -->
+                                        <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity"
+                                            x-show="isOpen" x-transition:enter="transition ease-out duration-200"
+                                            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                                            x-transition:leave="transition ease-out duration-100"
+                                            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                                            aria-hidden="true" x-cloak></div>
+
+                                        <!-- Modal dialog -->
+                                        <div id="edit-modal"
+                                            class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6"
+                                            role="dialog" aria-modal="true" x-show="isOpen"
+                                            x-transition:enter="transition ease-in-out duration-200"
+                                            x-transition:enter-start="opacity-0 translate-y-4"
+                                            x-transition:enter-end="opacity-100 translate-y-0"
+                                            x-transition:leave="transition ease-in-out duration-200"
+                                            x-transition:leave-start="opacity-100 translate-y-0"
+                                            x-transition:leave-end="opacity-0 translate-y-4" x-cloak>
+                                            <div class="bg-white rounded shadow-lg overflow-auto w-3/4 max-h-full"
+                                                @click.outside="closeModal" @keydown.escape.window="closeModal">
+                                                <!-- Modal header -->
+                                                <div class="px-5 py-3 border-b border-slate-200">
+                                                    <div class="flex justify-between items-center">
+                                                        <div class="font-semibold text-slate-800">Edit Department/Sub
+                                                            Department</div>
+                                                        <button type="button"
+                                                            class="text-slate-400 hover:text-slate-500"
+                                                            @click="closeModal">
+                                                            <div class="sr-only">Close</div>
+                                                            <svg class="w-4 h-4 fill-current">
+                                                                <path
+                                                                    d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
                                                 </div>
-
                                                 <!-- Modal content -->
-                                                <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0"
-                                                    x-show="isOpen" x-transition:enter="ease-out duration-300"
-                                                    x-transition:enter-start="opacity-0"
-                                                    x-transition:enter-end="opacity-100"
-                                                    x-transition:leave="ease-in duration-200"
-                                                    x-transition:leave-start="opacity-100"
-                                                    x-transition:leave-end="opacity-0"
-                                                    style="background-color: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: none;"
-                                                    x-cloak @click.away="closeModal()">
+                                                <div class="modal-content text-xs px-5 py-4">
+                                                    <form @submit.prevent="submitForm">
+                                                        <input type="hidden" name="id" x-model="formData.id">
 
-                                                    <div class="inline-block align-middle bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full"
-                                                        x-transition:enter="ease-out duration-300"
-                                                        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                                                        x-transition:leave="ease-in duration-200"
-                                                        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                                                        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-                                                        <!-- Modal header with close button -->
-                                                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 relative">
-                                                            <button @click="closeModal()"
-                                                                class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 focus:outline-none">
-                                                                <span class="sr-only">Close</span>
-                                                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                                                    stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                                                </svg>
-                                                            </button>
+                                                        <!-- Edit Type Dropdown -->
+                                                        <div class="relative z-0 w-full mb-5 group">
+                                                            <select x-model="editType" id="editType"
+                                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                required>
+                                                                <option value="department">Department</option>
+                                                                <option value="subdepartment">Sub Department</option>
+                                                            </select>
+                                                            <label for="editType"
+                                                                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                Edit Type*
+                                                            </label>
+                                                        </div>
 
-                                                            <h3
-                                                                class="font-semibold text-slate-800 border-b border-slate-200 pb-2 mb-4">
-                                                                Edit Department/Sub Department
-                                                            </h3>
+                                                        <!-- Department Edit Form -->
+                                                        <div x-show="editType === 'department'" class="space-y-4">
+                                                            <div class="relative z-0 w-full mb-5 group">
+                                                                <input type="text" id="departmentName"
+                                                                    name="departmentName"
+                                                                    x-model="formData.departmentName" autocomplete="off"
+                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                    placeholder=" " required />
+                                                                <label for="departmentName"
+                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                    Department Name*
+                                                                </label>
+                                                            </div>
+                                                        </div>
 
-                                                            <form @submit.prevent="submitForm">
-                                                                <input type="hidden" name="id"
-                                                                    x-model="formData.id">
+                                                        <!-- Sub Department Edit Form -->
+                                                        <div x-show="editType === 'subdepartment'" class="space-y-4">
+                                                            <div class="relative z-0 w-full mb-5 group">
+                                                                <select id="parentDepartment" name="parentDepartment"
+                                                                    x-model="formData.parentId"
+                                                                    @change="updateDepartmentName()"
+                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                    required>
+                                                                    <option value="" disabled selected hidden>--
+                                                                        Select Department --</option>
+                                                                    <template x-for="dept in mainDepartments"
+                                                                        :key="dept.id">
+                                                                        <option :value="dept.id"
+                                                                            :selected="dept.id == formData.parentId"
+                                                                            x-text="dept.name"></option>
+                                                                    </template>
+                                                                </select>
+                                                                <label for="parentDepartment"
+                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                    Parent Department*
+                                                                </label>
+                                                            </div>
 
-                                                                <!-- Edit Type Dropdown -->
-                                                                <div class="mb-4 mt-4">
-                                                                    <label
-                                                                        class="block text-sm font-medium text-gray-700 mb-2">Edit
-                                                                        Type</label>
-                                                                    <select x-model="editType"
-                                                                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                                        <option value="department">Department</option>
-                                                                        <option value="subdepartment">Sub Department
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-
-                                                                <!-- Department Edit Form -->
-                                                                <div x-show="editType === 'department'"
-                                                                    class="space-y-4">
-                                                                    <div>
-                                                                        <label for="departmentName"
-                                                                            class="block text-sm font-medium text-gray-700">Department
-                                                                            Name</label>
-                                                                        <input type="text" id="departmentName"
-                                                                            name="departmentName"
-                                                                            x-model="formData.departmentName"
-                                                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Sub Department Edit Form -->
-                                                                <div x-show="editType === 'subdepartment'"
-                                                                    class="space-y-4">
-                                                                    <div>
-                                                                        <label for="parentDepartment"
-                                                                            class="block text-sm font-medium text-gray-700">Parent
-                                                                            Department</label>
-                                                                        <select id="parentDepartment"
-                                                                            name="parentDepartment"
-                                                                            x-model="formData.parentId"
-                                                                            @change="updateDepartmentName()"
-                                                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                                            <option value="">Select Department
-                                                                            </option>
-                                                                            <template x-for="dept in mainDepartments"
-                                                                                :key="dept.id">
-                                                                                <option :value="dept.id"
-                                                                                    :selected="dept.id == formData.parentId"
-                                                                                    x-text="dept.name"></option>
-                                                                            </template>
-                                                                        </select>
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <label for="subDepartmentName"
-                                                                            class="block text-sm font-medium text-gray-700">Sub
-                                                                            Department Name</label>
-                                                                        <input type="text" id="subDepartmentName"
-                                                                            name="subDepartmentName"
-                                                                            x-model="formData.subDepartmentName"
-                                                                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                                    </div>
-                                                                </div>
-                                                            </form>
+                                                            <div class="relative z-0 w-full mb-5 group">
+                                                                <input type="text" id="subDepartmentName"
+                                                                    name="subDepartmentName"
+                                                                    x-model="formData.subDepartmentName"
+                                                                    autocomplete="off"
+                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                    placeholder=" " required />
+                                                                <label for="subDepartmentName"
+                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                    Sub Department Name*
+                                                                </label>
+                                                            </div>
                                                         </div>
 
                                                         <!-- Modal footer -->
                                                         <div
-                                                            class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                                            <button type="button" @click="submitForm()"
-                                                                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                                                Save Changes
-                                                            </button>
-                                                            <button type="button" @click="closeModal()"
-                                                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                                            class="px-5 py-3 border-t border-slate-200 flex justify-end mt-4">
+                                                            <button type="button" @click="closeModal"
+                                                                class="mr-2 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                                                                 Cancel
                                                             </button>
+                                                            <button type="button" @click="submitForm"
+                                                                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                                Save Changes
+                                                            </button>
                                                         </div>
-                                                    </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

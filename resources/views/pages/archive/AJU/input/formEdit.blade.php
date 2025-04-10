@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">AJU Management</h2>
+            <h2 class="text-3xl font-semibold">AJU Editing Management</h2>
         </div>
 
         <!-- First Container: Input Fields -->
@@ -25,8 +25,6 @@
                                 Select Date
                             </label>
                         </div>
-
-
                         <!-- Input AJU Number + Button -->
                         <div class="relative z-0 w-full mb-5 flex items-center space-x-2">
                             <div class="w-full">
@@ -120,7 +118,7 @@
                         <!-- Trigger Button -->
                         <button
                             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer disabled:bg-blue-800 disabled:cursor-not-allowed"
-                            type="button" disabled
+                            type="button"
                             @click.prevent="
                                                 modalOpenArchive = true;
                                                 document.querySelectorAll('[id^=id_aju_modal_archive_]').forEach(input => {
@@ -138,7 +136,7 @@
                             x-transition:leave="transition ease-out duration-100" x-transition:leave-start="opacity-100"
                             x-transition:leave-end="opacity-0" aria-hidden="true" x-cloak></div>
 
-                        <!-- Modal Dialog -->
+                        <!-- Modal Dialog - Diperlebar menjadi max-w-7xl dan dimodifikasi layoutnya -->
                         <div id="archive-modal"
                             class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center px-4 sm:px-6 py-4"
                             role="dialog" aria-modal="true" x-show="modalOpenArchive"
@@ -148,94 +146,125 @@
                             x-transition:leave="transition ease-in-out duration-200"
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 translate-y-4" x-cloak>
-                            <div class="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-6xl max-h-[90vh] flex flex-col"
+                            <div class="bg-white rounded-lg shadow-xl overflow-hidden w-3/4 max-h-[70vh] flex flex-col"
                                 @click.outside="modalOpenArchive = false"
                                 @keydown.escape.window="modalOpenArchive = false">
-                                <!-- Modal Header -->
-                                <div class="px-5 py-3 border-b border-slate-200 flex justify-between items-center">
+                                <!-- Modal Header dengan padding lebih lebar -->
+                                <div class="px-6 py-3 border-b border-slate-200 flex justify-between items-center">
                                     <h2 class="font-semibold text-slate-800 text-lg">Archive Data</h2>
-                                    <button type="button"
-                                        class="text-slate-400 hover:text-slate-500 focus:outline-none"
-                                        @click="modalOpenArchive = false" aria-label="Close modal">
-                                        <svg class="w-5 h-5 fill-current">
-                                            <path
-                                                d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
-                                        </svg>
-                                    </button>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="relative mb-4">
+                                            <input type="text" id="searchArchive" placeholder="Search document..."
+                                                class="form-input pl-4 pr-10 py-2 border border-gray-300 rounded w-64">
+                                            <button id="btnSearchArchive" type="button"
+                                                class="absolute right-3 top-2 text-gray-400 hover:text-gray-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <button type="button"
+                                            class="text-slate-400 hover:text-slate-500 focus:outline-none"
+                                            @click="modalOpenArchive = false" aria-label="Close modal">
+                                            <svg class="w-5 h-5 fill-current">
+                                                <path
+                                                    d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <!-- Modal Content -->
-                                <div class="flex-1 overflow-y-auto p-5">
-                                    <div class="overflow-x-auto">
-                                        <table class="min-w-full divide-y divide-gray-200">
-                                            <thead class="bg-gray-50">
-                                                <tr>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Date</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Doc Type</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Description</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        File Name</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="bg-white divide-y divide-gray-200">
-                                                @foreach ($archives as $archive)
+                                <!-- Modal Content dengan padding lebih lebar -->
+                                <div class="flex-1 overflow-y-auto px-6 py-4">
+                                    <div class="container mx-auto">
+                                        <div class="overflow-x-auto">
+                                            <table class="min-w-full divide-y divide-gray-200">
+                                                <thead class="bg-gray-50">
                                                     <tr>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            {{ $archive->date }}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            {{ $archive->doc_type }}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            {{ $archive->description }}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            <a onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
-                                                                class="text-indigo-600 hover:text-indigo-900 cursor-pointer">{{ $archive->file_name }}</a>
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                            <form method="POST"
-                                                                action="{{ route('aju.storeModalArchive') }}">
-                                                                @csrf
-                                                                <input type="hidden" name="id_aju_modal_archive"
-                                                                    id="id_aju_modal_archive_{{ $archive->idrec }}"
-                                                                    value="">
-                                                                <input type="hidden" name="id_archieve"
-                                                                    value="{{ $archive->idrec }}">
-                                                                <button type="submit"
-                                                                    class="text-indigo-600 hover:text-indigo-900 mr-3">Add</button>
-                                                            </form>
-                                                        </td>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            Doc Type</th>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            Date</th>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            Description</th>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            Doc Number</th>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            Department</th>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            Sub Department</th>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            File Name</th>
+                                                        <th
+                                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                            Actions</th>
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                </thead>
+
+                                                <tbody id="archiveTableBody"
+                                                    class="bg-white divide-y divide-gray-200">
+                                                    @foreach ($archives as $archive)
+                                                        <tr>
+                                                            <td
+                                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                {{ $archive->doc_type }}</td>
+                                                            <td
+                                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                {{ $archive->date }}</td>
+                                                            <td class="px-6 py-4 text-sm text-gray-500">
+                                                                {{ $archive->description }}</td>
+                                                            <td
+                                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                {{ $archive->no_document ?? '-' }}</td>
+                                                            <td
+                                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                {{ $archive->subDepartment->parent->name ?? '-' }}
+                                                            </td>
+                                                            <td
+                                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                {{ $archive->subDepartment->name ?? '-' }}
+                                                            </td>
+                                                            <td
+                                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                <a onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
+                                                                    class="text-indigo-600 hover:text-indigo-900 cursor-pointer">{{ $archive->file_name }}</a>
+                                                            </td>
+                                                            <td
+                                                                class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                                <form method="POST"
+                                                                    action="{{ route('aju.storeModalArchive.update') }}">
+                                                                    @csrf
+                                                                    <input type="hidden" name="id_aju_modal_archive"
+                                                                        id="id_aju_modal_archive_{{ $archive->idrec }}"
+                                                                        value="">
+                                                                    <input type="hidden" name="id_archieve"
+                                                                        value="{{ $archive->idrec }}">
+                                                                    <button type="submit"
+                                                                        class="text-indigo-600 hover:text-indigo-900 mr-3">Add</button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Modal Footer -->
-                                <div class="border-t border-slate-200 px-5 py-3 flex justify-between items-center">
-                                    <div class="text-sm text-gray-500">
-                                        Showing {{ $archives->firstItem() }} to {{ $archives->lastItem() }} of
-                                        {{ $archives->total() }} entries
-                                    </div>
-                                    <div class="flex space-x-2">
-                                        @if ($archives->previousPageUrl())
-                                            <a href="{{ $archives->previousPageUrl() }}"
-                                                class="px-3 py-1 border rounded text-sm">Previous</a>
-                                        @endif
-                                        @if ($archives->nextPageUrl())
-                                            <a href="{{ $archives->nextPageUrl() }}"
-                                                class="px-3 py-1 border rounded text-sm">Next</a>
-                                        @endif
-                                    </div>
+                                <div class="border-t border-slate-200 px-6 py-3 flex justify-between items-center">
+
                                 </div>
                             </div>
                         </div>
@@ -244,7 +273,7 @@
                     <div x-data="modal()">
                         <button
                             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer disabled:bg-blue-800 disabled:cursor-not-allowed"
-                            type="button" disabled
+                            type="button"
                             @click.prevent="
                                                 modalOpenDetail = true;
                                                 document.getElementById('id_aju_modal').value = document.getElementById('id_aju').value;
@@ -291,49 +320,134 @@
                                     <form id="documentForm" method="POST" action="{{ route('aju.storeModal') }}"
                                         enctype="multipart/form-data">
                                         @csrf
-                                        <div class="grid md:grid-cols-2 md:gap-6">
-                                            <!-- Input Date -->
-                                            <div class="relative z-0 w-full mb-5 group">
-                                                <input type="date" name="date_modal" id="date_modal" required
-                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                                <label for="date_modal"
-                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                                    Select Date
-                                                </label>
+                                        <div class="grid md:grid-cols-1 md:gap-6">
+                                            <div class="grid md:grid-cols-2 md:gap-6">
+                                                <!-- Input Date -->
+                                                <div class="relative z-0 w-full mb-5 group">
+                                                    <input type="date" name="date_modal" id="date_modal" required
+                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                                    <label for="date_modal"
+                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                        Select Date
+                                                    </label>
+                                                </div>
+                                                <div class="relative z-0 w-full mb-5 flex items-center space-x-2">
+                                                    <div class="w-full">
+                                                        <input name="id_document" id="id_document" autocomplete="off"
+                                                            class="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                            placeholder=" " required
+                                                            onkeypress="return event.key !== ' '"
+                                                            oninput="this.value = this.value.replace(/\s/g, '')" />
+                                                        <label for="id_document"
+                                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                            Document Number
+                                                        </label>
+                                                    </div>
+                                                    <button type="button" id="suggest_id_document"
+                                                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
+                                                        Suggest
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div class="relative z-0 w-full mb-5 flex items-center space-x-2">
-                                                <select name="type_docs_modal" id="type_docs_modal"
-                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                    required>
-                                                    <option value="" data-code="">Select Document Type
-                                                    </option>
-                                                    <option value="Invoice" data-code="INV">Invoice</option>
-                                                    <option value="Purchase Order" data-code="PO">Purchase Order
-                                                    </option>
-                                                    <option value="Delivery Order" data-code="DO">Delivery Order
-                                                    </option>
-                                                    <option value="Contract" data-code="CTR">Contract</option>
-                                                    <option value="Proposal" data-code="PRP">Proposal</option>
-                                                    <option value="Report" data-code="RPT">Report</option>
-                                                    <option value="Memo" data-code="MMO">Memo</option>
-                                                    <option value="Agreement" data-code="AGR">Agreement</option>
-                                                    <option value="Receipt" data-code="RCT">Receipt</option>
-                                                    <option value="Manual Guide" data-code="MGD">Manual Guide</option>
-                                                    <option value="Policy Document" data-code="PLD">Policy Document
-                                                    </option>
-                                                    <option value="Technical Specification" data-code="TSP">Technical
-                                                        Specification</option>
-                                                    <option value="Meeting Minutes" data-code="MMT">Meeting Minutes
-                                                    </option>
-                                                    <option value="Certification" data-code="CRT">Certification
-                                                    </option>
-                                                    <option value="Legal Document" data-code="LGD">Legal Document
-                                                    </option>
-                                                </select>
-                                                <label for="type_docs_modal"
-                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                                    Type Document
-                                                </label>
+                                            <div class="grid md:grid-cols-4 md:gap-6">
+                                                <div class="relative z-0 w-full mb-5 group">
+                                                    <select name="dep_modal" id="dep_modal"
+                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                        required >
+                                                        <option value="" disabled selected>Select Department
+                                                        </option>
+                                                        @foreach ($deps as $department)
+                                                            <option value="{{ $department->id }}"
+                                                                @if (isset($aju) && $department->id == $aju->department->pid) selected @endif>
+                                                                {{ $department->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <label for="dep_modal"
+                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                        Department
+                                                    </label>
+                                                </div>
+
+                                                <!-- Sub Department -->
+                                                <div class="relative z-0 w-full mb-5 group">
+                                                    <select name="sub_dep_modal" id="sub_dep_modal"
+                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                        required>
+                                                        <option value="" disabled selected>Select Sub Department
+                                                        </option>
+                                                        @if (isset($aju) && isset($subDeps))
+                                                            @foreach ($subDeps as $subDep)
+                                                                <option value="{{ $subDep->id }}"
+                                                                    @if ($aju->id_department == $subDep->id) selected @endif>
+                                                                    {{ $subDep->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                    <label for="sub_dep_modal"
+                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                        Sub Department
+                                                    </label>
+                                                </div>
+                                                <div class="relative z-0 w-full mb-5 flex items-center space-x-2">
+                                                    <select name="type_docs_modal" id="type_docs_modal"
+                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                        required>
+                                                        <option value="" data-code="">Select Document Type
+                                                        </option>
+                                                        <option value="Invoice" data-code="INV">Invoice</option>
+                                                        <option value="Purchase Order" data-code="PO">Purchase Order
+                                                        </option>
+                                                        <option value="Delivery Order" data-code="DO">Delivery Order
+                                                        </option>
+                                                        <option value="Contract" data-code="CTR">Contract</option>
+                                                        <option value="Proposal" data-code="PRP">Proposal</option>
+                                                        <option value="Report" data-code="RPT">Report</option>
+                                                        <option value="Memo" data-code="MMO">Memo</option>
+                                                        <option value="Agreement" data-code="AGR">Agreement</option>
+                                                        <option value="Receipt" data-code="RCT">Receipt</option>
+                                                        <option value="Manual Guide" data-code="MGD">Manual Guide
+                                                        </option>
+                                                        <option value="Policy Document" data-code="PLD">Policy
+                                                            Document
+                                                        </option>
+                                                        <option value="Technical Specification" data-code="TSP">
+                                                            Technical
+                                                            Specification</option>
+                                                        <option value="Meeting Minutes" data-code="MMT">Meeting
+                                                            Minutes
+                                                        </option>
+                                                        <option value="Certification" data-code="CRT">Certification
+                                                        </option>
+                                                        <option value="Legal Document" data-code="LGD">Legal Document
+                                                        </option>
+                                                    </select>
+                                                    <label for="type_docs_modal"
+                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                        Type Document
+                                                    </label>
+                                                </div>
+                                                <div class="relative z-0 w-full mb-5 group">
+                                                    <select name="user_email" id="user_email"
+                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                        required>
+                                                        <option value="" disabled selected>Select User Email
+                                                        </option>
+                                                        @if (isset($users))
+                                                            @foreach ($users as $user)
+                                                                <option value="{{ $user->id }}"
+                                                                    @if (isset($aju) && $aju->created_by == $user->id) selected @endif>
+                                                                    {{ $user->name }} ({{ $user->email }})
+                                                                </option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                    <label for="user_email"
+                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                        User Email
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                         <input type="hidden" name="id_aju_modal" id="id_aju_modal" value="">
@@ -414,7 +528,7 @@
 
 
                                         <!-- Modal footer -->
-                                        <div class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
+                                        <div class="px-5 py-3 border-t border-slate-200 flex justify-end mt-4">
                                             <button type="submit"
                                                 class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">Upload</button>
                                         </div>
@@ -432,6 +546,10 @@
                             <th scope="col" class="px-6 py-3">Document Type</th>
                             <th scope="col" class="px-6 py-3">Date</th>
                             <th scope="col" class="px-6 py-3">Description</th>
+                            <th scope="col" class="px-6 py-3">Document Number</th>
+                            {{-- <th scope="col" class="px-6 py-3">Department</th>
+                            <th scope="col" class="px-6 py-3">Sub Department</th> --}}
+                            <th scope="col" class="px-6 py-3">User</th>
                             <th scope="col" class="px-6 py-3">File Name</th>
                             <th scope="col" class="px-6 py-3">Action</th>
                         </tr>
@@ -442,6 +560,14 @@
                                 <td class="px-6 py-4">{{ $detail->archive->doc_type ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->date ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->description ?? '-' }}</td>
+                                <td class="px-6 py-4">{{ $detail->archive->no_document ?? '-' }}</td>
+                                {{-- <td class="px-6 py-4">
+                                    {{ $detail->archive->subDepartment->parent->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $detail->archive->subDepartment->name ?? '-' }}
+                                </td> --}}
+                                <td class="px-6 py-4">{{ $detail->archive->createdByUser->name ?? '-' }}</td>
                                 <td class="px-6 py-4">
                                     @if ($detail->archive && $detail->archive->file_name)
                                         <a onclick="openPdfInNewTab('{{ $detail->archive->pdfblob }}')"
@@ -451,6 +577,10 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">
+                                    <button class="text-green-600 hover:text-red-900 cursor-pointer"
+                                        onclick="openPdfInNewTab('{{ $detail->archive->pdfblob }}')">
+                                        View
+                                    </button>
                                     <button class="text-red-600 hover:text-red-900 cursor-pointer"
                                         onclick="confirmDelete('{{ $detail->idrec }}', '{{ $detail->archive->file_name }}')">
                                         Delete
@@ -458,6 +588,7 @@
                                 </td>
                             </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -591,36 +722,6 @@
             document.getElementById("date_modal").value = formattedDate;
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const departmentSelect = document.getElementById('dep');
-            const subDepartmentSelect = document.getElementById('sub_dep');
-
-            departmentSelect.addEventListener('change', function() {
-                const departmentId = this.value;
-
-                // Clear existing options
-                subDepartmentSelect.innerHTML =
-                    '<option value="" disabled selected>Select Sub Department</option>';
-
-                if (departmentId) {
-                    fetch(`/archive/get-sub-departments/${departmentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            data.forEach(subDep => {
-                                const option = document.createElement('option');
-                                option.value = subDep.id;
-                                option.textContent = subDep.name;
-                                subDepartmentSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching sub-departments:', error);
-                        });
-                }
-            });
-        });
-
-
         function openPdfInNewTab(base64Data) {
             if (base64Data) {
                 // Convert base64 to a blob
@@ -702,14 +803,10 @@
                                     element => {
                                         element.disabled = true;
                                     });
-                                
+
                                 document.getElementById('save').style.display = 'none';
 
                                 // Mengaktifkan tombol archive dan feedback jika ada
-                                document.querySelector('[aria-controls="archive-modal"]').disabled =
-                                    false;
-                                document.querySelector('[aria-controls="feedback-modal1"]').disabled =
-                                    false;
                             } else {
                                 Swal.fire({
                                     title: "Failed!",
@@ -732,6 +829,34 @@
             });
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const departmentSelect = document.getElementById('dep_modal');
+            const subDepartmentSelect = document.getElementById('sub_dep_modal');
+
+            departmentSelect.addEventListener('change', function() {
+                const departmentId = this.value;
+
+                // Clear existing options
+                subDepartmentSelect.innerHTML =
+                    '<option value="" disabled selected>Select Sub Department</option>';
+
+                if (departmentId) {
+                    fetch(`/archive/get-sub-departments/${departmentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(subDep => {
+                                const option = document.createElement('option');
+                                option.value = subDep.id;
+                                option.textContent = subDep.name;
+                                subDepartmentSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching sub-departments:', error);
+                        });
+                }
+            });
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             // Get the button and both input fields
@@ -746,6 +871,162 @@
                     idAjuModalInput.value = idAjuInput.value;
                 });
             }
+        });
+
+        document.getElementById('btnSearchArchive').addEventListener('click', function() {
+            let query = document.getElementById('searchArchive').value;
+            let idAju = document.getElementById('id_aju').value; // Ambil nilai id_aju dari input tersembunyi
+
+            fetch(`{{ route('aju.archive.search') }}?search=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById('archiveTableBody');
+                    tableBody.innerHTML = '';
+
+                    // Dapatkan CSRF token dari meta tag
+                    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    data.archives.forEach(archive => {
+                        let row = document.createElement('tr');
+                        row.innerHTML = `
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${archive.doc_type}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${archive.date}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">${archive.description}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${archive.no_document || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${archive.sub_department?.parent?.name || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${archive.sub_department?.name || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <a onclick="openPdfInNewTab('${archive.pdfblob}')" class="text-indigo-600 hover:text-indigo-900 cursor-pointer">${archive.file_name}</a>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <form method="POST" action="{{ route('aju.storeModalArchive.update') }}">
+                                                    <input type="hidden" name="_token" value="${csrfToken}">
+                                                    <input type="hidden" name="id_aju_modal_archive" id="id_aju_modal_archive_${archive.idrec}" value="${idAju}">
+                                                    <input type="hidden" name="id_archieve" value="${archive.idrec}">
+                                                    <button type="submit" class="text-indigo-600 hover:text-indigo-900 mr-3">Add</button>
+                                                </form>
+                                            </td>
+                                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching search results:', error);
+                });
+        });
+
+        // Also add event listener for Enter key
+        document.getElementById('searchArchive').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('btnSearchArchive').click();
+            }
+        });
+
+        document.getElementById('id_document').addEventListener('input', function() {
+            const docNumber = this.value.trim();
+            const docTypeSelect = document.getElementById('type_docs_modal');
+            const selectedDocType = docTypeSelect.options[docTypeSelect.selectedIndex].value;
+
+            // Only check if document number is not empty and document type is selected
+            if (docNumber && selectedDocType) {
+                // Show loading indicator (optional)
+                this.classList.add('checking-number');
+
+                fetch(
+                        `/archive/check-document-number?id_document=${encodeURIComponent(docNumber)}&doc_type=${encodeURIComponent(selectedDocType)}`
+                    )
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.exists) {
+                            Toastify({
+                                text: "Document number already exists for this document type! Please use a different number.",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                stopOnFocus: true,
+                            }).showToast();
+
+                            // Optionally highlight the field
+                            this.classList.add('border-red-500');
+                        } else {
+                            this.classList.remove('border-red-500');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking document number:', error);
+                        Toastify({
+                            text: "Error checking document number availability",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            stopOnFocus: true,
+                        }).showToast();
+                    })
+                    .finally(() => {
+                        this.classList.remove('checking-number');
+                    });
+            }
+        });
+
+        document.getElementById('suggest_id_document')?.addEventListener('click', function() {
+            // Get date input value and selected document type
+            const dateInput = document.getElementById('date_modal').value;
+            const docTypeSelect = document.getElementById('type_docs_modal');
+            const docType = docTypeSelect.options[docTypeSelect.selectedIndex].value;
+
+            // Disable button during request to prevent multiple clicks
+            const suggestButton = this;
+            suggestButton.disabled = true;
+            suggestButton.innerHTML = 'Generating...';
+
+            // Send request to backend
+            fetch('/archive/suggest-document-number', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        date: dateInput,
+                        doc_type: docType
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.suggested_id_document) {
+                        document.getElementById('id_document').value = data.suggested_id_document;
+                    } else {
+                        throw new Error('No suggestion received from server');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error suggesting Document Number:', error);
+                    Toastify({
+                        text: "Failed to generate Document number. Please try again or enter manually.",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                        stopOnFocus: true,
+                    }).showToast();
+                })
+                .finally(() => {
+                    // Re-enable button regardless of success/failure
+                    suggestButton.disabled = false;
+                    suggestButton.innerHTML = 'Suggest';
+                });
         });
 
         function confirmDelete(idrec, fileName) {

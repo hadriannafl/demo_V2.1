@@ -2,7 +2,7 @@
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <!-- Header Section -->
         <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">Document Management</h2>
+            <h2 class="text-3xl font-semibold">Document Edit Management</h2>
         </div>
 
         <!-- Container for Document List -->
@@ -38,10 +38,19 @@
                                 Description</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Document Number</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Sub Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 File Name</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created At</th>
+                                Created by</th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions</th>
@@ -64,17 +73,26 @@
                                     {{ $archive->description ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->no_document ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->subDepartment->parent->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->subDepartment->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <a onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
                                         class="text-indigo-600 hover:text-indigo-900 cursor-pointer">{{ $archive->file_name ?? '-' }}</a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->created_at->format('Y-m-d') }}
+                                    {{ $archive->createdByUser->name ?? '-' }}
                                 </td>
                                 <td
                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex justify-center space-x-2">
                                     <div x-data="modal({{ $archive }})">
                                         <button
-                                            class="px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150 cursor-pointer"
+                                            class="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-800 flex items-center cursor-pointer"
                                             type="button" @click.prevent="modalOpenDetail = true;"
                                             aria-controls="feedback-modal1">Edit</button>
                                         <!-- Modal backdrop -->
@@ -115,81 +133,168 @@
                                                 </div>
                                                 <!-- Modal content -->
                                                 <div class="modal-content text-xs px-5 py-4">
-                                                    <form method="POST" action="{{ route('index.update', $archive->idrec) }}"
+                                                    <form method="POST"
+                                                        action="{{ route('index.update', $archive->idrec) }}"
                                                         enctype="multipart/form-data">
                                                         @csrf
                                                         @method('PUT')
-                                                        <div class="grid md:grid-cols-2 md:gap-6">
-                                                            <!-- Input Date -->
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <input type="date" name="date" id="date"
-                                                                    autocomplete="off"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    value="{{ old('date', $archive->date) }}"
-                                                                    required />
-                                                                <label for="date"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                                                    Select Date
-                                                                </label>
+                                                        <div class="grid md:grid-cols-1 md:gap-6">
+                                                            <div class="grid md:grid-cols-2 md:gap-6">
+                                                                <!-- Input Date -->
+                                                                <div class="relative z-0 w-full mb-5 group">
+                                                                    <input type="date" name="date"
+                                                                        id="date" autocomplete="off"
+                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                        value="{{ old('date', $archive->date) }}"
+                                                                        required />
+                                                                    <label for="date"
+                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        Select Date
+                                                                    </label>
+                                                                </div>
+                                                                <div
+                                                                    class="relative z-0 w-full mb-5 flex items-center space-x-2">
+                                                                    <div class="w-full">
+                                                                        <input name="id_document" id="id_document"
+                                                                            autocomplete="off"
+                                                                            class="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                            placeholder=" " required
+                                                                            value="{{ old('document', $archive->no_document) }}"
+                                                                            onkeypress="return event.key !== ' '"
+                                                                            oninput="this.value = this.value.replace(/\s/g, '')" />
+                                                                        <label for="id_document"
+                                                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                            Document Number
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div class="relative z-0 w-full mb-5 group">
-                                                                <select name="type_docs_modal" id="type_docs_modal"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    required>
-                                                                    <option value="" data-code="">Select
-                                                                        Document Type</option>
-                                                                    <option value="Invoice" data-code="INV"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Invoice' ? 'selected' : '' }}>
-                                                                        Invoice</option>
-                                                                    <option value="Purchase Order" data-code="PO"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Purchase Order' ? 'selected' : '' }}>
-                                                                        Purchase Order</option>
-                                                                    <option value="Delivery Order" data-code="DO"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Delivery Order' ? 'selected' : '' }}>
-                                                                        Delivery Order</option>
-                                                                    <option value="Contract" data-code="CTR"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Contract' ? 'selected' : '' }}>
-                                                                        Contract</option>
-                                                                    <option value="Proposal" data-code="PRP"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Proposal' ? 'selected' : '' }}>
-                                                                        Proposal</option>
-                                                                    <option value="Report" data-code="RPT"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Report' ? 'selected' : '' }}>
-                                                                        Report</option>
-                                                                    <option value="Memo" data-code="MMO"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Memo' ? 'selected' : '' }}>
-                                                                        Memo</option>
-                                                                    <option value="Agreement" data-code="AGR"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Agreement' ? 'selected' : '' }}>
-                                                                        Agreement</option>
-                                                                    <option value="Receipt" data-code="RCT"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Receipt' ? 'selected' : '' }}>
-                                                                        Receipt</option>
-                                                                    <option value="Manual Guide" data-code="MGD"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Manual Guide' ? 'selected' : '' }}>
-                                                                        Manual Guide</option>
-                                                                    <option value="Policy Document" data-code="PLD"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Policy Document' ? 'selected' : '' }}>
-                                                                        Policy Document</option>
-                                                                    <option value="Technical Specification"
-                                                                        data-code="TSP"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Technical Specification' ? 'selected' : '' }}>
-                                                                        Technical Specification</option>
-                                                                    <option value="Meeting Minutes" data-code="MMT"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Meeting Minutes' ? 'selected' : '' }}>
-                                                                        Meeting Minutes</option>
-                                                                    <option value="Certification" data-code="CRT"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Certification' ? 'selected' : '' }}>
-                                                                        Certification</option>
-                                                                    <option value="Legal Document" data-code="LGD"
-                                                                        {{ old('type_docs_modal', $archive->doc_type) == 'Legal Document' ? 'selected' : '' }}>
-                                                                        Legal Document</option>
-                                                                </select>
 
-                                                                <label for="type_docs_modal"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                                                    Type Document
-                                                                </label>
+                                                            <div class="grid md:grid-cols-4 md:gap-6">
+                                                                <!-- Department -->
+                                                                <div class="relative z-0 w-full mb-5 group">
+                                                                    <select name="dep" id="dep"
+                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                        required>
+                                                                        <option value="" selected>Select
+                                                                            Department</option>
+                                                                        @foreach ($deps as $department)
+                                                                            <option value="{{ $department->id }}"
+                                                                                @if (isset($archive->subDepartment) && $department->id == $archive->subDepartment->parent->id) selected @endif>
+                                                                                {{ $department->name }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    <label for="dep"
+                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        Department
+                                                                    </label>
+                                                                </div>
+
+                                                                <!-- Sub Department -->
+                                                                <div class="relative z-0 w-full mb-5 group">
+                                                                    <select name="sub_dep" id="sub_dep"
+                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                        required>
+                                                                        <option value="" disabled selected>Select
+                                                                            Sub Department</option>
+                                                                        @if (isset($archive->subDepartment) && isset($subDeps))
+                                                                            @foreach ($subDeps as $subDep)
+                                                                                <option value="{{ $subDep->id }}"
+                                                                                    @if ($archive->subDepartment->id == $subDep->id) selected @endif>
+                                                                                    {{ $subDep->name }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    </select>
+                                                                    <label for="sub_dep"
+                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        Sub Department
+                                                                    </label>
+                                                                </div>
+                                                                <div class="relative z-0 w-full mb-5 group">
+                                                                    <select name="type_docs_modal"
+                                                                        id="type_docs_modal"
+                                                                        data-value="{{ old('type', $archive->doc_type) }}"
+                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                        required>
+                                                                        <option value="" data-code="">Select
+                                                                            Document Type</option>
+                                                                        <option value="Invoice" data-code="INV"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Invoice' ? 'selected' : '' }}>
+                                                                            Invoice</option>
+                                                                        <option value="Purchase Order" data-code="PO"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Purchase Order' ? 'selected' : '' }}>
+                                                                            Purchase Order</option>
+                                                                        <option value="Delivery Order" data-code="DO"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Delivery Order' ? 'selected' : '' }}>
+                                                                            Delivery Order</option>
+                                                                        <option value="Contract" data-code="CTR"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Contract' ? 'selected' : '' }}>
+                                                                            Contract</option>
+                                                                        <option value="Proposal" data-code="PRP"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Proposal' ? 'selected' : '' }}>
+                                                                            Proposal</option>
+                                                                        <option value="Report" data-code="RPT"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Report' ? 'selected' : '' }}>
+                                                                            Report</option>
+                                                                        <option value="Memo" data-code="MMO"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Memo' ? 'selected' : '' }}>
+                                                                            Memo</option>
+                                                                        <option value="Agreement" data-code="AGR"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Agreement' ? 'selected' : '' }}>
+                                                                            Agreement</option>
+                                                                        <option value="Receipt" data-code="RCT"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Receipt' ? 'selected' : '' }}>
+                                                                            Receipt</option>
+                                                                        <option value="Manual Guide" data-code="MGD"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Manual Guide' ? 'selected' : '' }}>
+                                                                            Manual Guide</option>
+                                                                        <option value="Policy Document"
+                                                                            data-code="PLD"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Policy Document' ? 'selected' : '' }}>
+                                                                            Policy Document</option>
+                                                                        <option value="Technical Specification"
+                                                                            data-code="TSP"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Technical Specification' ? 'selected' : '' }}>
+                                                                            Technical Specification</option>
+                                                                        <option value="Meeting Minutes"
+                                                                            data-code="MMT"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Meeting Minutes' ? 'selected' : '' }}>
+                                                                            Meeting Minutes</option>
+                                                                        <option value="Certification" data-code="CRT"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Certification' ? 'selected' : '' }}>
+                                                                            Certification</option>
+                                                                        <option value="Legal Document" data-code="LGD"
+                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Legal Document' ? 'selected' : '' }}>
+                                                                            Legal Document</option>
+                                                                    </select>
+
+                                                                    <label for="type_docs_modal"
+                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        Type Document
+                                                                    </label>
+                                                                </div>
+
+                                                                <div class="relative z-0 w-full mb-5 group">
+                                                                    <select name="user_email" id="user_email"
+                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                        required>
+                                                                        <option value="" disabled selected>Select
+                                                                            User Email</option>
+                                                                        @foreach ($users as $user)
+                                                                            <option value="{{ $user->id }}"
+                                                                                @if ($archive->created_by == $user->id) selected @endif>
+                                                                                {{ $user->name }}
+                                                                                ({{ $user->email }})
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    <label for="user_email"
+                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        User Email
+                                                                    </label>
+                                                                </div>
                                                             </div>
                                                         </div>
 
@@ -276,7 +381,7 @@
                                                         </div>
                                                         <!-- Modal footer -->
                                                         <div
-                                                            class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
+                                                            class="px-5 py-3 border-t border-slate-200 flex justify-end mt-4">
                                                             <button type="submit"
                                                                 class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">Update</button>
                                                         </div>
@@ -449,6 +554,36 @@
             let formattedDate = today.toISOString().split('T')[0];
             document.getElementById("date").value = formattedDate;
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const departmentSelect = document.getElementById('dep');
+            const subDepartmentSelect = document.getElementById('sub_dep');
+
+            departmentSelect.addEventListener('change', function() {
+                const departmentId = this.value;
+
+                // Clear existing options
+                subDepartmentSelect.innerHTML =
+                    '<option value="" disabled selected>Select Sub Department</option>';
+
+                if (departmentId) {
+                    fetch(`/archive/get-sub-departments/${departmentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(subDep => {
+                                const option = document.createElement('option');
+                                option.value = subDep.id;
+                                option.textContent = subDep.name;
+                                subDepartmentSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching sub-departments:', error);
+                        });
+                }
+            });
+        });
+
 
         function openPdfInNewTab(base64Data) {
             if (base64Data) {

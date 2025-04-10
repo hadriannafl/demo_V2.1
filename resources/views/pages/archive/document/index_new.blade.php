@@ -42,55 +42,136 @@
                         </div>
                         <!-- Modal content -->
                         <div class="modal-content text-xs px-5 py-4">
-                            <form id="documentForm" method="POST" action="{{ route('aju.storeModal') }}"
+                            <form id="documentForm" method="POST" action="{{ route('document.store') }}"
                                 enctype="multipart/form-data">
                                 @csrf
-                                <div class="grid md:grid-cols-2 md:gap-6">
-                                    <!-- Input Date -->
-                                    <div class="relative z-0 w-full mb-5 group">
-                                        <input type="date" name="date_modal" id="date_modal" required
-                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-                                        <label for="date_modal"
-                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                            Select Date
-                                        </label>
+                                <div class="grid md:grid-cols-1 md:gap-6">
+                                    <div class="grid md:grid-cols-2 md:gap-6">
+                                        <!-- Input Date -->
+                                        <div class="relative z-0 w-full mb-5 group">
+                                            <input type="date" name="date_modal" id="date_modal" required
+                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
+                                            <label for="date_modal"
+                                                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                Select Date
+                                            </label>
+                                        </div>
+                                        <div class="relative z-0 w-full mb-5 flex items-center space-x-2">
+                                            <div class="w-full">
+                                                <input name="id_document" id="id_document" autocomplete="off"
+                                                    class="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                    placeholder=" " required onkeypress="return event.key !== ' '"
+                                                    oninput="this.value = this.value.replace(/\s/g, '')" />
+                                                <label for="id_document"
+                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                    Document Number
+                                                </label>
+                                            </div>
+                                            <button type="button" id="suggest_id_document"
+                                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
+                                                Suggest
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="relative z-0 w-full mb-5 flex items-center space-x-2">
-                                        <select name="type_docs_modal" id="type_docs_modal"
-                                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                            required>
-                                            <option value="" data-code="">Select Document Type
-                                            </option>
-                                            <option value="Invoice" data-code="INV">Invoice</option>
-                                            <option value="Purchase Order" data-code="PO">Purchase Order
-                                            </option>
-                                            <option value="Delivery Order" data-code="DO">Delivery Order
-                                            </option>
-                                            <option value="Contract" data-code="CTR">Contract</option>
-                                            <option value="Proposal" data-code="PRP">Proposal</option>
-                                            <option value="Report" data-code="RPT">Report</option>
-                                            <option value="Memo" data-code="MMO">Memo</option>
-                                            <option value="Agreement" data-code="AGR">Agreement</option>
-                                            <option value="Receipt" data-code="RCT">Receipt</option>
-                                            <option value="Manual Guide" data-code="MGD">Manual Guide</option>
-                                            <option value="Policy Document" data-code="PLD">Policy Document
-                                            </option>
-                                            <option value="Technical Specification" data-code="TSP">Technical
-                                                Specification</option>
-                                            <option value="Meeting Minutes" data-code="MMT">Meeting Minutes
-                                            </option>
-                                            <option value="Certification" data-code="CRT">Certification
-                                            </option>
-                                            <option value="Legal Document" data-code="LGD">Legal Document
-                                            </option>
-                                        </select>
-                                        <label for="type_docs_modal"
-                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                            Type Document
-                                        </label>
+
+                                    <div class="grid md:grid-cols-4 md:gap-6">
+                                        <!-- Department -->
+                                        <div class="relative z-0 w-full mb-5 group">
+                                            <select name="dep" id="dep"
+                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                required @if (!empty($aju)) disabled @endif>
+                                                <option value="" disabled selected>Select Department</option>
+                                                @foreach ($deps as $department)
+                                                    <option value="{{ $department->id }}"
+                                                        @if (isset($aju) && $department->id == $aju->department->pid) selected @endif>
+                                                        {{ $department->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <label for="dep"
+                                                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                Department
+                                            </label>
+                                        </div>
+
+                                        <!-- Sub Department -->
+                                        <div class="relative z-0 w-full mb-5 group">
+                                            <select name="sub_dep" id="sub_dep"
+                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                required>
+                                                <option value="" disabled selected>Select Sub Department</option>
+                                                @if (isset($aju) && isset($subDeps))
+                                                    @foreach ($subDeps as $subDep)
+                                                        <option value="{{ $subDep->id }}"
+                                                            @if ($aju->id_department == $subDep->id) selected @endif>
+                                                            {{ $subDep->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <label for="sub_dep"
+                                                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                Sub Department
+                                            </label>
+                                        </div>
+
+                                        <div class="relative z-0 w-full mb-5 group">
+                                            <select name="type_docs_modal" id="type_docs_modal"
+                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                required>
+                                                <option value="" data-code="">Select Document Type
+                                                </option>
+                                                <option value="Invoice" data-code="INV">Invoice</option>
+                                                <option value="Purchase Order" data-code="PO">Purchase Order
+                                                </option>
+                                                <option value="Delivery Order" data-code="DO">Delivery Order
+                                                </option>
+                                                <option value="Contract" data-code="CTR">Contract</option>
+                                                <option value="Proposal" data-code="PRP">Proposal</option>
+                                                <option value="Report" data-code="RPT">Report</option>
+                                                <option value="Memo" data-code="MMO">Memo</option>
+                                                <option value="Agreement" data-code="AGR">Agreement</option>
+                                                <option value="Receipt" data-code="RCT">Receipt</option>
+                                                <option value="Manual Guide" data-code="MGD">Manual Guide</option>
+                                                <option value="Policy Document" data-code="PLD">Policy Document
+                                                </option>
+                                                <option value="Technical Specification" data-code="TSP">Technical
+                                                    Specification</option>
+                                                <option value="Meeting Minutes" data-code="MMT">Meeting Minutes
+                                                </option>
+                                                <option value="Certification" data-code="CRT">Certification
+                                                </option>
+                                                <option value="Legal Document" data-code="LGD">Legal Document
+                                                </option>
+                                            </select>
+                                            <label for="type_docs_modal"
+                                                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                Type Document
+                                            </label>
+                                        </div>
+                                        <div class="relative z-0 w-full mb-5 group">
+                                            <select name="user_email" id="user_email"
+                                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                required>
+                                                <option value="" disabled {{ !isset($aju) ? 'selected' : '' }}>
+                                                    Select User Email
+                                                </option>
+                                                @if (isset($users))
+                                                    @foreach ($users as $user)
+                                                        <option value="{{ $user->id }}"
+                                                            @if ((isset($aju) && $aju->created_by == $user->id) || (!isset($aju) && Auth::id() == $user->id)) selected @endif>
+                                                            {{ $user->name }} ({{ $user->email }})
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <label for="user_email"
+                                                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                User Email
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="id_aju_modal" id="id_aju_modal" value="">
                                 <div class="flex items-center space-x-2 w-full mb-5">
                                     <div class="relative z-0 w-full group">
                                         <input name="description_modal" id="description_modal" autocomplete="off"
@@ -164,9 +245,7 @@
 
 
                                 <!-- Modal footer -->
-                                <div class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
-                                    <button type="button" @click="modalOpenDetail = false"
-                                        class="mr-2 inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 active:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">Cancel</button>
+                                <div class="px-5 py-3 border-t border-slate-200 flex justify-end mt-4">
                                     <button type="submit"
                                         class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">Upload</button>
                                 </div>
@@ -198,19 +277,31 @@
                                 No</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date</th>
+                                Document Type</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Document Type</th>
+                                Date</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Description</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Document Number</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Sub Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 File Name</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created At</th>
+                                Created by</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -220,20 +311,35 @@
                                     {{ $index + $archives->firstItem() }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->date ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $archive->doc_type ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->date ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $archive->description ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->no_document ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->subDepartment->parent->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $archive->subDepartment->name ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <a onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
                                         class="text-indigo-600 hover:text-indigo-900 cursor-pointer">{{ $archive->file_name ?? '-' }}</a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->created_at->format('Y-m-d H:i:s') }}
+                                    {{ $archive->createdByUser->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center align-middle">
+                                    <a href="#" onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
+                                        class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 transition duration-150">
+                                        View
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -269,6 +375,23 @@
             </div>
         </div>
     </div>
+    @if (session('success'))
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Toastify({
+                    text: "{{ session('success') }}",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)"
+                    },
+                    stopOnFocus: true,
+                }).showToast();
+            });
+        </script>
+    @endif
+
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('modal', () => ({
@@ -330,10 +453,146 @@
             }));
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const departmentSelect = document.getElementById('dep');
+            const subDepartmentSelect = document.getElementById('sub_dep');
+
+            departmentSelect.addEventListener('change', function() {
+                const departmentId = this.value;
+
+                // Clear existing options
+                subDepartmentSelect.innerHTML =
+                    '<option value="" disabled selected>Select Sub Department</option>';
+
+                if (departmentId) {
+                    fetch(`/archive/get-sub-departments/${departmentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(subDep => {
+                                const option = document.createElement('option');
+                                option.value = subDep.id;
+                                option.textContent = subDep.name;
+                                subDepartmentSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching sub-departments:', error);
+                        });
+                }
+            });
+        });
+
+        document.getElementById('id_document').addEventListener('input', function() {
+            const docNumber = this.value.trim();
+            const docTypeSelect = document.getElementById('type_docs_modal');
+            const selectedDocType = docTypeSelect.options[docTypeSelect.selectedIndex].value;
+
+            // Only check if document number is not empty and document type is selected
+            if (docNumber && selectedDocType) {
+                // Show loading indicator (optional)
+                this.classList.add('checking-number');
+
+                fetch(
+                        `/archive/check-document-number?id_document=${encodeURIComponent(docNumber)}&doc_type=${encodeURIComponent(selectedDocType)}`
+                    )
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.exists) {
+                            Toastify({
+                                text: "Document number already exists for this document type! Please use a different number.",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                stopOnFocus: true,
+                            }).showToast();
+
+                            // Optionally highlight the field
+                            this.classList.add('border-red-500');
+                        } else {
+                            this.classList.remove('border-red-500');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking document number:', error);
+                        Toastify({
+                            text: "Error checking document number availability",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                            stopOnFocus: true,
+                        }).showToast();
+                    })
+                    .finally(() => {
+                        this.classList.remove('checking-number');
+                    });
+            }
+        });
+
+        document.getElementById('suggest_id_document')?.addEventListener('click', function() {
+            // Get date input value and selected document type
+            const dateInput = document.getElementById('date_modal').value;
+            const docTypeSelect = document.getElementById('type_docs_modal');
+            const docType = docTypeSelect.options[docTypeSelect.selectedIndex].value;
+
+            // Disable button during request to prevent multiple clicks
+            const suggestButton = this;
+            suggestButton.disabled = true;
+            suggestButton.innerHTML = 'Generating...';
+
+            // Send request to backend
+            fetch('/archive/suggest-document-number', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        date: dateInput,
+                        doc_type: docType
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.suggested_id_document) {
+                        document.getElementById('id_document').value = data.suggested_id_document;
+                    } else {
+                        throw new Error('No suggestion received from server');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error suggesting Document Number:', error);
+                    Toastify({
+                        text: "Failed to generate Document number. Please try again or enter manually.",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                        stopOnFocus: true,
+                    }).showToast();
+                })
+                .finally(() => {
+                    // Re-enable button regardless of success/failure
+                    suggestButton.disabled = false;
+                    suggestButton.innerHTML = 'Suggest';
+                });
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
             let today = new Date();
             let formattedDate = today.toISOString().split('T')[0];
-            document.getElementById("date").value = formattedDate;
+            document.getElementById("date_modal").value = formattedDate;
         });
 
         function openPdfInNewTab(base64Data) {
