@@ -22,13 +22,22 @@ Route::get('/home', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/settings/users-management', [UserController::class, 'index'])->name('users-management');
+    
     Route::get('/account/getData', [UserController::class, 'accountGetData'])->name('account.getData');
     Route::get('/users/getList', [UserController::class, 'userGetData'])->name('users.getList');
     Route::get('/users/getMainMenus', [UserController::class, 'usergetMainMenus'])->name('menus.getMainMenus');
 
     Route::get('/menus/getData', [UserController::class, 'getData'])->name('menus.getData');
     Route::get('/menus/getUserAccess', [UserController::class, 'getUserAccess'])->name('menus.getUserAccess');
+
+    Route::get('/settings/users-management', [UserController::class, 'index'])->name('users-management');
+
+    Route::get('/settings/users-management/new', [UserController::class, 'indexNew'])->name('users-newManagement');
+    Route::post('/check-email', [UserController::class, 'checkEmail'])->name('check.email');
+    Route::post('/settings/users-management/users', [UserController::class, 'store'])->name('users.store');
+
+    Route::get('/settings/users-management/edit', [UserController::class, 'indexEdit'])->name('users-editManagement');
+    Route::get('/settings/users-management/delete', [UserController::class, 'indexDelete'])->name('users-deleteManagement');
 
 
     Route::get('/settings/users-access-management', [UserController::class, 'indexUserAccessManagement'])->name('users-access-management');
@@ -96,13 +105,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/department', [DepartmentController::class, 'index'])->name('index.department');
         Route::post('/department/store', [DepartmentController::class, 'store'])->name('department.store');
 
-        Route::get('/department/New', [DepartmentController::class, 'indexNew'])->name('indexNew.department');
+        Route::get('/department/new', [DepartmentController::class, 'indexNew'])->name('indexNew.department');
         Route::put('/api/departments/{id}', [DepartmentController::class, 'updateDepartment']);
         Route::put('/api/sub-departments/{id}', [DepartmentController::class, 'updateSubDepartment']);
 
-        Route::get('/department/Edit', [DepartmentController::class, 'indexEdit'])->name('indexEdit.department');
+        Route::get('/department/edit', [DepartmentController::class, 'indexEdit'])->name('indexEdit.department');
 
-        Route::get('/department/Delete', [DepartmentController::class, 'indexDelete'])->name('indexDelete.department');
+        Route::get('/department/delete', [DepartmentController::class, 'indexDelete'])->name('indexDelete.department');
         Route::post('/department/{id}/delete', [DepartmentController::class, 'softDelete'])->name('departments.softDelete');
     });
 });

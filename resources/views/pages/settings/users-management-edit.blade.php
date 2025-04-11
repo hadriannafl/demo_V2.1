@@ -41,6 +41,8 @@
                                 Created At</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Updated By</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -60,8 +62,16 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ \Carbon\Carbon::parse($user->crated_at)->format('Y-m-d') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($user->updated_at)->format('Y-m-d') }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ \Carbon\Carbon::parse($user->updated_at)->format('Y-m-d') }}
                                 </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button
+                                        class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-1 px-3 rounded">
+                                        Edit
+                                    </button>
+                                </td>
+                                
                             </tr>
                         @endforeach
                     </tbody>
