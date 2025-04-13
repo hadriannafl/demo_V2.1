@@ -62,10 +62,22 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ \Carbon\Carbon::parse($user->crated_at)->format('Y-m-d') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($user->updated_at)->format('Y-m-d') }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ \Carbon\Carbon::parse($user->updated_at)->format('Y-m-d') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                                    @if ($user->status === 'Active')
+                                        <form action="{{ route('users.deactivate', $user->id) }}" method="POST"
+                                            class="deactivate-form" style="display:inline;">
+                                            @csrf
+                                            <button type="button" onclick="confirmDeactivate(this)"
+                                                class="bg-red-400 hover:bg-red-500 text-white font-semibold py-1 px-3 rounded cursor-pointer">
+                                                Deactivate
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-gray-500">User is inactive</span>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -112,5 +124,49 @@
                 document.getElementById('searchForm').submit();
             }
         });
+
+        function confirmDeactivate(button) {
+            if (confirm('Are you sure you want to deactivate this user?')) {
+                const form = button.closest('form');
+
+                // Using fetch API for AJAX submission
+                fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show success message
+                            alert(data.toast.message);
+                            // Reload the page to reflect changes
+                            window.location.reload();
+                        } else {
+                            alert(data.toast.details);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while deactivating the user');
+                    });
+            }
+        }
+
+        // Alternative: If you want to use a nicer toast notification
+        function showToast(type, message, details) {
+            // Implement your preferred toast notification here
+            // Example with SweetAlert:
+            Swal.fire({
+                icon: type,
+                title: message,
+                text: details,
+                timer: 3000
+            });
+        }
     </script>
 </x-app-layout>

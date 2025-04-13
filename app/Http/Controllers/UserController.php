@@ -8,9 +8,11 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\UserAccessLevel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -35,7 +37,7 @@ class UserController extends Controller
                 'per_page' => $perPage
             ]);
 
-        $roles = Role::all();
+        $roles = Role::where('name', '!=', 'Admin')->get();
 
         return view('pages/settings/users-management', [
             'users' => $users,
@@ -65,7 +67,7 @@ class UserController extends Controller
                 'per_page' => $perPage
             ]);
 
-        $roles = Role::all();
+        $roles = Role::where('name', '!=', 'Admin')->get();
         $departments = DB::table('m_department')->where('pid', 0)->get();
 
         return view('pages.settings.users-management-new', compact('users', 'roles', 'perPage', 'departments'));
@@ -145,14 +147,87 @@ class UserController extends Controller
                 'per_page' => $perPage
             ]);
 
-        $roles = Role::all();
+        $roles = Role::where('name', '!=', 'Admin')->get();
 
-        return view('pages/settings/users-management-edit', [
-            'users' => $users,
-            'roles' => $roles,
-            'perPage' => $perPage
-        ]);
+        $departments = DB::table('m_department')->where('pid', 0)->get();
+
+        return view('pages.settings.users-management-edit', compact('users', 'roles', 'perPage', 'departments'));
     }
+
+    public function updateUsers(Request $request, $id)
+    {
+        try {
+            // Validasi input
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'password' => 'nullable|min:8',
+                'role_id' => 'required|exists:roles,id',
+                'department_id' => 'required|exists:m_department,id',
+                'status' => 'sometimes|in:Active,Inactive',
+                'employee_id' => 'required|string|unique:users,employee_id,' . $id,
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'toast' => [
+                        'type' => 'error',
+                        'message' => 'Validation Error',
+                        'details' => $validator->errors()->first()
+                    ],
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Temukan user
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'toast' => [
+                        'type' => 'error',
+                        'message' => 'User Not Found',
+                        'details' => 'The requested user does not exist'
+                    ]
+                ], 404);
+            }
+
+            // Prepare update data
+            $updateData = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'role_id' => $request->role_id,
+                'dep' => $request->department_id,
+                'status' => $request->status ?? 'Active',
+                'employee_id' => $request->employee_id,
+                'updated_by' => Auth::id(),
+                'updated_at' => now()
+            ];
+
+            // Update password if provided
+            if (!empty($request->password)) {
+                $updateData['password'] = Hash::make($request->password);
+            }
+
+            // Update user
+            $user->update($updateData);
+
+            return redirect()->back()->with('success', 'User Update Successfully!');
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'toast' => [
+                    'type' => 'error',
+                    'message' => 'Server Error',
+                    'details' => 'An unexpected error occurred'
+                ],
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function indexDelete(Request $request)
     {
@@ -175,13 +250,45 @@ class UserController extends Controller
                 'per_page' => $perPage
             ]);
 
-        $roles = Role::all();
+        $roles = Role::where('name', '!=', 'Admin')->get();
 
         return view('pages/settings/users-management-delete', [
             'users' => $users,
             'roles' => $roles,
             'perPage' => $perPage
         ]);
+    }
+
+    public function deactivateUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            $user->update([
+                'status' => 'Inactive',
+                'updated_by' => Auth::id(),
+                'updated_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'toast' => [
+                    'type' => 'success',
+                    'message' => 'User Deactivated',
+                    'details' => 'User has been deactivated successfully'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'toast' => [
+                    'type' => 'error',
+                    'message' => 'Error',
+                    'details' => 'Failed to deactivate user'
+                ],
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function indexUserAccessManagement()

@@ -16,7 +16,15 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            TAjuSeeder::class
+            AccountAdminSeeder::class,
+            GlobalTitleSeeder::class,
+            MInventorySeeder::class,
+            MWarehouseSeeder::class,
+            PermissionsTableSeeder::class,
+            RolesTableSeeder::class,
+            SidebarItemsTableSeeder::class,
+            RolesAndPermissionsSeeder::class,
+            TAjuSeeder::class,
         ]);
     }
 }

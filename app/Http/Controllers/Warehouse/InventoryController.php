@@ -95,11 +95,7 @@ class InventoryController extends Controller
 
         return view('pages/warehouse/inventory/index_delete', compact('inventories', 'perPage'));
     }
-
-    public function create()
-    {
-        return view('pages/warehouse/inventory/New/index');
-    }
+    
 
     public function store(Request $request)
     {

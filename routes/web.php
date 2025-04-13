@@ -22,7 +22,7 @@ Route::get('/home', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     Route::get('/account/getData', [UserController::class, 'accountGetData'])->name('account.getData');
     Route::get('/users/getList', [UserController::class, 'userGetData'])->name('users.getList');
     Route::get('/users/getMainMenus', [UserController::class, 'usergetMainMenus'])->name('menus.getMainMenus');
@@ -37,7 +37,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/settings/users-management/users', [UserController::class, 'store'])->name('users.store');
 
     Route::get('/settings/users-management/edit', [UserController::class, 'indexEdit'])->name('users-editManagement');
+    Route::put('/settings/users/{user}', [UserController::class, 'updateUsers'])->name('users.update');
+
     Route::get('/settings/users-management/delete', [UserController::class, 'indexDelete'])->name('users-deleteManagement');
+    Route::post('/settings/users/{user}/deactivate', [UserController::class, 'deactivateUser'])->name('users.deactivate');
 
 
     Route::get('/settings/users-access-management', [UserController::class, 'indexUserAccessManagement'])->name('users-access-management');

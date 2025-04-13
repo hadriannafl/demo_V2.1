@@ -31,7 +31,7 @@ class MInventorySeeder extends Seeder
                 'category_2' => 'Gadgets',
                 'plu' => 'SM123',
                 'w_unit' => 'kg',
-                'net_wight' => 0.5,
+                'net_weight' => 0.5,
                 'id_supplier' => 1,
             ],
             [
@@ -51,7 +51,7 @@ class MInventorySeeder extends Seeder
                 'category_2' => 'Kitchen',
                 'plu' => 'MW456',
                 'w_unit' => 'kg',
-                'net_wight' => 8.0,
+                'net_weight' => 8.0,
                 'id_supplier' => 2,
             ]
         ]);

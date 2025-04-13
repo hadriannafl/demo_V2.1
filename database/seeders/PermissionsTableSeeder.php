@@ -65,11 +65,6 @@ class PermissionsTableSeeder extends Seeder
             ['name' => 'create_tax_payments'],
             ['name' => 'edit_tax_payments'],
             ['name' => 'delete_tax_payments'],
-            ['name' => 'view_tax_reports'],
-            ['name' => 'list_tax_reports'],
-            ['name' => 'create_tax_reports'],
-            ['name' => 'edit_tax_reports'],
-            ['name' => 'delete_tax_reports'],
             // Human Resource
             ['name' => 'human_resource'],
             ['name' => 'view_employees'],
@@ -101,6 +96,25 @@ class PermissionsTableSeeder extends Seeder
             ['name' => 'create_shipping'],
             ['name' => 'edit_shipping'],
             ['name' => 'delete_shipping'],
+            // Archive
+            ['name' => 'aju'],
+            ['name' => 'view_aju'],
+            ['name' => 'list_aju'],
+            ['name' => 'create_aju'],
+            ['name' => 'edit_aju'],
+            ['name' => 'delete_aju'],
+            ['name' => 'view_document'],
+            ['name' => 'list_document'],
+            ['name' => 'create_document'],
+            ['name' => 'edit_document'],
+            ['name' => 'delete_document'],
+            // Master
+            ['name' => 'Master_settings'],
+            ['name' => 'view_master_settings'],
+            ['name' => 'list_master_settings'],
+            ['name' => 'create_master_settings'],
+            ['name' => 'edit_master_settings'],
+            ['name' => 'delete_master_settings'],
             // Account Settings
             ['name' => 'account_settings'],
             ['name' => 'view_os_menu'],
@@ -109,6 +123,7 @@ class PermissionsTableSeeder extends Seeder
             ['name' => 'create_user_settings'],
             ['name' => 'edit_user_settings'],
             ['name' => 'delete_user_settings'],
+          
         ]);
     }
 }
