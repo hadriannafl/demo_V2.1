@@ -8,11 +8,20 @@
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
                 <h2 class="text-lg font-semibold text-gray-900">AJU List</h2>
                 <div class="flex items-center">
-                    <form method="GET" action="{{ route('index.newaju') }}">
-                        <label for="search" class="mr-2">Search:</label>
-                        <input type="text" name="search" id="search" value="{{ request('search') }}"
-                            class="border border-gray-300 rounded px-4 py-2 w-48 mr-2" placeholder="Search...">
-                    </form>
+                     <div class="relative">
+                         <form method="GET" action="{{ route('index.aju') }}">
+                            <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                                     placeholder="Search..."
+                                     class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48">
+                                 <div class="absolute left-3 top-2.5">
+                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                     </svg>
+                                 </div>
+                         </form>
+                     </div>
                 </div>
             </div>
 
@@ -154,7 +163,7 @@
             </div>
             <div class="bg-gray-50 rounded p-4">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <form method="GET" action="{{ route('index.newaju') }}">
+                    <form method="GET" action="{{ route('index.aju') }}">
                         <div class="flex items-center">
                             <label for="per_page" class="mr-2">Show:</label>
                             <select name="per_page" id="per_page" onchange="this.form.submit()"
