@@ -44,7 +44,7 @@
                             @if (empty($aju))
                                 <button type="button" id="suggest_id_aju"
                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
-                                    Suggest
+                                    #
                                 </button>
                             @endif
                         </div>
@@ -356,7 +356,7 @@
                                                     </div>
                                                     <button type="button" id="suggest_id_document"
                                                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
-                                                        Suggest
+                                                        #
                                                     </button>
                                                 </div>
                                             </div>
@@ -836,7 +836,7 @@
                 .finally(() => {
                     // Re-enable button regardless of success/failure
                     suggestButton.disabled = false;
-                    suggestButton.innerHTML = 'Suggest';
+                    suggestButton.innerHTML = '#';
                 });
         });
 
@@ -1068,7 +1068,7 @@
                 .finally(() => {
                     // Re-enable button regardless of success/failure
                     suggestButton.disabled = false;
-                    suggestButton.innerHTML = 'Suggest';
+                    suggestButton.innerHTML = '#';
                 });
         });
 
