@@ -37,4 +37,9 @@ class TAju extends Model
     {
         return $this->hasMany(TArchive::class, 'id_archieve', 'id_aju');
     }
+
+    public function createdByUser()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 }

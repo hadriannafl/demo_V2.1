@@ -81,7 +81,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-left">
                                     <div x-data="{ modalOpenDetail: false, modalData: {} }">
                                         <button
-                                            class="inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150"
+                                            class="bg-yellow-600 text-white px-3 py-1 rounded-md hover:bg-yellow-700 flex items-center justify-center gap-2 transition duration-150 cursor-pointer"
                                             type="button"
                                             @click.prevent="modalOpenDetail = true; modalData = { id: '{{ $inventory->id_inventory }}', 
                                             category: '{{ $inventory->category }}', name: '{{ $inventory->name }}', 

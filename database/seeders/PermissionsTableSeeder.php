@@ -109,12 +109,12 @@ class PermissionsTableSeeder extends Seeder
             ['name' => 'edit_document'],
             ['name' => 'delete_document'],
             // Master
-            ['name' => 'Master_settings'],
-            ['name' => 'view_master_settings'],
-            ['name' => 'list_master_settings'],
-            ['name' => 'create_master_settings'],
-            ['name' => 'edit_master_settings'],
-            ['name' => 'delete_master_settings'],
+            ['name' => 'master'],
+            ['name' => 'view_master_department'],
+            ['name' => 'list_master_department'],
+            ['name' => 'create_master_department'],
+            ['name' => 'edit_master_department'],
+            ['name' => 'delete_master_department'],
             // Account Settings
             ['name' => 'account_settings'],
             ['name' => 'view_os_menu'],

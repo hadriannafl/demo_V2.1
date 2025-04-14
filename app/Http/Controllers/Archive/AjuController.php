@@ -22,20 +22,24 @@ class AjuController extends Controller
         $perPage = $request->input('per_page', 5);
 
         // Ambil data dari model Aju dengan relasi ke Archive & Department
-        $ajus = TAju::with(['department', 'details', 'archives' => function ($query) {
-            $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
-        }])
+        $ajus = TAju::with([
+            'department',
+            'createdByUser',
+            'details' => function ($query) {
+                $query->with(['archive' => function ($q) {
+                    $q->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
+                }]);
+            }
+        ])
             ->where('active_y_n', 'Y')
-            ->whereHas('archives', function ($query) {
+            ->whereHas('details.archive', function ($query) {
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
-
 
         // Jika ada pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereRaw('LOWER(tipe_docs) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereHas('department', function ($query) use ($search) {
                         $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
@@ -58,18 +62,24 @@ class AjuController extends Controller
         $perPage = $request->input('per_page', 5);
 
         // Ambil data dari model Aju dengan relasi ke Archive & Department
-        $ajus = TAju::with(['department', 'details', 'archives'])
+        $ajus = TAju::with([
+            'department',
+            'createdByUser',
+            'details' => function ($query) {
+                $query->with(['archive' => function ($q) {
+                    $q->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
+                }]);
+            }
+        ])
             ->where('active_y_n', 'Y')
-            ->whereHas('archives', function ($query) {
+            ->whereHas('details.archive', function ($query) {
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
-
 
         // Jika ada pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereRaw('LOWER(tipe_docs) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereHas('department', function ($query) use ($search) {
                         $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
@@ -77,6 +87,7 @@ class AjuController extends Controller
         }
 
         $ajus = $ajus->paginate($perPage);
+
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
@@ -116,7 +127,9 @@ class AjuController extends Controller
 
         $aju = TAju::where('id_aju', $idAju)->first();
 
-        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives'));
+        $users = User::all();
+
+        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives', 'users'));
     }
 
 
@@ -269,7 +282,7 @@ class AjuController extends Controller
             }
 
             // Redirect ke route setelah berhasil
-            return redirect()->route('index.formUpdate.GetData', ['id_aju' => $idAju])
+            return redirect()->route('index.formNew.GetData', ['id_aju' => $idAju])
                 ->with('success', 'Archive added successfully!');
         } catch (\Exception $e) {
             return response()->json([
@@ -325,18 +338,24 @@ class AjuController extends Controller
         $perPage = $request->input('per_page', 5);
 
         // Ambil data dari model Aju dengan relasi ke Archive & Department
-        $ajus = TAju::with(['department', 'details', 'archives'])
+        $ajus = TAju::with([
+            'department',
+            'createdByUser',
+            'details' => function ($query) {
+                $query->with(['archive' => function ($q) {
+                    $q->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
+                }]);
+            }
+        ])
             ->where('active_y_n', 'Y')
-            ->whereHas('archives', function ($query) {
+            ->whereHas('details.archive', function ($query) {
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
-
 
         // Jika ada pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereRaw('LOWER(tipe_docs) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereHas('department', function ($query) use ($search) {
                         $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
@@ -401,6 +420,82 @@ class AjuController extends Controller
         }
     }
 
+    public function storeModalUpdate(Request $request)
+    {
+        // dd($request->all());
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'date_modal' => 'required|date',
+            'type_docs_modal' => 'required|string',
+            'id_document' => 'required|string|max:255',
+            'description_modal' => 'required|string',
+            'files' => 'required|array',
+            'files.*' => 'mimes:pdf|max:25600', // 25MB
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
+
+        // Ambil ID dari TAju berdasarkan no_docs
+        $idAju = DB::table('t_aju')
+            ->where('no_docs', $request->input('id_aju_modal'))
+            ->value('id_aju');
+
+        if (!$idAju) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ID Aju tidak ditemukan!'
+            ], 404);
+        }
+
+        // Mengambil file dari request
+        $files = $request->file('files');
+
+        try {
+            foreach ($files as $file) {
+                // Mendapatkan nama file
+                $fileName = $file->getClientOriginalName();
+
+                // Membaca file sebagai string dan mengubahnya menjadi Base64
+                $fileData = file_get_contents($file->getRealPath());
+                $base64EncodedData = base64_encode($fileData);
+
+                // Menyimpan data ke database menggunakan model TArchive
+                $archive = TArchive::create([
+                    'id_archieve' => $idAju,
+                    'date' => $request->date_modal,
+                    'doc_type' => $request->type_docs_modal,
+                    'no_document' => $request->id_document,
+                    'sub_dep' => $request->sub_dep_modal,
+                    'description' => $request->description_modal,
+                    'file_name' => $fileName,
+                    'pdfblob' => $base64EncodedData,
+                    'active_y_n' => 'Y',
+                    'created_by' => $request->user_email,
+                    'created_at' => now(),
+                ]);
+
+                // Menyimpan ke t_aju_detail menggunakan model TAjuDetail
+                TAjuDetail::create([
+                    'id_aju' => $idAju,
+                    'id_archieve' => $archive->idrec,
+                ]);
+            }
+
+            // Redirect ke route setelah berhasil
+            return redirect()->route('index.formUpdate.GetData', ['id_aju' => $idAju])
+                ->with('success', 'Archive added successfully!');
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to upload document: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function formUpdateGetData(Request $request)
     {
@@ -502,18 +597,24 @@ class AjuController extends Controller
         $perPage = $request->input('per_page', 5);
 
         // Ambil data dari model Aju dengan relasi ke Archive & Department
-        $ajus = TAju::with(['department', 'details', 'archives'])
+        $ajus = TAju::with([
+            'department',
+            'createdByUser',
+            'details' => function ($query) {
+                $query->with(['archive' => function ($q) {
+                    $q->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
+                }]);
+            }
+        ])
             ->where('active_y_n', 'Y')
-            ->whereHas('archives', function ($query) {
+            ->whereHas('details.archive', function ($query) {
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
-
 
         // Jika ada pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereRaw('LOWER(tipe_docs) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereHas('department', function ($query) use ($search) {
                         $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
@@ -521,6 +622,7 @@ class AjuController extends Controller
         }
 
         $ajus = $ajus->paginate($perPage);
+
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 

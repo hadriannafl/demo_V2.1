@@ -8,20 +8,20 @@
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
                 <h2 class="text-lg font-semibold text-gray-900">AJU List</h2>
                 <div class="flex items-center">
-                     <div class="relative">
-                         <form method="GET" action="{{ route('index.aju') }}">
+                    <div class="relative">
+                        <form method="GET" action="{{ route('index.aju') }}">
                             <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
-                                     placeholder="Search..."
-                                     class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48">
-                                 <div class="absolute left-3 top-2.5">
-                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
-                                         viewBox="0 0 24 24" stroke="currentColor">
-                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                     </svg>
-                                 </div>
-                         </form>
-                     </div>
+                                placeholder="Search..."
+                                class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48">
+                            <div class="absolute left-3 top-2.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -43,6 +43,9 @@
                                 Description</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Created By</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Created At</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -62,14 +65,17 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $aju->description }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ $aju->createdByUser->name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ \Carbon\Carbon::parse($aju->created_at)->format('Y-m-d') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     @if (optional($aju->archives)->where('pdfblob', '!=', null)->isNotEmpty())
                                         <div x-data="modal()">
                                             <button
-                                                class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150 cursor-pointer"
+                                                class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 transition duration-150 cursor-pointer"
                                                 type="button"
-                                                @click.prevent="modalOpenDetail = true; loadFiles(@js($aju->archives))"
+                                                @click.prevent="modalOpenDetail = true; loadDetails(@js($aju->details))"
                                                 aria-controls="feedback-modal1">
                                                 View
                                             </button>
@@ -116,32 +122,35 @@
                                                     <div class="modal-content text-xs px-5 py-4">
                                                         <!-- Display file names -->
                                                         <div id="file-names" class="mt-4 text-sm text-gray-700">
-                                                            <template x-for="(file, index) in files"
+                                                            <template x-for="(detail, index) in details"
                                                                 :key="index">
-                                                                <div
-                                                                    class="relative w-full flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9] mb-4">
-                                                                    <!-- Icon Folder -->
-                                                                    <svg class="w-8 h-8 text-[#1976d2] mr-4"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        fill="none" viewBox="0 0 24 24"
-                                                                        stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-                                                                    </svg>
-                                                                    <!-- Nama File -->
-                                                                    <span
-                                                                        class="truncate text-sm font-medium text-[#07074D] flex-1">
-                                                                        <span x-text="file.file_name"></span>
-                                                                        <!-- Tampilkan file_name dari t_archive -->
-                                                                    </span>
-                                                                    <!-- Tombol View PDF -->
-                                                                    <button
-                                                                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
-                                                                        @click="openPdfInNewTab(file.url)">
-                                                                        View File
-                                                                    </button>
-                                                                </div>
+                                                                <template x-if="detail.archive">
+                                                                    <div
+                                                                        class="relative w-full flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9] mb-4">
+                                                                        <!-- Icon Folder -->
+                                                                        <svg class="w-8 h-8 text-[#1976d2] mr-4"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            fill="none" viewBox="0 0 24 24"
+                                                                            stroke="currentColor">
+                                                                            <path stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                stroke-width="2"
+                                                                                d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                                                                        </svg>
+                                                                        <!-- Nama File -->
+                                                                        <span
+                                                                            class="truncate text-sm font-medium text-[#07074D] flex-1">
+                                                                            <span
+                                                                                x-text="detail.archive.file_name"></span>
+                                                                        </span>
+                                                                        <!-- Tombol View PDF -->
+                                                                        <button
+                                                                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+                                                                            @click="openPdfInNewTab(detail.archive.pdfblob)">
+                                                                            View File
+                                                                        </button>
+                                                                    </div>
+                                                                </template>
                                                             </template>
                                                         </div>
                                                     </div>
@@ -205,19 +214,49 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('modal', () => ({
                 modalOpenDetail: false,
-                files: [],
+                details: [],
 
-                loadFiles(archives) {
-                    this.files = [];
-                    archives.forEach(archive => {
-                        if (archive.pdfblob) {
-                            this.files.push({
-                                file_name: archive.file_name,
-                                url: archive.pdfblob
-                            });
+                loadDetails(details) {
+                    // Filter hanya detail yang memiliki archive dengan pdfblob
+                    this.details = details.filter(detail =>
+                        detail.archive &&
+                        detail.archive.pdfblob &&
+                        detail.archive.pdfblob !== ''
+                    );
+
+                    console.log('Loaded details:', this.details); // Untuk debugging
+                },
+
+                openPdfInNewTab(base64Data) {
+                    if (base64Data) {
+                        const byteCharacters = atob(base64Data);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
                         }
-                    });
-                    console.log(this.files); // Untuk debugging, pastikan semua file masuk
+                        const byteArray = new Uint8Array(byteNumbers);
+                        const blob = new Blob([byteArray], {
+                            type: 'application/pdf'
+                        });
+
+                        const blobUrl = URL.createObjectURL(blob);
+                        window.open(blobUrl, '_blank');
+
+                        URL.revokeObjectURL(blobUrl);
+                    } else {
+                        Toastify({
+                            text: "PDF data is missing or invalid.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            style: {
+                                background: "#ff4d4d",
+                                color: "#fff",
+                                borderRadius: "5px",
+                                padding: "10px"
+                            }
+                        }).showToast();
+                    }
                 }
             }));
         });

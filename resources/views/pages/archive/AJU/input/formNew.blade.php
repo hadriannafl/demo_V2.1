@@ -254,7 +254,7 @@
                                                             <td
                                                                 class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                                 <form method="POST"
-                                                                    action="{{ route('aju.storeModalArchive.update') }}">
+                                                                    action="{{ route('aju.storeNewModalArchive') }}">
                                                                     @csrf
                                                                     <input type="hidden" name="id_aju_modal_archive"
                                                                         id="id_aju_modal_archive_{{ $archive->idrec }}"
@@ -555,10 +555,10 @@
                 <table id="tablePDF" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
+                            <th scope="col" class="px-6 py-3">Document Number</th>
                             <th scope="col" class="px-6 py-3">Document Type</th>
                             <th scope="col" class="px-6 py-3">Date</th>
                             <th scope="col" class="px-6 py-3">Description</th>
-                            <th scope="col" class="px-6 py-3">Document Number</th>
                             {{-- <th scope="col" class="px-6 py-3">Department</th>
                             <th scope="col" class="px-6 py-3">Sub Department</th> --}}
                             <th scope="col" class="px-6 py-3">User</th>
@@ -569,10 +569,10 @@
                     <tbody>
                         @foreach ($ajuDetails as $detail)
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="px-6 py-4">{{ $detail->archive->no_document ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->doc_type ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->date ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->description ?? '-' }}</td>
-                                <td class="px-6 py-4">{{ $detail->archive->no_document ?? '-' }}</td>
                                 {{-- <td class="px-6 py-4">
                                     {{ $detail->archive->subDepartment->parent->name ?? '-' }}
                                 </td>

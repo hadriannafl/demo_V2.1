@@ -584,7 +584,6 @@ class SidebarItemsTableSeeder extends Seeder
             'order' => 9, 
         ]);
 
-        // Shipping
         $shipping = SidebarItem::create([
             'name' => 'Shipping',
             'route' => null,
@@ -715,6 +714,55 @@ class SidebarItemsTableSeeder extends Seeder
             'order' => 4,
         ]);
 
+        // -------------------- Master --------------------
+        $master = SidebarItem::create([
+            'name' => 'Master',
+            'route' => null,
+            'permission_id' => Permission::where('name', 'master')->first()->id,
+            'parent_id' => null,
+            'order' => 11,
+        ]);
+
+        $department = SidebarItem::create([
+            'name' => 'Department',
+            'route' => null,
+            'permission_id' => Permission::where('name', 'view_master_department')->first()->id,
+            'parent_id' => $master->id,
+            'order' => 1,
+        ]);
+
+        SidebarItem::create([
+            'name' => 'List',
+            'route' => 'department.index',
+            'permission_id' => Permission::where('name', 'list_master_department')->first()->id,
+            'parent_id' => $department->id,
+            'order' => 1,
+        ]);
+
+        SidebarItem::create([
+            'name' => 'New',
+            'route' => 'department.create',
+            'permission_id' => Permission::where('name', 'create_master_department')->first()->id,
+            'parent_id' => $department->id,
+            'order' => 2,
+        ]);
+
+        SidebarItem::create([
+            'name' => 'Edit',
+            'route' => 'department.edit',
+            'permission_id' => Permission::where('name', 'edit_master_department')->first()->id,
+            'parent_id' => $department->id,
+            'order' => 3,
+        ]);
+
+        SidebarItem::create([
+            'name' => 'Delete',
+            'route' => 'department.delete',
+            'permission_id' => Permission::where('name', 'delete_master_department')->first()->id,
+            'parent_id' => $department->id,
+            'order' => 4,
+        ]);
+
 
         // -------------------- Account Settings --------------------
         $accountSettings = SidebarItem::create([
@@ -722,7 +770,7 @@ class SidebarItemsTableSeeder extends Seeder
             'route' => null,
             'permission_id' => Permission::where('name', 'account_settings')->first()->id,
             'parent_id' => null,
-            'order' => 11, 
+            'order' => 12, 
         ]);
 
         // OS Menu List

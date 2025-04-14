@@ -74,12 +74,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/suggest-aju-number', [AjuController::class, 'suggestAjuNumber']);
         Route::post('/aju/new/store', [AjuController::class, 'store'])->name('aju.store');
         Route::post('/aju/new/storeModal', [AjuController::class, 'storeModal'])->name('aju.storeModal');
-        Route::post('/aju/new/storeModalArchive', [AjuController::class, 'storeModalArchive'])->name('aju.storeModalArchive');
+        Route::post('/aju/new/storeModalArchive', [AjuController::class, 'storeModalArchive'])->name('aju.storeNewModalArchive');
         Route::delete('/aju-detail/{id}', [AjuController::class, 'destroy'])->name('aju-detail.destroy');
 
         Route::get('/aju/editAju', [AjuController::class, 'indexEditAju'])->name('index.editaju');
         Route::put('/aju/update/{idrec}', [AjuController::class, 'update'])->name('indexAju.update');
-        Route::get('/aju/update/formNewGetData', [AjuController::class, 'formUpdateGetData'])->name('index.formUpdate.GetData');
+        Route::post('/aju/update/storeModalUpdate', [AjuController::class, 'storeModalUpdate'])->name('aju.storeModalUpdate');
+        Route::get('/aju/update/formUpdateGetData', [AjuController::class, 'formUpdateGetData'])->name('index.formUpdate.GetData');
         Route::get('/aju/archive/search', [AjuController::class, 'searchArchives'])->name('aju.archive.search');
         Route::post('/aju/update/storeModalArchive', [AjuController::class, 'storeModalArchiveUpdate'])->name('aju.storeModalArchive.update');
 

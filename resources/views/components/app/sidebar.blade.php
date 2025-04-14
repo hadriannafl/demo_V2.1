@@ -984,7 +984,7 @@
                         </li>
                     @endcan
                     <!-- Archive -->
-                    @can('warehouse')
+                    @can('aju')
                         <li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-linear-to-r @if (in_array(Request::segment(1), ['archive', 'document'])) {{ 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]' }} @endif"
                             x-data="{ open: {{ in_array(Request::segment(1), ['archive', 'document']) ? 1 : 0 }} }">
                             <a class="block text-gray-400 hover:text-white truncate transition @if (!in_array(Request::segment(1), ['archive', 'document'])) {{ 'hover:text-gray-900 dark:hover:text-white' }} @endif"
@@ -1012,7 +1012,7 @@
                             <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
                                 <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['archive', 'document'])) {{ 'hidden' }} @endif"
                                     :class="open ? 'block!' : 'hidden'">
-                                    @can('view_inventory')
+                                    @can('view_aju')
                                         <li class="mb-1 last:mb-0" x-data="{ openArchive: {{ in_array(Request::segment(2), ['aju']) ? 1 : 0 }} }">
                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
                                                 href="#0" @click.prevent="openArchive = !openArchive">
@@ -1028,7 +1028,7 @@
                                             </a>
                                             <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['aju'])) {{ 'hidden' }} @endif"
                                                 :class="openArchive ? 'block!' : 'hidden'">
-                                                @can('view_inventory')
+                                                @can('list_aju')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.aju')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.aju') }}">
@@ -1036,7 +1036,7 @@
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('list_inventory')
+                                                @can('create_aju')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.newaju', 'index.formNew', 'index.formNew.GetData')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.newaju') }}">
@@ -1044,7 +1044,7 @@
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('edit_inventory')
+                                                @can('edit_aju')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.editaju', 'index.formUpdate.GetData')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.editaju') }}">
@@ -1052,7 +1052,7 @@
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('delete_inventory')
+                                                @can('delete_aju')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.deleteaju')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.deleteaju') }}">
@@ -1068,7 +1068,7 @@
                             <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
                                 <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['archive', 'document'])) {{ 'hidden' }} @endif"
                                     :class="open ? 'block!' : 'hidden'">
-                                    @can('view_inventory')
+                                    @can('view_document')
                                         <li class="mb-1 last:mb-0" x-data="{ openDocument: {{ in_array(Request::segment(2), ['document']) ? 1 : 0 }} }">
                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
                                                 href="#0" @click.prevent="openDocument = !openDocument">
@@ -1084,7 +1084,7 @@
                                             </a>
                                             <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['document'])) {{ 'hidden' }} @endif"
                                                 :class="openDocument ? 'block!' : 'hidden'">
-                                                @can('view_inventory')
+                                                @can('list_document')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.document')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.document') }}">
@@ -1092,7 +1092,7 @@
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('list_inventory')
+                                                @can('create_document')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.newDocument', 'index.form')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.newDocument') }}">
@@ -1100,7 +1100,7 @@
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('edit_inventory')
+                                                @can('edit_document')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.editDocument', 'index.formEdit')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.editDocument') }}">
@@ -1108,7 +1108,7 @@
                                                         </a>
                                                     </li>
                                                 @endcan
-                                                @can('delete_inventory')
+                                                @can('delete_document')
                                                     <li class="mb-1 last:mb-0">
                                                         <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.DeleteDocument', 'index.formDelete')) {{ 'text-violet-500!' }} @endif"
                                                             href="{{ route('index.DeleteDocument') }}">
@@ -1125,91 +1125,93 @@
                     @endcan
             </div>
             <!-- Master group -->
-            <div>
-                <h3 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold pl-3">
-                    <span class="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6"
-                        aria-hidden="true">•••</span>
-                    <span class="lg:hidden lg:sidebar-expanded:block 2xl:block">Management</span>
-                </h3>
-                <ul class="mt-3">
-                    @can('warehouse')
-                        <li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-linear-to-r @if (in_array(Request::segment(1), ['master'])) {{ 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]' }} @endif"
-                            x-data="{ open: {{ in_array(Request::segment(1), ['master']) ? 1 : 0 }} }">
-                            <a class="block text-gray-400 hover:text-white truncate transition @if (!in_array(Request::segment(1), ['master'])) {{ 'hover:text-gray-900 dark:hover:text-white' }} @endif"
-                                href="#0" @click.prevent="open = !open; sidebarExpanded = true">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                       <svg class="shrink-0 fill-current @if (in_array(Request::segment(1), ['master'])) {{ 'text-violet-500' }}@else{{ 'text-gray-400 dark:text-gray-500' }} @endif"
-                                            xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
-                                            viewBox="0 0 24 24" width="16" height="16">
-                                            <path
-                                                d="M24,18v6H0v-6c0-1.654,1.346-3,3-3h2.139l2.046,2H3c-.552,0-1,.448-1,1v4H22v-4c0-.552-.448-1-1-1h-4.185l2.046-2h2.139c1.654,0,3,1.346,3,3Zm0-15.5v5.5h-4v2c0,1.103-.897,2-2,2h-5v3.446s1.795-1.794,1.795-1.794l1.414,1.414-2.888,2.889c-1.903,2.012-4.252-1.915-5.526-2.889l1.414-1.414,1.792,1.792v-3.445H6c-1.103,0-2-.897-2-2v-2H0V2.5C0,1.122,1.121,0,2.5,0H7.5c1.379,0,2.5,1.122,2.5,2.5v5.5H6v2h12v-2h-4V2.5c0-1.378,1.121-2.5,2.5-2.5h5c1.379,0,2.5,1.122,2.5,2.5ZM2,6h6V2.5c0-.276-.225-.5-.5-.5H2.5c-.275,0-.5,.224-.5,.5v3.5ZM22,2.5c0-.276-.225-.5-.5-.5h-5c-.275,0-.5,.224-.5,.5v3.5h6V2.5Z" />
-                                        </svg>
-                                        <span
-                                            class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200 @if (in_array(Request::segment(1), ['master'])) text-white @endif">Master</span>
+            @can('master')
+                <div>
+                    <h3 class="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold pl-3">
+                        <span class="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6"
+                            aria-hidden="true">•••</span>
+                        <span class="lg:hidden lg:sidebar-expanded:block 2xl:block">Management</span>
+                    </h3>
+                    <ul class="mt-3">
+                        @can('master')
+                            <li class="pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-linear-to-r @if (in_array(Request::segment(1), ['master'])) {{ 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]' }} @endif"
+                                x-data="{ open: {{ in_array(Request::segment(1), ['master']) ? 1 : 0 }} }">
+                                <a class="block text-gray-400 hover:text-white truncate transition @if (!in_array(Request::segment(1), ['master'])) {{ 'hover:text-gray-900 dark:hover:text-white' }} @endif"
+                                    href="#0" @click.prevent="open = !open; sidebarExpanded = true">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <svg class="shrink-0 fill-current @if (in_array(Request::segment(1), ['master'])) {{ 'text-violet-500' }}@else{{ 'text-gray-400 dark:text-gray-500' }} @endif"
+                                                xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+                                                viewBox="0 0 24 24" width="16" height="16">
+                                                <path
+                                                    d="M24,18v6H0v-6c0-1.654,1.346-3,3-3h2.139l2.046,2H3c-.552,0-1,.448-1,1v4H22v-4c0-.552-.448-1-1-1h-4.185l2.046-2h2.139c1.654,0,3,1.346,3,3Zm0-15.5v5.5h-4v2c0,1.103-.897,2-2,2h-5v3.446s1.795-1.794,1.795-1.794l1.414,1.414-2.888,2.889c-1.903,2.012-4.252-1.915-5.526-2.889l1.414-1.414,1.792,1.792v-3.445H6c-1.103,0-2-.897-2-2v-2H0V2.5C0,1.122,1.121,0,2.5,0H7.5c1.379,0,2.5,1.122,2.5,2.5v5.5H6v2h12v-2h-4V2.5c0-1.378,1.121-2.5,2.5-2.5h5c1.379,0,2.5,1.122,2.5,2.5ZM2,6h6V2.5c0-.276-.225-.5-.5-.5H2.5c-.275,0-.5,.224-.5,.5v3.5ZM22,2.5c0-.276-.225-.5-.5-.5h-5c-.275,0-.5,.224-.5,.5v3.5h6V2.5Z" />
+                                            </svg>
+                                            <span
+                                                class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200 @if (in_array(Request::segment(1), ['master'])) text-white @endif">Master</span>
+                                        </div>
+                                        <div
+                                            class="flex shrink-0 ml-2 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                            <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @if (in_array(Request::segment(1), ['master'])) {{ 'rotate-180' }} @endif"
+                                                :class="open ? 'rotate-180' : 'rotate-0'" viewBox="0 0 12 12">
+                                                <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                    <div
-                                        class="flex shrink-0 ml-2 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                        <svg class="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 @if (in_array(Request::segment(1), ['master'])) {{ 'rotate-180' }} @endif"
-                                            :class="open ? 'rotate-180' : 'rotate-0'" viewBox="0 0 12 12">
-                                            <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                                        </svg>
-                                    </div>
+                                </a>
+                                <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                    <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['master'])) {{ 'hidden' }} @endif"
+                                        :class="open ? 'block!' : 'hidden'">
+                                        @can('view_master_department')
+                                            <li class="mb-1 last:mb-0" x-data="{ openDepartment: {{ in_array(Request::segment(2), ['department']) ? 1 : 0 }} }">
+                                                <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
+                                                    href="#0" @click.prevent="openDepartment = !openDepartment">
+                                                    <span
+                                                        class="text-sm font-medium @if (Route::is('index.department', 'indexNew.department', 'indexEdit.department', 'indexDelete.department')) {{ 'text-white' }} @endif">Department</span>
+                                                </a>
+                                                <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['department'])) {{ 'hidden' }} @endif"
+                                                    :class="openDepartment ? 'block!' : 'hidden'">
+                                                    @can('list_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.department')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('index.department') }}">
+                                                                <span class="text-sm font-medium">List</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('create_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexNew.department')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexNew.department') }}">
+                                                                <span class="text-sm font-medium">New</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('edit_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexEdit.department')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexEdit.department') }}">
+                                                                <span class="text-sm font-medium">Edit</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('delete_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexDelete.department')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexDelete.department') }}">
+                                                                <span class="text-sm font-medium">Delete</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                </ul>
+                                            </li>
+                                        @endcan
+                                    </ul>
                                 </div>
-                            </a>
-                            <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                                <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['master'])) {{ 'hidden' }} @endif"
-                                    :class="open ? 'block!' : 'hidden'">
-                                    @can('view_inventory')
-                                        <li class="mb-1 last:mb-0" x-data="{ openDepartment: {{ in_array(Request::segment(2), ['department']) ? 1 : 0 }} }">
-                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
-                                                href="#0" @click.prevent="openDepartment = !openDepartment">
-                                                <span
-                                                    class="text-sm font-medium @if (Route::is('index.department', 'indexNew.department', 'indexEdit.department', 'indexDelete.department')) {{ 'text-white' }} @endif">Department</span>
-                                            </a>
-                                            <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['department'])) {{ 'hidden' }} @endif"
-                                                :class="openDepartment ? 'block!' : 'hidden'">
-                                                @can('view_inventory')
-                                                    <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.department')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('index.department') }}">
-                                                            <span class="text-sm font-medium">List</span>
-                                                        </a>
-                                                    </li>
-                                                @endcan
-                                                @can('create_inventory')
-                                                    <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexNew.department')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('indexNew.department') }}">
-                                                            <span class="text-sm font-medium">New</span>
-                                                        </a>
-                                                    </li>
-                                                @endcan
-                                                @can('edit_inventory')
-                                                    <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexEdit.department')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('indexEdit.department') }}">
-                                                            <span class="text-sm font-medium">Edit</span>
-                                                        </a>
-                                                    </li>
-                                                @endcan
-                                                @can('delete_inventory')
-                                                    <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexDelete.department')) {{ 'text-violet-500!' }} @endif"
-                                                            href="{{ route('indexDelete.department') }}">
-                                                            <span class="text-sm font-medium">Delete</span>
-                                                        </a>
-                                                    </li>
-                                                @endcan
-                                            </ul>
-                                        </li>
-                                    @endcan
-                                </ul>
-                            </div>
-                        </li>
-                    @endcan
-                </ul>
-            </div>
+                            </li>
+                        @endcan
+                    </ul>
+                </div>
+            @endcan
 
             <!-- More group -->
             @can('account_settings')
@@ -1271,7 +1273,13 @@
                                                         class="text-sm font-medium @if (Route::is('users-management', 'users-newManagement', 'users-editManagement', 'users-deleteManagement')) {{ 'text-white' }} @endif">User
                                                         Settings</span>
                                                 </a>
-                                                <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['users-management', 'users-newManagement', 'users-editManagement', 'users-deleteManagement'])) {{ 'hidden' }} @endif"
+                                                <ul class="pl-4 mt-1 @if (
+                                                    !in_array(Request::segment(2), [
+                                                        'users-management',
+                                                        'users-newManagement',
+                                                        'users-editManagement',
+                                                        'users-deleteManagement',
+                                                    ])) {{ 'hidden' }} @endif"
                                                     :class="openPR ? 'block!' : 'hidden'">
                                                     @can('list_user_settings')
                                                         <li class="mb-1 last:mb-0">

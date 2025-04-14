@@ -317,7 +317,7 @@
                                 </div>
                                 <!-- Modal content -->
                                 <div class="modal-content text-xs px-5 py-4">
-                                    <form id="documentForm" method="POST" action="{{ route('aju.storeModal') }}"
+                                    <form id="documentForm" method="POST" action="{{ route('aju.storeModalUpdate') }}"
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="grid md:grid-cols-1 md:gap-6">
@@ -543,10 +543,10 @@
                 <table id="tablePDF" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
+                            <th scope="col" class="px-6 py-3">Document Number</th>
                             <th scope="col" class="px-6 py-3">Document Type</th>
                             <th scope="col" class="px-6 py-3">Date</th>
                             <th scope="col" class="px-6 py-3">Description</th>
-                            <th scope="col" class="px-6 py-3">Document Number</th>
                             {{-- <th scope="col" class="px-6 py-3">Department</th>
                             <th scope="col" class="px-6 py-3">Sub Department</th> --}}
                             <th scope="col" class="px-6 py-3">User</th>
@@ -557,10 +557,10 @@
                     <tbody>
                         @foreach ($ajuDetails as $detail)
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="px-6 py-4">{{ $detail->archive->no_document ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->doc_type ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->date ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $detail->archive->description ?? '-' }}</td>
-                                <td class="px-6 py-4">{{ $detail->archive->no_document ?? '-' }}</td>
                                 {{-- <td class="px-6 py-4">
                                     {{ $detail->archive->subDepartment->parent->name ?? '-' }}
                                 </td>

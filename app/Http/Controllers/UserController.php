@@ -119,10 +119,10 @@ class UserController extends Controller
             // Debug setelah create
             logger()->info('User Created:', $user->toArray());
 
-            return redirect()->route('users-newManagement')->with('success', 'User berhasil dibuat.');
+            return redirect()->route('users-newManagement')->with('success', 'User successfully created.');
         } catch (\Exception $e) {
             logger()->error('Error creating user: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'Gagal membuat user: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Failed to create user: ' . $e->getMessage());
         }
     }
 

@@ -72,7 +72,7 @@
                                     {{ number_format($inventory->price_list, 0, '', '.') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-left">
                                     <div x-data="{ modalOpenDetail: false, modalData: {} }">
-                                        <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                        <button class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 transition duration-150 cursor-pointer"
                                             type="button"
                                             @click.prevent="modalOpenDetail = true; modalData = { id: '{{ $inventory->id_inventory }}', name: '{{ $inventory->name }}', brand: '{{ $inventory->brand }}', model: '{{ $inventory->model }}', variant: '{{ $inventory->variant }}', qty: '{{ number_format($inventory->qty, 0, '', '.') }} {{ $inventory->unit }}', weight: '{{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}', price: '{{ number_format($inventory->price_list, 0, '', '.') }}'}"
                                             aria-controls="feedback-modal1">View

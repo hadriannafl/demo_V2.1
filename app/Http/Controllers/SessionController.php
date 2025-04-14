@@ -12,19 +12,25 @@ class SessionController extends Controller
     {
         return view('auth.login');
     }
+
+
     function login(Request $request)
     {
-        $loginInfo = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        if (Auth::attempt($loginInfo)) {
-            return redirect(('/dashboard'));
-        } else {
-            return redirect()->back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ])->withInput();
+        $remember = $request->boolean('remember'); // Using boolean() instead of has()
+
+        if (Auth::attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+
+            return redirect()->intended('dashboard');
         }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 }
