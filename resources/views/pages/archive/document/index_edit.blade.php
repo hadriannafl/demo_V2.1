@@ -101,7 +101,7 @@
                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex justify-center space-x-2">
                                     <div x-data="modal({{ $archive }})">
                                         <button
-                                            class="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-800 flex items-center cursor-pointer"
+                                            class="bg-yellow-600 text-white px-3 py-1 rounded-md hover:bg-yellow-800 flex items-center cursor-pointer"
                                             type="button" @click.prevent="modalOpenDetail = true;"
                                             aria-controls="feedback-modal1">Edit</button>
                                         <!-- Modal backdrop -->

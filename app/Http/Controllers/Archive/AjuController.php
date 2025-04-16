@@ -217,15 +217,13 @@ class AjuController extends Controller
 
     public function storeModal(Request $request)
     {
-        // dd($request->all());
-        // Validasi input
         $validator = Validator::make($request->all(), [
             'date_modal' => 'required|date',
             'type_docs_modal' => 'required|string',
             'id_document' => 'required|string|max:255',
             'description_modal' => 'required|string',
             'files' => 'required|array',
-            'files.*' => 'mimes:pdf|max:25600', // 25MB
+            'files.*' => 'mimes:pdf,jpg,jpeg|max:25600', // 25MB
         ]);
 
         if ($validator->fails()) {
@@ -235,7 +233,6 @@ class AjuController extends Controller
             ], 422);
         }
 
-        // Ambil ID dari TAju berdasarkan no_docs
         $idAju = DB::table('t_aju')
             ->where('no_docs', $request->input('id_aju_modal'))
             ->value('id_aju');
@@ -247,19 +244,15 @@ class AjuController extends Controller
             ], 404);
         }
 
-        // Mengambil file dari request
         $files = $request->file('files');
 
         try {
             foreach ($files as $file) {
-                // Mendapatkan nama file
                 $fileName = $file->getClientOriginalName();
-
-                // Membaca file sebagai string dan mengubahnya menjadi Base64
+                $fileExtension = $file->getClientOriginalExtension();
                 $fileData = file_get_contents($file->getRealPath());
                 $base64EncodedData = base64_encode($fileData);
 
-                // Menyimpan data ke database menggunakan model TArchive
                 $archive = TArchive::create([
                     'id_archieve' => $idAju,
                     'date' => $request->date_modal,
@@ -268,26 +261,25 @@ class AjuController extends Controller
                     'sub_dep' => $request->sub_dep_modal,
                     'description' => $request->description_modal,
                     'file_name' => $fileName,
+                    'file_extension' => $fileExtension,
                     'pdfblob' => $base64EncodedData,
                     'active_y_n' => 'Y',
                     'created_by' => $request->user_email,
                     'created_at' => now(),
                 ]);
 
-                // Menyimpan ke t_aju_detail menggunakan model TAjuDetail
                 TAjuDetail::create([
                     'id_aju' => $idAju,
                     'id_archieve' => $archive->idrec,
                 ]);
             }
 
-            // Redirect ke route setelah berhasil
             return redirect()->route('index.formNew.GetData', ['id_aju' => $idAju])
-                ->with('success', 'Archive added successfully!');
+                ->with('success', 'Dokumen berhasil diunggah!');
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to upload document: ' . $e->getMessage()
+                'message' => 'Gagal mengunggah dokumen: ' . $e->getMessage()
             ], 500);
         }
     }

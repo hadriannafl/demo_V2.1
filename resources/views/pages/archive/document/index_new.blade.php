@@ -69,7 +69,7 @@
                                             </div>
                                             <button type="button" id="suggest_id_document"
                                                 class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
-                                                Suggest
+                                                #
                                             </button>
                                         </div>
                                     </div>
@@ -191,7 +191,8 @@
                                     x-show="!fileUploaded">
                                     <input type="file" name="files[]" id="files"
                                         class="absolute inset-0 w-full h-full opacity-0 z-50" multiple
-                                        @change="handleFiles($event)" />
+                                        @change="handleFiles($event)"
+                                        accept="application/pdf, image/jpeg, image/jpg" />
                                     <div class="text-center">
                                         <img class="mx-auto h-12 w-12"
                                             src="https://www.svgrepo.com/show/357902/image-upload.svg" alt="">
@@ -406,59 +407,100 @@
             Alpine.data('modal', () => ({
                 modalOpenDetail: false,
                 files: [],
-                fileUploaded: false, // Add this line to define the variable
+                fileUploaded: false,
+                isDragging: false,
 
                 loadFiles(archives) {
-                    // Clear previous files
                     this.files = [];
-
-                    // Add PDF files to the files array
                     archives.forEach(archive => {
                         if (archive.pdfblob) {
                             this.files.push({
-                                file_name: archive.file_name,
+                                name: archive.file_name,
+                                type: archive.file_extension === 'pdf' ?
+                                    'application/pdf' : 'image/jpeg',
                                 url: archive.pdfblob
                             });
                         }
                     });
                 },
 
-                // You should also add these methods that are referenced in your template
                 handleDrop(event) {
+                    event.preventDefault();
                     this.isDragging = false;
-                    const files = event.dataTransfer.files;
-                    this.handleFiles({
-                        target: {
-                            files
-                        }
-                    });
+                    this.processFiles(event.dataTransfer.files);
                 },
 
                 handleFiles(event) {
-                    const uploadedFiles = Array.from(event.target.files);
-                    this.files = [...this.files, ...uploadedFiles];
-                    this.fileUploaded = this.files.length > 0;
+                    this.processFiles(event.target.files);
+                    event.target.value = ''; // Reset input to allow same file re-upload
+                },
 
-                    // Update the hidden input with file names
-                    const fileNamesInput = document.getElementById('file_names_input');
-                    if (fileNamesInput) {
-                        fileNamesInput.value = this.files.map(file => file.name).join(',');
-                    }
+                processFiles(fileList) {
+                    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg'];
+                    const maxSize = 25 * 1024 * 1024; // 25MB
+
+                    Array.from(fileList).forEach(file => {
+                        if (allowedTypes.includes(file.type) && file.size <= maxSize) {
+                            // For new uploads
+                            this.files.push(file);
+                            this.fileUploaded = true;
+
+                            Toastify({
+                                text: `${file.name} uploaded successfully!`,
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                style: {
+                                    background: "#4CAF50"
+                                }
+                            }).showToast();
+                        } else {
+                            Toastify({
+                                text: `Invalid file: ${file.name}. Only PDF/JPG under 25MB allowed.`,
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                style: {
+                                    background: "#FF5733"
+                                }
+                            }).showToast();
+                        }
+                    });
+
+                    this.updateFileNames();
                 },
 
                 removeFile(index) {
-                    this.files.splice(index, 1);
+                    const removedFile = this.files.splice(index, 1)[0];
                     this.fileUploaded = this.files.length > 0;
 
-                    // Update the hidden input with file names
+                    Toastify({
+                        text: `Removed: ${removedFile.name || removedFile.file_name}`,
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        style: {
+                            background: "#607D8B"
+                        }
+                    }).showToast();
+
+                    this.updateFileNames();
+                },
+
+                updateFileNames() {
                     const fileNamesInput = document.getElementById('file_names_input');
                     if (fileNamesInput) {
                         fileNamesInput.value = this.files.map(file => file.name).join(',');
                     }
                 },
 
-                // Add isDragging state for the dropzone
-                isDragging: false
+                // Drag and drop helpers
+                ['@dragover.prevent']() {
+                    this.isDragging = true;
+                },
+                ['@dragleave.prevent']() {
+                    this.isDragging = false;
+                }
             }));
         });
 
@@ -594,7 +636,7 @@
                 .finally(() => {
                     // Re-enable button regardless of success/failure
                     suggestButton.disabled = false;
-                    suggestButton.innerHTML = 'Suggest';
+                    suggestButton.innerHTML = '#';
                 });
         });
 

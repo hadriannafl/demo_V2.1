@@ -11,7 +11,7 @@
             <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
                 <h2 class="text-lg font-semibold text-gray-900">Document List</h2>
                 <div class="flex items-center">
-                 
+
                     <div class="relative">
                         <form method="GET" action="{{ route('index.DeleteDocument') }}">
                             <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
@@ -99,16 +99,15 @@
                                 </td>
                                 <td
                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex justify-center space-x-2">
-                                    <form method="POST" action="{{ route('index.formDelete', $archive->idrec) }}">
+                                    <form id="deleteForm-{{ $archive->idrec }}" method="POST"
+                                        action="{{ route('index.formDelete', $archive->idrec) }}">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit"
-                                            onclick="return confirm('Are you sure you want to delete this document?')"
+                                        <button type="button" onclick="confirmDelete('{{ $archive->idrec }}')"
                                             class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-800 flex items-center cursor-pointer">
                                             Delete
                                         </button>
                                     </form>
-
                                 </td>
                             </tr>
                         @endforeach
@@ -155,6 +154,22 @@
     @endif
 
     <script>
+        function confirmDelete(idrec) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteForm-' + idrec).submit();
+                }
+            });
+        }
+
         function openPdfInNewTab(base64Data) {
             if (base64Data) {
                 // Convert base64 to a blob

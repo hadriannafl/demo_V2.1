@@ -136,7 +136,9 @@
                                                     input.value = document.getElementById('id_aju').value;
                                                 });
                                             "
-                            aria-controls="archive-modal" @if (empty($aju->no_docs)) disabled @endif>
+                            aria-controls="archive-modal" @if (empty($aju->no_docs))
+                            disabled
+                            @endif>
                             Add Archive
                         </button>
 
@@ -484,7 +486,8 @@
                                             x-bind:class="{ 'border-blue-500': isDragging }" x-show="!fileUploaded">
                                             <input type="file" name="files[]" id="files"
                                                 class="absolute inset-0 w-full h-full opacity-0 z-50" multiple
-                                                @change="handleFiles($event)" />
+                                                @change="handleFiles($event)"
+                                                accept="application/pdf, image/jpeg, image/jpg" />
                                             <div class="text-center">
                                                 <img class="mx-auto h-12 w-12"
                                                     src="https://www.svgrepo.com/show/357902/image-upload.svg"
@@ -647,33 +650,27 @@
                 processFiles(files) {
                     if (this.files.length === 0) {
                         for (let file of files) {
-                            if (file.type === 'application/pdf' && file.size <= 25 * 1024 *
-                                1024) { // Max 25MB
+                            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg'];
+                            const maxSize = 25 * 1024 * 1024; // 25MB
+
+                            if (allowedTypes.includes(file.type) && file.size <= maxSize) {
                                 this.files.push(file);
                                 this.fileUploaded = true;
-
-                                // Update hidden input with file names
                                 this.updateFileNames();
 
-                                // Success notification
                                 Toastify({
-                                    text: "File uploaded successfully!",
+                                    text: "File berhasil diunggah!",
                                     duration: 3000,
-                                    close: true,
                                     gravity: "top",
                                     position: "right",
                                     style: {
                                         background: "#4CAF50"
                                     }
                                 }).showToast();
-
-                                break;
                             } else {
-                                // Error notification
                                 Toastify({
-                                    text: `File ${file.name} invalid or exceeds 25MB.`,
+                                    text: `File ${file.name} tidak valid (hanya PDF/JPG, maks 25MB).`,
                                     duration: 3000,
-                                    close: true,
                                     gravity: "top",
                                     position: "right",
                                     style: {
@@ -683,11 +680,9 @@
                             }
                         }
                     } else {
-                        // Error notification for multiple files
                         Toastify({
-                            text: "Only one file can be uploaded.",
+                            text: "Hanya satu file yang diizinkan.",
                             duration: 3000,
-                            close: true,
                             gravity: "top",
                             position: "right",
                             style: {

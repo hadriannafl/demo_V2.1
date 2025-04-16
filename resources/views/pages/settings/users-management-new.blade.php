@@ -366,56 +366,126 @@
             const form = document.getElementById('documentForm');
             const password = document.getElementById('password');
             const passwordConfirmation = document.getElementById('password_confirmation');
+            const passwordError = document.querySelector('#password + p.text-xs.text-red-500');
 
-            // Validasi real-time saat mengetik
-            [password, passwordConfirmation].forEach(input => {
-                input.addEventListener('input', function() {
-                    validatePasswordMatch();
-                });
+            // Fungsi untuk menampilkan notifikasi
+            function showErrorToast(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    stopOnFocus: true,
+                    style: {
+                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                        fontWeight: "bold"
+                    }
+                }).showToast();
+            }
+
+            // Validasi kompleksitas password
+            function validatePasswordComplexity(pwd) {
+                const hasUpperCase = /[A-Z]/.test(pwd);
+                const hasLowerCase = /[a-z]/.test(pwd);
+                const hasNumber = /[0-9]/.test(pwd);
+                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+                const isLongEnough = pwd.length >= 8;
+
+                return {
+                    isValid: hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough,
+                    errors: {
+                        hasUpperCase,
+                        hasLowerCase,
+                        hasNumber,
+                        hasSpecialChar,
+                        isLongEnough
+                    }
+                };
+            }
+
+            // Update pesan error real-time
+            password.addEventListener('input', function() {
+                const result = validatePasswordComplexity(this.value);
+
+                if (this.value.length > 0 && !result.isValid) {
+                    passwordError.classList.remove('hidden');
+
+                    // Update pesan error detail
+                    let errorMessages = [];
+                    if (!result.errors.hasUpperCase) errorMessages.push("uppercase letter");
+                    if (!result.errors.hasLowerCase) errorMessages.push("lowercase letter");
+                    if (!result.errors.hasNumber) errorMessages.push("number");
+                    if (!result.errors.hasSpecialChar) errorMessages.push("symbol");
+                    if (!result.errors.isLongEnough) errorMessages.push("min. 8 characters");
+
+                    passwordError.innerHTML = `Must contain: ${errorMessages.join(", ")}`;
+                } else {
+                    passwordError.classList.add('hidden');
+                }
+
+                validatePasswordMatch();
             });
 
-            // Validasi saat submit form
+            // Validasi saat form disubmit
             form.addEventListener('submit', function(e) {
-                if (!validatePasswordMatch()) {
+                const passwordValue = password.value;
+                const result = validatePasswordComplexity(passwordValue);
+                const passwordsMatch = validatePasswordMatch();
+
+                if (!result.isValid) {
                     e.preventDefault();
-                    Toastify({
-                        text: "Password and confirmation don't match!",
-                        duration: 3000,
-                        gravity: "top",
-                        position: "right",
-                        style: {
-                            background: "linear-gradient(to right, #ff5f6d, #ffc371)"
-                        }
-                    }).showToast();
+                    passwordError.classList.remove('hidden');
+
+                    // Tampilkan notifikasi error detail
+                    let missingRequirements = [];
+                    if (!result.errors.hasUpperCase) missingRequirements.push("uppercase letter");
+                    if (!result.errors.hasLowerCase) missingRequirements.push("lowercase letter");
+                    if (!result.errors.hasNumber) missingRequirements.push("number");
+                    if (!result.errors.hasSpecialChar) missingRequirements.push("symbol");
+                    if (!result.errors.isLongEnough) missingRequirements.push("min. 8 characters");
+
+                    showErrorToast(`Password must contain: ${missingRequirements.join(", ")}`);
+                    password.focus();
+                    return;
+                }
+
+                if (!passwordsMatch) {
+                    e.preventDefault();
+                    showErrorToast("Password and confirmation don't match!");
+                    passwordConfirmation.focus();
                 }
             });
 
+            // Validasi kesesuaian password
             function validatePasswordMatch() {
-                if (password.value !== passwordConfirmation.value) {
+                if (password.value !== passwordConfirmation.value && passwordConfirmation.value.length > 0) {
+                    document.getElementById('password-match-error').classList.remove('hidden');
                     passwordConfirmation.setCustomValidity("Passwords don't match");
                     return false;
                 } else {
+                    document.getElementById('password-match-error').classList.add('hidden');
                     passwordConfirmation.setCustomValidity('');
                     return true;
                 }
             }
-        });
 
-        document.querySelectorAll('.toggle-password').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                const icon = this.querySelector('svg');
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const icon = this.querySelector('svg');
 
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.innerHTML =
-                        '<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />';
-                } else {
-                    input.type = 'password';
-                    icon.innerHTML =
-                        '<path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />';
-                }
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.innerHTML =
+                            '<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />';
+                    } else {
+                        input.type = 'password';
+                        icon.innerHTML =
+                            '<path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />';
+                    }
+                });
             });
         });
     </script>
