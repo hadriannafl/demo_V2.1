@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -148,6 +149,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'permission_id' => $rolePermission[1],
             'created_at'  => $now,
             'updated_at'  => $now,
+            'created_by' => 1,
+            'updated_by' => 1,            
         ], $rolePermissions);
 
         DB::table('role_permission')->insert($data);

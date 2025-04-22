@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TAju;
 use App\Models\TArchive;
 use App\Models\MDepartment;
-use App\Models\MSubdepartment;
+use App\Models\MDocumentType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +75,9 @@ class DocumentController extends Controller
 
         $users = User::all();
 
-        return view('pages.archive.document.index_new', compact('archives', 'deps', 'subDeps', 'perPage', 'users'));
+        $documentTypes = MDocumentType::where('status', 'Active')->orderBy('name')->get();
+
+        return view('pages.archive.document.index_new', compact('archives', 'deps', 'subDeps', 'perPage', 'users', 'documentTypes'));
     }
 
     public function checkDocumentNumber(Request $request)

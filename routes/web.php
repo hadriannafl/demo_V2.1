@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\Archive\AjuController;
-use App\Http\Controllers\Archive\DocumentController;
+
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Master\Department\DepartmentController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Archive\AjuController;
+use App\Http\Controllers\Archive\DocumentController;
 use App\Http\Controllers\Warehouse\InventoryController;
+use App\Http\Controllers\Master\DocumentType\DocumentTypeController;
+use App\Http\Controllers\Master\Department\DepartmentController;
 
 // Route::redirect('/', 'login');
 
@@ -117,5 +119,16 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/department/delete', [DepartmentController::class, 'indexDelete'])->name('indexDelete.department');
         Route::post('/department/{id}/delete', [DepartmentController::class, 'softDelete'])->name('departments.softDelete');
+
+        Route::get('/documentType', [DocumentTypeController::class, 'index'])->name('index.documentType');
+
+        Route::get('/documentType/new', [DocumentTypeController::class, 'indexNew'])->name('indexNew.documentType');
+        Route::post('/documentType/store', [DocumentTypeController::class, 'store'])->name('documentType.store');
+
+        Route::get('/documentType/edit', [DocumentTypeController::class, 'indexEdit'])->name('indexEdit.documentType');
+        Route::put('/documentType/update/{id}', [DocumentTypeController::class, 'update'])->name('index.documentType.update');
+        
+        Route::get('/documentType/delete', [DocumentTypeController::class, 'indexDelete'])->name('indexDelete.documentType');
+        Route::delete('/documentType/{id}/delete', [DocumentTypeController::class, 'softDelete'])->name('documentType.softDelete');
     });
 });

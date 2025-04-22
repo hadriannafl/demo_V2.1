@@ -17,8 +17,16 @@ return new class extends Migration
             $table->primary(['role_id', 'permission_id']);
             $table->timestamps();
 
+            // Tambahan kolom created_by dan updated_by
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
+
+            // Optional: tambahkan foreign key untuk created_by dan updated_by jika dibutuhkan
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

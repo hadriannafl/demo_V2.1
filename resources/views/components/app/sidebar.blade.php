@@ -1207,6 +1207,55 @@
                                         @endcan
                                     </ul>
                                 </div>
+                                <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                    <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['master'])) {{ 'hidden' }} @endif"
+                                        :class="open ? 'block!' : 'hidden'">
+                                        @can('view_master_department')
+                                            <li class="mb-1 last:mb-0" x-data="{ openDoc_type: {{ in_array(Request::segment(2), ['documentType']) ? 1 : 0 }} }">
+                                                <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
+                                                    href="#0" @click.prevent="openDoc_type = !openDoc_type">
+                                                    <span
+                                                        class="text-sm font-medium @if (Route::is('index.documentType')) {{ 'text-white' }} @endif">Document Type</span>
+                                                </a>
+                                                <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['documentType'])) {{ 'hidden' }} @endif"
+                                                    :class="openDoc_type ? 'block!' : 'hidden'">
+                                                    @can('list_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.documentType')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('index.documentType')}}">
+                                                                <span class="text-sm font-medium">List</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('create_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('')) {{ 'text-violet-500!' }} @endif"
+                                                                href="">
+                                                                <span class="text-sm font-medium">New</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('edit_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('')) {{ 'text-violet-500!' }} @endif"
+                                                                href="">
+                                                                <span class="text-sm font-medium">Edit</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('delete_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('')) {{ 'text-violet-500!' }} @endif"
+                                                                href="">
+                                                                <span class="text-sm font-medium">Delete</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                </ul>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </div>
                             </li>
                         @endcan
                     </ul>

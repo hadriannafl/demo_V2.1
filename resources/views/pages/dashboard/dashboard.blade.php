@@ -2,14 +2,15 @@
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
         <!-- Business Operations Banner -->
-        <div class="relative bg-gray-800 p-4 sm:p-6 rounded-sm overflow-hidden mb-8 border-l-4 border-blue-500">
+        <div class="relative bg-gray-800 p-4 sm:p-6 rounded-sm overflow-hidden mb-8 border-l-4 border-blue-500 sticky top-0 z-10">
+            {{-- relative bg-gray-800 p-4 sm:p-6 rounded-sm overflow-hidden mb-8 border-l-4 border-blue-500 --}}
             <!-- Background Image -->
             <div class="absolute inset-0 bg-cover bg-center opacity-20"
                 style="background-image: url('{{ asset('images/dashboard.avif') }}')">
             </div>
 
             <!-- Content -->
-            <div class="relative">
+            <div class="relative ">
                 <h1 class="text-2xl md:text-3xl text-white font-bold mb-1">
                     BUSINESS OPERATIONS DASHBOARD
                 </h1>
@@ -77,7 +78,7 @@
                     </div>
                 </div>
             @endcan
-            
+
             @can('sales')
                 <!-- Sales -->
                 <div class="bg-white p-4 rounded shadow border-t-4 border-green-500">
@@ -91,7 +92,7 @@
                     </div>
                 </div>
             @endcan
-            
+
             @can('warehouse')
                 <!-- Warehouse -->
                 <div class="bg-white p-4 rounded shadow border-t-4 border-yellow-500">
@@ -105,7 +106,7 @@
                     </div>
                 </div>
             @endcan
-            
+
             @can('accounting')
                 <!-- Accounting -->
                 <div class="bg-white p-4 rounded shadow border-t-4 border-purple-500">
@@ -136,7 +137,7 @@
                     </div>
                 </div>
             @endcan
-            
+
             @can('tax')
                 <!-- Tax -->
                 <div class="bg-white p-4 rounded shadow border-t-4 border-indigo-500">
@@ -150,7 +151,7 @@
                     </div>
                 </div>
             @endcan
-            
+
             @can('human_resource')
                 <!-- HR -->
                 <div class="bg-white p-4 rounded shadow border-t-4 border-pink-500">
@@ -164,7 +165,7 @@
                     </div>
                 </div>
             @endcan
-            
+
             @can('general_affairs')
                 <!-- General Affairs -->
                 <div class="bg-white p-4 rounded shadow border-t-4 border-teal-500">
@@ -181,174 +182,177 @@
         </div>
 
         <!-- Combined Department Sections -->
-        @if(auth()->user()->canAny(['purchasing', 'warehouse', 'sales', 'finance']))
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            @can('purchasing', 'warehouse')
-                <!-- Purchasing & Warehouse -->
-                <div class="bg-white p-6 rounded shadow">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-bold text-gray-800">Procurement & Inventory</h2>
-                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">Purchasing & Warehouse</span>
-                    </div>
+        @if (auth()->user()->canAny(['purchasing', 'warehouse', 'sales', 'finance']))
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                @can('purchasing', 'warehouse')
+                    <!-- Purchasing & Warehouse -->
+                    <div class="bg-white p-6 rounded shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800">Procurement & Inventory</h2>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">Purchasing &
+                                Warehouse</span>
+                        </div>
 
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="p-3 bg-blue-50 rounded">
-                            <p class="text-sm text-gray-600">Open POs</p>
-                            <p class="text-xl font-bold">84</p>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="p-3 bg-blue-50 rounded">
+                                <p class="text-sm text-gray-600">Open POs</p>
+                                <p class="text-xl font-bold">84</p>
+                            </div>
+                            <div class="p-3 bg-blue-50 rounded">
+                                <p class="text-sm text-gray-600">Avg. Lead Time</p>
+                                <p class="text-xl font-bold">5.2 days</p>
+                            </div>
+                            <div class="p-3 bg-yellow-50 rounded">
+                                <p class="text-sm text-gray-600">Stock Alerts</p>
+                                <p class="text-xl font-bold">12 items</p>
+                            </div>
+                            <div class="p-3 bg-yellow-50 rounded">
+                                <p class="text-sm text-gray-600">Inventory Turns</p>
+                                <p class="text-xl font-bold">4.2x</p>
+                            </div>
                         </div>
-                        <div class="p-3 bg-blue-50 rounded">
-                            <p class="text-sm text-gray-600">Avg. Lead Time</p>
-                            <p class="text-xl font-bold">5.2 days</p>
-                        </div>
-                        <div class="p-3 bg-yellow-50 rounded">
-                            <p class="text-sm text-gray-600">Stock Alerts</p>
-                            <p class="text-xl font-bold">12 items</p>
-                        </div>
-                        <div class="p-3 bg-yellow-50 rounded">
-                            <p class="text-sm text-gray-600">Inventory Turns</p>
-                            <p class="text-xl font-bold">4.2x</p>
-                        </div>
-                    </div>
 
-                    <div class="h-64 bg-gray-50 rounded flex items-center justify-center text-gray-400">
-                        [Inventory Trend Chart]
+                        <div class="h-64 bg-gray-50 rounded flex items-center justify-center text-gray-400">
+                            <canvas id="inventoryChart"></canvas>
+                        </div>
                     </div>
-                </div>
-            @endcan
-            
-            @can('sales', 'finance')
-                <!-- Sales & Finance -->
-                <div class="bg-white p-6 rounded shadow">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-bold text-gray-800">Revenue & Finance</h2>
-                        <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Sales & Finance</span>
-                    </div>
+                @endcan
 
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="p-3 bg-green-50 rounded">
-                            <p class="text-sm text-gray-600">MTD Sales</p>
-                            <p class="text-xl font-bold">$420K</p>
+                @can('sales', 'finance')
+                    <!-- Sales & Finance -->
+                    <div class="bg-white p-6 rounded shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800">Revenue & Finance</h2>
+                            <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Sales & Finance</span>
                         </div>
-                        <div class="p-3 bg-green-50 rounded">
-                            <p class="text-sm text-gray-600">Open Quotes</p>
-                            <p class="text-xl font-bold">$1.1M</p>
-                        </div>
-                        <div class="p-3 bg-red-50 rounded">
-                            <p class="text-sm text-gray-600">Cash Flow</p>
-                            <p class="text-xl font-bold">$240K</p>
-                        </div>
-                        <div class="p-3 bg-red-50 rounded">
-                            <p class="text-sm text-gray-600">Outstanding AR</p>
-                            <p class="text-xl font-bold">$320K</p>
-                        </div>
-                    </div>
 
-                    <div class="h-64 bg-gray-50 rounded flex items-center justify-center text-gray-400">
-                        [Sales Trend Chart]
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="p-3 bg-green-50 rounded">
+                                <p class="text-sm text-gray-600">MTD Sales</p>
+                                <p class="text-xl font-bold">$420K</p>
+                            </div>
+                            <div class="p-3 bg-green-50 rounded">
+                                <p class="text-sm text-gray-600">Open Quotes</p>
+                                <p class="text-xl font-bold">$1.1M</p>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded">
+                                <p class="text-sm text-gray-600">Cash Flow</p>
+                                <p class="text-xl font-bold">$240K</p>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded">
+                                <p class="text-sm text-gray-600">Outstanding AR</p>
+                                <p class="text-xl font-bold">$320K</p>
+                            </div>
+                        </div>
+
+                        <div class="h-64 bg-gray-50 rounded flex items-center justify-center text-gray-400">
+                            <canvas id="salesChart"></canvas>
+                        </div>
                     </div>
-                </div>
-            @endcan
-        </div>
+                @endcan
+            </div>
         @endif
 
         <!-- Additional Department Sections -->
-        @if(auth()->user()->canAny(['human_resource', 'general_affairs', 'logistics', 'tax', 'accounting']))
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            @can('human_resource', 'general_affairs')
-                <!-- HR & General Affairs -->
-                <div class="bg-white p-6 rounded shadow">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-bold text-gray-800">People & Facilities</h2>
-                        <span class="px-3 py-1 bg-pink-100 text-pink-800 text-sm rounded-full">HR & GA</span>
-                    </div>
+        @if (auth()->user()->canAny(['human_resource', 'general_affairs', 'logistics', 'tax', 'accounting']))
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                @can('human_resource', 'general_affairs')
+                    <!-- HR & General Affairs -->
+                    <div class="bg-white p-6 rounded shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800">People & Facilities</h2>
+                            <span class="px-3 py-1 bg-pink-100 text-pink-800 text-sm rounded-full">HR & GA</span>
+                        </div>
 
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">Total Employees</span>
-                            <span class="font-medium">142</span>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Total Employees</span>
+                                <span class="font-medium">142</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Open Positions</span>
+                                <span class="font-medium">3</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">On Leave</span>
+                                <span class="font-medium">5</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Active Facilities Tickets</span>
+                                <span class="font-medium">7</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">Open Positions</span>
-                            <span class="font-medium">3</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">On Leave</span>
-                            <span class="font-medium">5</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">Active Facilities Tickets</span>
-                            <span class="font-medium">7</span>
-                        </div>
-                    </div>
 
-                    <div class="mt-4 h-40 bg-gray-50 rounded flex items-center justify-center text-gray-400">
-                        [Headcount Chart]
+                        <div class="mt-4 h-40 bg-gray-50 rounded flex items-center justify-center text-gray-400">
+                            [Headcount Chart]
+                        </div>
                     </div>
-                </div>
-            @endcan
-            
-            @can('logistics')
-                <!-- Logistics -->
-                <div class="bg-white p-6 rounded shadow">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-bold text-gray-800">Logistics</h2>
-                        <span class="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full">Shipping & Receiving</span>
-                    </div>
+                @endcan
 
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="p-3 bg-orange-50 rounded">
-                            <p class="text-sm text-gray-600">Today's Shipments</p>
-                            <p class="text-xl font-bold">32</p>
+                @can('logistics')
+                    <!-- Logistics -->
+                    <div class="bg-white p-6 rounded shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800">Logistics</h2>
+                            <span class="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full">Shipping &
+                                Receiving</span>
                         </div>
-                        <div class="p-3 bg-orange-50 rounded">
-                            <p class="text-sm text-gray-600">On-Time Rate</p>
-                            <p class="text-xl font-bold">94%</p>
-                        </div>
-                        <div class="p-3 bg-orange-50 rounded">
-                            <p class="text-sm text-gray-600">Inbound Today</p>
-                            <p class="text-xl font-bold">18</p>
-                        </div>
-                        <div class="p-3 bg-orange-50 rounded">
-                            <p class="text-sm text-gray-600">Freight Costs</p>
-                            <p class="text-xl font-bold">$8.2K</p>
-                        </div>
-                    </div>
-                </div>
-            @endcan
-            
-            @can('tax', 'accounting')
-                <!-- Tax & Accounting -->
-                <div class="bg-white p-6 rounded shadow">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-bold text-gray-800">Finance & Compliance</h2>
-                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-full">Tax & Accounting</span>
-                    </div>
 
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">Current Tax Liability</span>
-                            <span class="font-medium">$185K</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">AP Due This Week</span>
-                            <span class="font-medium">$42K</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">AR Over 60 Days</span>
-                            <span class="font-medium">$48K</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600">Month-End Status</span>
-                            <span class="font-medium text-green-600">On Track</span>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="p-3 bg-orange-50 rounded">
+                                <p class="text-sm text-gray-600">Today's Shipments</p>
+                                <p class="text-xl font-bold">32</p>
+                            </div>
+                            <div class="p-3 bg-orange-50 rounded">
+                                <p class="text-sm text-gray-600">On-Time Rate</p>
+                                <p class="text-xl font-bold">94%</p>
+                            </div>
+                            <div class="p-3 bg-orange-50 rounded">
+                                <p class="text-sm text-gray-600">Inbound Today</p>
+                                <p class="text-xl font-bold">18</p>
+                            </div>
+                            <div class="p-3 bg-orange-50 rounded">
+                                <p class="text-sm text-gray-600">Freight Costs</p>
+                                <p class="text-xl font-bold">$8.2K</p>
+                            </div>
                         </div>
                     </div>
+                @endcan
 
-                    <div class="mt-4 h-40 bg-gray-50 rounded flex items-center justify-center text-gray-400">
-                        [Financial Compliance Status]
+                @can('tax', 'accounting')
+                    <!-- Tax & Accounting -->
+                    <div class="bg-white p-6 rounded shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800">Finance & Compliance</h2>
+                            <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-full">Tax &
+                                Accounting</span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Current Tax Liability</span>
+                                <span class="font-medium">$185K</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">AP Due This Week</span>
+                                <span class="font-medium">$42K</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">AR Over 60 Days</span>
+                                <span class="font-medium">$48K</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Month-End Status</span>
+                                <span class="font-medium text-green-600">On Track</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 h-40 bg-gray-50 rounded flex items-center justify-center text-gray-400">
+                            [Financial Compliance Status]
+                        </div>
                     </div>
-                </div>
-            @endcan
-        </div>
+                @endcan
+            </div>
         @endif
 
         @can('aju')
@@ -382,6 +386,209 @@
     </div>
 
     @section('js-page')
-        <script></script>
+        <script>
+            const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
+            const inventoryChart = new Chart(inventoryCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Inventory Value',
+                        data: [125, 132, 118, 145, 152, 138, 142],
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Stock Alerts',
+                        data: [8, 10, 12, 15, 11, 9, 12],
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                        borderWidth: 2,
+                        borderDash: [4, 4],
+                        pointBackgroundColor: 'rgba(245, 158, 11, 1)',
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Inter, sans-serif'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            bodyFont: {
+                                family: 'Inter, sans-serif'
+                            },
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.dataset.label === 'Inventory Value') {
+                                        label += '$' + context.raw + 'K';
+                                    } else {
+                                        label += context.raw + ' items';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(226, 232, 240, 0.5)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter, sans-serif'
+                                },
+                                callback: function(value) {
+                                    return '$' + value + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter, sans-serif'
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    animations: {
+                        tension: {
+                            duration: 1000,
+                            easing: 'linear',
+                            from: 0.5,
+                            to: 0.4,
+                            loop: false
+                        }
+                    }
+                }
+            });
+
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            const salesChart = new Chart(salesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Closed Sales',
+                        data: [380, 420, 395, 450, 480, 410, 440],
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        hoverBackgroundColor: 'rgba(16, 185, 129, 1)',
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }, {
+                        label: 'Quotes',
+                        data: [520, 580, 540, 600, 620, 590, 610],
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        hoverBackgroundColor: 'rgba(99, 102, 241, 1)',
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Inter, sans-serif'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            bodyFont: {
+                                family: 'Inter, sans-serif'
+                            },
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += '$' + context.raw + 'K';
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(226, 232, 240, 0.5)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter, sans-serif'
+                                },
+                                callback: function(value) {
+                                    return '$' + value + 'K';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter, sans-serif'
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    animation: {
+                        delay: function(context) {
+                            return context.dataIndex * 100;
+                        }
+                    }
+                }
+            });
+        </script>
     @endsection
 </x-app-layout>
