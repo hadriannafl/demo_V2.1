@@ -1215,7 +1215,7 @@
                                                 <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
                                                     href="#0" @click.prevent="openDoc_type = !openDoc_type">
                                                     <span
-                                                        class="text-sm font-medium @if (Route::is('index.documentType')) {{ 'text-white' }} @endif">Document Type</span>
+                                                        class="text-sm font-medium @if (Route::is('index.documentType', 'indexNew.documentType', 'indexEdit.documentType', 'indexDelete.documentType')) {{ 'text-white' }} @endif">Document Type</span>
                                                 </a>
                                                 <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['documentType'])) {{ 'hidden' }} @endif"
                                                     :class="openDoc_type ? 'block!' : 'hidden'">
@@ -1229,24 +1229,24 @@
                                                     @endcan
                                                     @can('create_master_department')
                                                         <li class="mb-1 last:mb-0">
-                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('')) {{ 'text-violet-500!' }} @endif"
-                                                                href="">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexNew.documentType')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexNew.documentType')}}">
                                                                 <span class="text-sm font-medium">New</span>
                                                             </a>
                                                         </li>
                                                     @endcan
                                                     @can('edit_master_department')
                                                         <li class="mb-1 last:mb-0">
-                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('')) {{ 'text-violet-500!' }} @endif"
-                                                                href="">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexEdit.documentType')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexEdit.documentType')}}">
                                                                 <span class="text-sm font-medium">Edit</span>
                                                             </a>
                                                         </li>
                                                     @endcan
                                                     @can('delete_master_department')
                                                         <li class="mb-1 last:mb-0">
-                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('')) {{ 'text-violet-500!' }} @endif"
-                                                                href="">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexDelete.documentType')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexDelete.documentType')}}">
                                                                 <span class="text-sm font-medium">Delete</span>
                                                             </a>
                                                         </li>
