@@ -1,36 +1,60 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <!-- Header Section -->
-        <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">Document Edit Management</h2>
+        <!-- Modern Header with Gradient -->
+
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <h2
+                    class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                    Document Management
+                </h2>
+                <p class="text-gray-500 mt-1">Efficient document tracking and organization</p>
+            </div>
         </div>
 
-        <!-- Container for Document List -->
-        <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
-            <!-- Table Header -->
-            <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">Document List</h2>
-                <div class="flex items-center">
-                    <div class="relative">
+
+        <!-- Modern Card Container -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <!-- Card Header with Glass Effect -->
+            <div
+                class="flex flex-col md:flex-row md:items-center md:justify-between px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800">Document List</h2>
+
+                <!-- Search and Pagination -->
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0">
+                    <div class="relative group">
                         <form method="GET" action="{{ route('index.editDocument') }}">
-                            <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
-                                placeholder="Search..."
-                                class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48">
-                            <div class="absolute left-3 top-2.5">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-all duration-300 group-focus-within:text-indigo-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
+                            <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                                placeholder="Search documents..."
+                                class="block w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 placeholder-gray-400">
                         </form>
                     </div>
+
+                    <form method="GET" action="{{ route('index.editDocument') }}" class="flex items-center">
+                        <label for="per_page" class="text-sm text-gray-600 mr-2">Show:</label>
+                        <div class="relative">
+                            <select name="per_page" id="per_page" onchange="this.form.submit()"
+                                class="appearance-none bg-white border border-gray-200 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm">
+                                <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
+                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                                <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
+                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                            </select>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <!-- Table Body -->
-            <div class="table-responsive">
-                <table id="documentTable" class="min-w-full divide-y divide-gray-200">
+            <!-- Table Container -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col"
@@ -41,13 +65,13 @@
                                 Date</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Document Type</th>
+                                Type</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Description</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Document Number</th>
+                                Doc Number</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Department</th>
@@ -56,10 +80,10 @@
                                 Sub Department</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                File Name</th>
+                                File</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created by</th>
+                                Author</th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions</th>
@@ -67,22 +91,22 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($archives as $index => $archive)
-                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
-                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     {{ $index + $archives->firstItem() }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $archive->date ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->doc_type ?? '-' }}
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{{ $archive->doc_type ?? '-' }}</span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
                                     {{ $archive->description ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->no_document ?? '-' }}
+                                    <span class="font-mono text-indigo-600">{{ $archive->no_document ?? '-' }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $archive->subDepartment->parent->name ?? '-' }}
@@ -90,101 +114,132 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $archive->subDepartment->name ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-normal text-sm text-gray-900">
                                     <a onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
-                                        class="text-indigo-600 hover:text-indigo-900 cursor-pointer">{{ $archive->file_name ?? '-' }}</a>
+                                        class="text-indigo-600 hover:text-indigo-800 cursor-pointer flex items-center">
+
+                                        <div class="flex-shrink-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+
+                                        <span class="whitespace-normal break-words">
+                                            {{ $archive->file_name ?? '-' }}
+                                        </span>
+
+                                    </a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->createdByUser->name ?? '-' }}
+                                    <div class="flex items-center">
+                                        <div
+                                            class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
+                                            {{ substr($archive->createdByUser->name ?? '?', 0, 1) }}
+                                        </div>
+                                        <div class="ml-2">
+                                            {{ $archive->createdByUser->name ?? '-' }}
+                                        </div>
+                                    </div>
                                 </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex justify-center space-x-2">
-                                    <div x-data="modal({{ $archive }})">
-                                        <button
-                                            class="bg-yellow-600 text-white px-3 py-1 rounded-md hover:bg-yellow-800 flex items-center cursor-pointer"
-                                            type="button" @click.prevent="modalOpenDetail = true;"
-                                            aria-controls="feedback-modal1">Edit</button>
-                                        <!-- Modal backdrop -->
-                                        <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity"
-                                            x-show="modalOpenDetail"
-                                            x-transition:enter="transition ease-out duration-200"
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                    <div x-data="modal({{ $archive }})" class="flex justify-center space-x-2">
+                                        <button @click="modalOpenDetail = true"
+                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-200">
+                                            Edit
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </button>
+
+                                        <!-- Modern Modal -->
+                                        <div class="fixed inset-0 z-50 overflow-y-auto" x-show="modalOpenDetail"
+                                            x-cloak x-transition:enter="transition ease-out duration-300"
                                             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                                            x-transition:leave="transition ease-out duration-100"
-                                            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                                            aria-hidden="true" x-cloak></div>
-                                        <!-- Modal dialog -->
-                                        <div id="feedback-modal1"
-                                            class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6"
-                                            role="dialog" aria-modal="true" x-show="modalOpenDetail"
-                                            x-transition:enter="transition ease-in-out duration-200"
-                                            x-transition:enter-start="opacity-0 translate-y-4"
-                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                            x-transition:leave="transition ease-in-out duration-200"
-                                            x-transition:leave-start="opacity-100 translate-y-0"
-                                            x-transition:leave-end="opacity-0 translate-y-4" x-cloak>
-                                            <div class="bg-white rounded shadow-lg overflow-auto w-3/4 max-h-full"
-                                                @click.outside="modalOpenDetail = false"
-                                                @keydown.escape.window="modalOpenDetail = false">
-                                                <!-- Modal header -->
-                                                <div class="px-5 py-3 border-b border-slate-200" id="modalAddLpjDetail">
-                                                    <div class="flex justify-between items-center">
-                                                        <div class="font-semibold text-slate-800">Edit Document</div>
+                                            x-transition:leave="transition ease-in duration-200"
+                                            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+
+                                            <!-- Modal backdrop with blur effect -->
+                                            <div class="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true"
+                                                @click="modalOpenDetail = false"></div>
+
+                                            <!-- Modal container -->
+                                            <div class="flex min-h-screen items-center justify-center p-4">
+                                                <!-- Modal dialog -->
+                                                <div class="relative w-full max-w-4xl rounded-2xl bg-white shadow-2xl transition-all"
+                                                    @click.stop x-show="modalOpenDetail"
+                                                    x-transition:enter="transition ease-out duration-300"
+                                                    x-transition:enter-start="opacity-0 scale-95"
+                                                    x-transition:enter-end="opacity-100 scale-100"
+                                                    x-transition:leave="transition ease-in duration-200"
+                                                    x-transition:leave-start="opacity-100 scale-100"
+                                                    x-transition:leave-end="opacity-0 scale-95">
+
+                                                    <!-- Modal header -->
+                                                    <div
+                                                        class="flex items-center justify-between p-6 border-b border-gray-200">
+                                                        <h3 class="text-xl font-semibold text-gray-900">Edit Document
+                                                        </h3>
                                                         <button type="button"
-                                                            class="text-slate-400 hover:text-slate-500"
+                                                            class="text-gray-400 hover:text-gray-500 rounded-full p-1"
                                                             @click="modalOpenDetail = false">
-                                                            <div class="sr-only">Close</div>
-                                                            <svg class="w-4 h-4 fill-current">
-                                                                <path
-                                                                    d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
+                                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                             </svg>
                                                         </button>
                                                     </div>
-                                                </div>
-                                                <!-- Modal content -->
-                                                <div class="modal-content text-xs px-5 py-4">
-                                                    <form method="POST"
-                                                        action="{{ route('index.update', $archive->idrec) }}"
-                                                        enctype="multipart/form-data">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="grid md:grid-cols-1 md:gap-6">
-                                                            <div class="grid md:grid-cols-2 md:gap-6">
-                                                                <!-- Input Date -->
-                                                                <div class="relative z-0 w-full mb-5 group">
+
+                                                    <!-- Modal content -->
+                                                    <div class="p-6 overflow-y-auto max-h-[70vh]">
+                                                        <form method="POST"
+                                                            action="{{ route('index.update', $archive->idrec) }}"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            @method('PUT')
+
+                                                            <!-- Grid layout -->
+                                                            <div class="grid gap-6 mb-6 md:grid-cols-2">
+                                                                <!-- Date input -->
+                                                                <div class="relative">
                                                                     <input type="date" name="date"
-                                                                        id="date" autocomplete="off"
-                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                        value="{{ old('date', $archive->date) }}"
-                                                                        required />
+                                                                        id="date" required
+                                                                        class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                        value="{{ old('date', $archive->date) }}" />
                                                                     <label for="date"
-                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
                                                                         Select Date
                                                                     </label>
                                                                 </div>
-                                                                <div
-                                                                    class="relative z-0 w-full mb-5 flex items-center space-x-2">
-                                                                    <div class="w-full">
+
+                                                                <!-- Document number -->
+                                                                <div class="relative flex items-center">
+                                                                    <div class="relative flex-1">
                                                                         <input name="id_document" id="id_document"
-                                                                            autocomplete="off"
-                                                                            class="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                            placeholder=" " required
+                                                                            required
+                                                                            class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                            placeholder=" "
                                                                             value="{{ old('document', $archive->no_document) }}"
                                                                             onkeypress="return event.key !== ' '"
                                                                             oninput="this.value = this.value.replace(/\s/g, '')" />
                                                                         <label for="id_document"
-                                                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                            class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
                                                                             Document Number
                                                                         </label>
                                                                     </div>
                                                                 </div>
                                                             </div>
 
-                                                            <div class="grid md:grid-cols-4 md:gap-6">
-                                                                <!-- Department -->
-                                                                <div class="relative z-0 w-full mb-5 group">
-                                                                    <select name="dep" id="dep"
-                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                        required>
+                                                            <!-- Second row -->
+                                                            <div class="grid gap-6 mb-6 md:grid-cols-4">
+                                                                <!-- Department dropdown -->
+                                                                <div class="relative">
+                                                                    <select name="dep" id="dep" required
+                                                                        class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                                         <option value="" selected>Select
                                                                             Department</option>
                                                                         @foreach ($deps as $department)
@@ -195,16 +250,15 @@
                                                                         @endforeach
                                                                     </select>
                                                                     <label for="dep"
-                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
                                                                         Department
                                                                     </label>
                                                                 </div>
 
-                                                                <!-- Sub Department -->
-                                                                <div class="relative z-0 w-full mb-5 group">
-                                                                    <select name="sub_dep" id="sub_dep"
-                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                        required>
+                                                                <!-- Sub Department dropdown -->
+                                                                <div class="relative">
+                                                                    <select name="sub_dep" id="sub_dep" required
+                                                                        class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                                         <option value="" disabled selected>Select
                                                                             Sub Department</option>
                                                                         @if (isset($archive->subDepartment) && isset($subDeps))
@@ -217,78 +271,36 @@
                                                                         @endif
                                                                     </select>
                                                                     <label for="sub_dep"
-                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
                                                                         Sub Department
                                                                     </label>
                                                                 </div>
-                                                                <div class="relative z-0 w-full mb-5 group">
+
+                                                                <!-- Document type dropdown -->
+                                                                <div class="relative">
                                                                     <select name="type_docs_modal"
-                                                                        id="type_docs_modal"
-                                                                        data-value="{{ old('type', $archive->doc_type) }}"
-                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                        required>
+                                                                        id="type_docs_modal" required
+                                                                        class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                                         <option value="" data-code="">Select
                                                                             Document Type</option>
-                                                                        <option value="Invoice" data-code="INV"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Invoice' ? 'selected' : '' }}>
-                                                                            Invoice</option>
-                                                                        <option value="Purchase Order" data-code="PO"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Purchase Order' ? 'selected' : '' }}>
-                                                                            Purchase Order</option>
-                                                                        <option value="Delivery Order" data-code="DO"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Delivery Order' ? 'selected' : '' }}>
-                                                                            Delivery Order</option>
-                                                                        <option value="Contract" data-code="CTR"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Contract' ? 'selected' : '' }}>
-                                                                            Contract</option>
-                                                                        <option value="Proposal" data-code="PRP"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Proposal' ? 'selected' : '' }}>
-                                                                            Proposal</option>
-                                                                        <option value="Report" data-code="RPT"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Report' ? 'selected' : '' }}>
-                                                                            Report</option>
-                                                                        <option value="Memo" data-code="MMO"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Memo' ? 'selected' : '' }}>
-                                                                            Memo</option>
-                                                                        <option value="Agreement" data-code="AGR"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Agreement' ? 'selected' : '' }}>
-                                                                            Agreement</option>
-                                                                        <option value="Receipt" data-code="RCT"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Receipt' ? 'selected' : '' }}>
-                                                                            Receipt</option>
-                                                                        <option value="Manual Guide" data-code="MGD"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Manual Guide' ? 'selected' : '' }}>
-                                                                            Manual Guide</option>
-                                                                        <option value="Policy Document"
-                                                                            data-code="PLD"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Policy Document' ? 'selected' : '' }}>
-                                                                            Policy Document</option>
-                                                                        <option value="Technical Specification"
-                                                                            data-code="TSP"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Technical Specification' ? 'selected' : '' }}>
-                                                                            Technical Specification</option>
-                                                                        <option value="Meeting Minutes"
-                                                                            data-code="MMT"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Meeting Minutes' ? 'selected' : '' }}>
-                                                                            Meeting Minutes</option>
-                                                                        <option value="Certification" data-code="CRT"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Certification' ? 'selected' : '' }}>
-                                                                            Certification</option>
-                                                                        <option value="Legal Document" data-code="LGD"
-                                                                            {{ old('type_docs_modal', $archive->doc_type) == 'Legal Document' ? 'selected' : '' }}>
-                                                                            Legal Document</option>
+                                                                        @foreach ($documentTypes as $docType)
+                                                                            <option value="{{ $docType->name }}"
+                                                                                data-code="{{ $docType->code }}"
+                                                                                {{ old('type_docs_modal', $archive->doc_type ?? '') == $docType->name ? 'selected' : '' }}>
+                                                                                {{ $docType->name }}
+                                                                            </option>
+                                                                        @endforeach
                                                                     </select>
-
                                                                     <label for="type_docs_modal"
-                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
                                                                         Type Document
                                                                     </label>
-                                                                </div>
+                                                                </div>  
 
-                                                                <div class="relative z-0 w-full mb-5 group">
-                                                                    <select name="user_email" id="user_email"
-                                                                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                        required>
+                                                                <!-- User email dropdown -->
+                                                                <div class="relative">
+                                                                    <select name="user_email" id="user_email" required
+                                                                        class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                                         <option value="" disabled selected>Select
                                                                             User Email</option>
                                                                         @foreach ($users as $user)
@@ -300,101 +312,136 @@
                                                                         @endforeach
                                                                     </select>
                                                                     <label for="user_email"
-                                                                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                                                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
                                                                         User Email
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
-                                                        <div class="flex items-center space-x-2 w-full mb-5">
-                                                            <div class="relative z-0 w-full group">
-                                                                <input name="description" id="description"
-                                                                    autocomplete="off"
-                                                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    value="{{ old('description', $archive->description) }}"
-                                                                    required />
-                                                                <label for="description"
-                                                                    class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                                                    Description
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <input type="hidden" name="file_names" id="file_names_input"
-                                                            x-model="fileNames">
-                                                        <!-- Dropzone for file uploads -->
-                                                        <div class="relative z-0 w-full mb-5 group border-2 border-gray-300 border-dashed rounded-lg p-6"
-                                                            id="dropzone" @dragover.prevent @dragenter.prevent
-                                                            @dragleave.prevent @drop.prevent="handleDrop($event)"
-                                                            x-bind:class="{ 'border-blue-500': isDragging }"
-                                                            x-show="!fileUploaded">
-                                                            <input type="file" name="files[]" id="files"
-                                                                class="absolute inset-0 w-full h-full opacity-0 z-50"
-                                                                multiple @change="handleFiles($event)" />
-                                                            <div class="text-center">
-                                                                <img class="mx-auto h-12 w-12"
-                                                                    src="https://www.svgrepo.com/show/357902/image-upload.svg"
-                                                                    alt="">
-                                                                <h3 class="mt-2 text-sm font-medium text-gray-900">
-                                                                    <label for="files"
-                                                                        class="relative cursor-pointer">
-                                                                        <span>Drag and drop</span>
-                                                                        <span class="text-indigo-600"> or browse</span>
-                                                                        <span>to upload</span>
+                                                            <!-- Description input -->
+                                                            <div class="mb-6">
+                                                                <div class="relative">
+                                                                    <textarea name="description" id="description" required rows="3"
+                                                                        class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                                                        placeholder=" ">{{ old('description', $archive->description) }}</textarea>
+                                                                    <label for="description"
+                                                                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-7 peer-placeholder-shown:top-6 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
+                                                                        Description
                                                                     </label>
-                                                                </h3>
-                                                                <p class="mt-1 text-xs text-gray-500">
-                                                                    PDF up to 25MB
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        <!-- Display selected file names -->
-                                                        <div id="file-names" class="mt-4 text-sm text-gray-700">
-                                                            <template x-for="(file, index) in files"
-                                                                :key="index">
-                                                                <div
-                                                                    class="relative w-full flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9]">
-                                                                    <!-- Icon Folder -->
-                                                                    <svg class="w-8 h-8 text-[#1976d2] mr-4"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        fill="none" viewBox="0 0 24 24"
-                                                                        stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-                                                                    </svg>
-                                                                    <!-- Nama File -->
-                                                                    <span
-                                                                        class="truncate text-sm font-medium text-[#07074D] flex-1">
-                                                                        <span x-text="file.name"></span>
-                                                                    </span>
-                                                                    <!-- Tombol Hapus -->
-                                                                    <button
-                                                                        class="text-[#d32f2f] hover:text-red-700 ml-4"
-                                                                        @click="removeFile(index)">
-                                                                        <svg width="16" height="16"
-                                                                            viewBox="0 0 10 10" fill="none"
-                                                                            xmlns="http://www.w3.org/2000/svg">
-                                                                            <path fill-rule="evenodd"
-                                                                                clip-rule="evenodd"
-                                                                                d="M0.279337 0.279338C0.651787 -0.0931121 1.25565 -0.0931121 1.6281 0.279338L9.72066 8.3719C10.0931 8.74435 10.0931 9.34821 9.72066 9.72066C9.34821 10.0931 8.74435 10.0931 8.3719 9.72066L0.279337 1.6281C-0.0931125 1.25565 -0.0931125 0.651788 0.279337 0.279338Z"
-                                                                                fill="currentColor" />
-                                                                            <path fill-rule="evenodd"
-                                                                                clip-rule="evenodd"
-                                                                                d="M0.279337 9.72066C-0.0931125 9.34821 -0.0931125 8.74435 0.279337 8.3719L8.3719 0.279338C8.74435 -0.0931127 9.34821 -0.0931123 9.72066 0.279338C10.0931 0.651787 10.0931 1.25565 9.72066 1.6281L1.6281 9.72066C1.25565 10.0931 0.651787 10.0931 0.279337 9.72066Z"
-                                                                                fill="currentColor" />
-                                                                        </svg>
-                                                                    </button>
                                                                 </div>
-                                                            </template>
-                                                        </div>
-                                                        <!-- Modal footer -->
-                                                        <div
-                                                            class="px-5 py-3 border-t border-slate-200 flex justify-end mt-4">
-                                                            <button type="submit"
-                                                                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">Update</button>
-                                                        </div>
-                                                    </form>
+                                                            </div>
+
+                                                            <!-- File upload with drag and drop -->
+                                                            <input type="hidden" name="file_names"
+                                                                id="file_names_input" x-model="fileNames">
+                                                            <!-- File upload section -->
+                                                            <div class="mb-6">
+                                                                <!-- Show dropzone only if no files are uploaded -->
+                                                                <div x-show="files.length === 0"
+                                                                    class="relative group">
+                                                                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center transition-all duration-200 hover:border-blue-400 hover:bg-blue-50/50"
+                                                                        id="dropzone" @dragover.prevent
+                                                                        @dragenter.prevent @dragleave.prevent
+                                                                        @drop.prevent="handleDrop($event)"
+                                                                        x-bind:class="{ 'border-blue-500 bg-blue-50/50': isDragging }">
+                                                                        <input type="file" name="files[]"
+                                                                            id="files" class="hidden" multiple
+                                                                            @change="handleFiles($event)"
+                                                                            accept="application/pdf, image/jpeg, image/jpg" />
+                                                                        <div
+                                                                            class="flex flex-col items-center justify-center space-y-3">
+                                                                            <div class="p-3 bg-blue-100 rounded-full">
+                                                                                <svg class="w-8 h-8 text-blue-600"
+                                                                                    fill="none"
+                                                                                    stroke="currentColor"
+                                                                                    viewBox="0 0 24 24">
+                                                                                    <path stroke-linecap="round"
+                                                                                        stroke-linejoin="round"
+                                                                                        stroke-width="2"
+                                                                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                                                </svg>
+                                                                            </div>
+                                                                            <div class="flex text-sm text-gray-600">
+                                                                                <label for="files"
+                                                                                    class="relative cursor-pointer font-medium text-blue-600 hover:text-blue-500">
+                                                                                    <span>Upload a file</span>
+                                                                                    <input id="files"
+                                                                                        name="files[]" type="file"
+                                                                                        class="sr-only" multiple>
+                                                                                </label>
+                                                                                <p class="pl-1">or drag and drop</p>
+                                                                            </div>
+                                                                            <p class="text-xs text-gray-500">
+                                                                                PDF, JPG up to 25MB
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Show uploaded files -->
+                                                                <div id="file-names" class="mt-4 space-y-2">
+                                                                    <template x-for="(file, index) in files"
+                                                                        :key="index">
+                                                                        <div
+                                                                            class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                                                            <div class="flex items-center space-x-3">
+                                                                                <svg class="w-6 h-6 text-blue-500"
+                                                                                    fill="none"
+                                                                                    stroke="currentColor"
+                                                                                    viewBox="0 0 24 24">
+                                                                                    <path stroke-linecap="round"
+                                                                                        stroke-linejoin="round"
+                                                                                        stroke-width="2"
+                                                                                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                                                </svg>
+                                                                                <span
+                                                                                    class="text-sm font-medium text-gray-700 truncate max-w-xs"
+                                                                                    x-text="file.name"></span>
+                                                                            </div>
+                                                                            <button type="button"
+                                                                                class="text-red-500 hover:text-red-700"
+                                                                                @click="removeFile(index)">
+                                                                                <svg class="w-5 h-5" fill="none"
+                                                                                    stroke="currentColor"
+                                                                                    viewBox="0 0 24 24">
+                                                                                    <path stroke-linecap="round"
+                                                                                        stroke-linejoin="round"
+                                                                                        stroke-width="2"
+                                                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                                </svg>
+                                                                            </button>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Form actions -->
+                                                            <div
+                                                                class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                                                                <button type="button"
+                                                                    @click="modalOpenDetail = false"
+                                                                    class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                                                    Cancel
+                                                                </button>
+                                                                <button type="submit"
+                                                                    class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 flex items-center">
+                                                                    <svg x-show="isSubmitting"
+                                                                        class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none" viewBox="0 0 24 24">
+                                                                        <circle class="opacity-25" cx="12"
+                                                                            cy="12" r="10"
+                                                                            stroke="currentColor" stroke-width="4">
+                                                                        </circle>
+                                                                        <path class="opacity-75" fill="currentColor"
+                                                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                                        </path>
+                                                                    </svg>
+                                                                    <span>Update Document</span>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -405,28 +452,16 @@
                     </tbody>
                 </table>
             </div>
-            <!-- Pagination -->
-            <div class="bg-gray-50 rounded p-4">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <form method="GET" action="{{ route('index.editDocument') }}">
-                        <div class="flex items-center">
-                            <label for="per_page" class="mr-2">Show:</label>
-                            <select name="per_page" id="per_page" onchange="this.form.submit()"
-                                class="border border-gray-300 rounded px-4 py-2 w-32">
-                                <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
-                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
-                                <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
-                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
+
+            <!-- Modern Pagination -->
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
                 <div class="px-6 py-4">
-                    {{ $archives->links() }}
+                    {{ $archives->onEachSide(1)->links('vendor.pagination.tailwind') }}
                 </div>
             </div>
         </div>
     </div>
+
     @if (session('success'))
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -453,13 +488,14 @@
                 fileUploaded: false,
                 document: document,
                 fileNames: document.pdfblob ? [document.file_name] : [],
+                isSubmitting: false,
 
                 init() {
-                    if (this.fileNames.length > 0) {
-                        this.files = this.fileNames.map(name => ({
-                            name
-                        }));
-                        this.fileUploaded = true;
+                    // Jika dokumen sudah memiliki file, tambahkan ke array files
+                    if (document.file_name) {
+                        this.files.push({
+                            name: document.file_name
+                        });
                     }
                 },
 
@@ -478,15 +514,11 @@
                 processFiles(files) {
                     if (this.files.length === 0) {
                         for (let file of files) {
-                            if (file.type === 'application/pdf' && file.size <= 25 * 1024 *
-                                1024) { // Max 25MB
+                            if (file.type === 'application/pdf' && file.size <= 25 * 1024 * 1024) {
                                 this.files.push(file);
                                 this.fileUploaded = true;
-
-                                // Update hidden input with file names
                                 this.updateFileNames();
 
-                                // Success notification
                                 Toastify({
                                     text: "File uploaded successfully!",
                                     duration: 3000,
@@ -500,7 +532,6 @@
 
                                 break;
                             } else {
-                                // Error notification
                                 Toastify({
                                     text: `File ${file.name} invalid or exceeds 25MB.`,
                                     duration: 3000,
@@ -514,7 +545,6 @@
                             }
                         }
                     } else {
-                        // Error notification for multiple files
                         Toastify({
                             text: "Only one file can be uploaded.",
                             duration: 3000,
@@ -533,11 +563,8 @@
                     if (this.files.length === 0) {
                         this.fileUploaded = false;
                     }
-
-                    // Update hidden input with file names
                     this.updateFileNames();
 
-                    // Notification for file deletion
                     Toastify({
                         text: "File deleted.",
                         duration: 3000,
@@ -554,15 +581,44 @@
                     const fileNames = this.files.map(file => file.name).join(',');
                     this.fileNames = fileNames;
                     document.getElementById('file_names_input').value = fileNames;
+                },
+
+                submitForm() {
+                    this.isSubmitting = true;
+                    // Your form submission logic here
                 }
             }));
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
-            let today = new Date();
-            let formattedDate = today.toISOString().split('T')[0];
-            document.getElementById("date").value = formattedDate;
-        });
+        function openPdfInNewTab(base64Data) {
+            if (base64Data) {
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], {
+                    type: 'application/pdf'
+                });
+                const blobUrl = URL.createObjectURL(blob);
+                window.open(blobUrl, '_blank');
+                URL.revokeObjectURL(blobUrl);
+            } else {
+                Toastify({
+                    text: "PDF data is missing or invalid.",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "#ff4d4d",
+                        color: "#fff",
+                        borderRadius: "5px",
+                        padding: "10px"
+                    }
+                }).showToast();
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             const departmentSelect = document.getElementById('dep');
@@ -570,8 +626,6 @@
 
             departmentSelect.addEventListener('change', function() {
                 const departmentId = this.value;
-
-                // Clear existing options
                 subDepartmentSelect.innerHTML =
                     '<option value="" disabled selected>Select Sub Department</option>';
 
@@ -592,42 +646,5 @@
                 }
             });
         });
-
-
-        function openPdfInNewTab(base64Data) {
-            if (base64Data) {
-                // Convert base64 to a blob
-                const byteCharacters = atob(base64Data);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], {
-                    type: 'application/pdf'
-                });
-
-                // Create a blob URL and open it in a new tab
-                const blobUrl = URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
-
-                // Revoke the blob URL after opening to free up memory
-                URL.revokeObjectURL(blobUrl);
-            } else {
-                // Show an error message if the PDF data is missing or invalid
-                Toastify({
-                    text: "PDF data is missing or invalid.",
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "#ff4d4d",
-                        color: "#fff",
-                        borderRadius: "5px",
-                        padding: "10px"
-                    }
-                }).showToast();
-            }
-        }
     </script>
 </x-app-layout>

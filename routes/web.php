@@ -8,9 +8,13 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Archive\AjuController;
 use App\Http\Controllers\Archive\DocumentController;
+use App\Http\Controllers\Purchasing\PurchaseRequest\PurchaseRequestController;
 use App\Http\Controllers\Warehouse\InventoryController;
-use App\Http\Controllers\Master\DocumentType\DocumentTypeController;
+use App\Http\Controllers\Master\Assets\MInventoryAssetController;
 use App\Http\Controllers\Master\Department\DepartmentController;
+use App\Http\Controllers\Master\DocumentType\DocumentTypeController;
+use App\Http\Controllers\Master\Vendor\VendorController; // Ensure this class exists in the specified namespace
+
 
 // Route::redirect('/', 'login');
 
@@ -50,12 +54,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user-access/{userId}/permissions', [UserController::class, 'getUserPermissions']);
     Route::post('/user-access/{userId}/update', [UserController::class, 'update']);
 
+    Route::prefix('purchasing')->group(function () {
+        Route::get('/purchase-request', [PurchaseRequestController::class, 'index'])->name('index.pr');
+
+        Route::get('/purchase-request/new', [PurchaseRequestController::class, 'indexNew'])->name('indexNew.pr');
+        Route::get('/purchase-request/new/form', [PurchaseRequestController::class, 'formNew'])->name('formNew.pr');
+        Route::post('/purchase-requests/store', [PurchaseRequestController::class, 'store'])->name('purchase-requests.store');
+
+        Route::get('/purchase-request/edit', [PurchaseRequestController::class, 'indexEdit'])->name('indexEdit.pr');
+
+        Route::get('/purchase-request/delete', [PurchaseRequestController::class, 'indexDelete'])->name('indexDelete.pr');
+    });
+
     Route::prefix('warehouse')->group(function () {
         Route::get('/inventory', [InventoryController::class, 'index'])->name('index.inventory');
 
         Route::get('/inventory/new', [InventoryController::class, 'indexNew'])->name('indexNew.inventory');
         Route::get('/inventory/add', [InventoryController::class, 'create'])->name('inventory.create');
         Route::post('/inventory/store', [InventoryController::class, 'store'])->name('inventory.store');
+        Route::get('/get-models/{brand_id}', [InventoryController::class, 'getModels']);
 
         Route::get('/inventory/edit', [InventoryController::class, 'indexEdit'])->name('indexEdit.inventory');
 
@@ -94,7 +111,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/document', [DocumentController::class, 'index'])->name('index.document');
 
         Route::get('/document/newDocument', [DocumentController::class, 'indexNewDocument'])->name('index.newDocument');
-        Route::get('/document/indexForm/{id_aju}', [DocumentController::class, 'indexForm'])->name('index.form');
         Route::get('/check-document-number', [DocumentController::class, 'checkDocumentNumber']);
         Route::post('/suggest-document-number', [DocumentController::class, 'suggestDocumentNumber']);
         Route::post('/document/new/store', [DocumentController::class, 'store'])->name('document.store');
@@ -108,6 +124,22 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('master')->group(function () {
+        //------------ Assets Code ----------------
+        Route::get('/inventory-assets', [MInventoryAssetController::class, 'index'])->name('index.inventory-assets');
+
+        Route::get('/inventory-assets/catalogue', [MInventoryAssetController::class, 'indexCatalogue'])->name('indexCatalogue.inventory-assets');
+
+        Route::get('/inventory-assets/new', [MInventoryAssetController::class, 'indexNew'])->name('indexNew.inventory-assets');
+        Route::get('/inventory-assets/add', [MInventoryAssetController::class, 'create'])->name('inventory.create');
+
+        Route::post('/inventory/store', [MInventoryAssetController::class, 'store'])->name('inventory.store');
+        Route::get('/inventory-assets/edit', [MInventoryAssetController::class, 'indexEdit'])->name('indexEdit.inventory-assets');
+        Route::get('/inventory-assets/delete', [MInventoryAssetController::class, 'indexDelete'])->name('indexDelete.inventory-assets');
+        Route::delete('/inventory-assets/delete/{id}', [MInventoryAssetController::class, 'destroy'])->name('inventory.destroy');
+
+        Route::put('/inventory-assets/update/{id}', [MInventoryAssetController::class, 'update'])->name('inventory.update');
+        Route::get('/inventory-assets/delete', [MInventoryAssetController::class, 'indexDelete'])->name('indexDelete.inventory-assets');
+        //------------ Department ----------------
         Route::get('/department', [DepartmentController::class, 'index'])->name('index.department');
         Route::post('/department/store', [DepartmentController::class, 'store'])->name('department.store');
 
@@ -119,7 +151,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/department/delete', [DepartmentController::class, 'indexDelete'])->name('indexDelete.department');
         Route::post('/department/{id}/delete', [DepartmentController::class, 'softDelete'])->name('departments.softDelete');
-
+        //------------ Document Type ----------------
         Route::get('/documentType', [DocumentTypeController::class, 'index'])->name('index.documentType');
 
         Route::get('/documentType/new', [DocumentTypeController::class, 'indexNew'])->name('indexNew.documentType');
@@ -127,8 +159,19 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/documentType/edit', [DocumentTypeController::class, 'indexEdit'])->name('indexEdit.documentType');
         Route::put('/documentType/update/{id}', [DocumentTypeController::class, 'update'])->name('index.documentType.update');
-        
+
         Route::get('/documentType/delete', [DocumentTypeController::class, 'indexDelete'])->name('indexDelete.documentType');
         Route::delete('/documentType/{id}/delete', [DocumentTypeController::class, 'softDelete'])->name('documentType.softDelete');
+        //------------ Vendor ----------------
+        Route::get('/vendor', [VendorController::class, 'indexVendor'])->name('index.vendor');
+
+        Route::get('/vendor/new', [VendorController::class, 'indexNewVendor'])->name('indexNew.vendor');
+        Route::post('/vendor/store', [VendorController::class, 'storeVendor'])->name('vendor.store');
+
+        Route::get('/vendor/edit', [VendorController::class, 'indexEditVendor'])->name('indexEdit.vendor');
+        Route::put('/vendors/{id}', [VendorController::class, 'updateVendor'])->name('vendors.update');
+
+        Route::get('/vendor/delete', [VendorController::class, 'indexDeleteVendor'])->name('indexDelete.vendor');
+        Route::delete('/vendor/{id}/delete', [VendorController::class, 'softDeleteVendor'])->name('vendor.softDelete');
     });
 });

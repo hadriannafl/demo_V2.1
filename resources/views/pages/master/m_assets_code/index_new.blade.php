@@ -1,15 +1,13 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <!-- Modern Header with Gradient -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
-                <h2
+                <h1
                     class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                    Document Management
-                </h2>
-                <p class="text-gray-500 mt-1">Efficient document tracking and organization</p>
+                    Asset Inventory Management</h1>
+                <p class="mt-1 text-gray-500 dark:text-gray-400">View and manage all company assets</p>
             </div>
-
             <!-- Modern Search with Floating Action Button -->
             <div class="flex items-center gap-4 mt-4 md:mt-0">
                 <!-- Modern button with floating effect -->
@@ -24,9 +22,8 @@
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Add New Document
+                        Add New Assets
                     </button>
-
 
                     <!-- Modern Modal -->
                     <div class="fixed inset-0 z-50 overflow-y-auto" x-show="modalOpenDetail" x-cloak
@@ -148,12 +145,7 @@
                                                     class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                                                     <option value="" data-code="">Select Document Type
                                                     </option>
-                                                    @foreach ($documentTypes as $doc)
-                                                        <option value="{{ $doc->name }}"
-                                                            data-code="{{ $doc->code }}">
-                                                            {{ $doc->name }}
-                                                        </option>
-                                                    @endforeach
+
                                                 </select>
                                                 <label for="type_docs_modal"
                                                     class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
@@ -294,12 +286,12 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Modern Card Container -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <!-- Card Header with Glass Effect -->
+        <!-- Card Container -->
+        <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <!-- Card Header with Search -->
             <div
                 class="flex flex-col md:flex-row md:items-center md:justify-between px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                 <h2 class="text-lg font-semibold text-gray-800">Document List</h2>
@@ -307,22 +299,22 @@
                 <!-- Search and Pagination -->
                 <div class="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0">
                     <div class="relative group">
-                        <form method="GET" action="{{ route('index.newDocument') }}">
-                            <div
-                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-all duration-300 group-focus-within:text-indigo-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
+                        <form method="GET" action="{{ route('indexCatalogue.inventory-assets') }}">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 text-gray-400 transition-all duration-300 group-hover:text-indigo-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
                             <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
-                                placeholder="Search documents..."
-                                class="block w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 placeholder-gray-400">
+                                placeholder="Search assets..."
+                                class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-white/70 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 placeholder-gray-400 focus:shadow-lg focus:pl-12">
                         </form>
                     </div>
 
-                    <form method="GET" action="{{ route('index.newDocument') }}" class="flex items-center">
+                    <form method="GET" action="{{ route('index.inventory-assets') }}" class="flex items-center">
                         <label for="per_page" class="text-sm text-gray-600 mr-2">Show:</label>
                         <div class="relative">
                             <select name="per_page" id="per_page" onchange="this.form.submit()"
@@ -337,123 +329,108 @@
                 </div>
             </div>
 
-            <!-- Modern Table Design -->
+            <!-- Table Container -->
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                No</th>
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Asset Code</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Type</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Description</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Doc Number</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Department</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Sub Department</th>
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Category</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                File</th>
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Inventory Name/Qty</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Author</th>
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Brand/Model</th>
                             <th scope="col"
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions</th>
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Details</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse ($archives as $index => $archive)
-                            <tr class="hover:bg-gray-50 transition-colors duration-150">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {{ $index + $archives->firstItem() }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <span
-                                        class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{{ $archive->doc_type ?? '-' }}</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->date ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
-                                    {{ $archive->description ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <span class="font-mono text-indigo-600">{{ $archive->no_document ?? '-' }}</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->subDepartment->parent->name ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $archive->subDepartment->name ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-normal text-sm text-gray-900">
-                                    <a onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
-                                        class="text-indigo-600 hover:text-indigo-800 cursor-pointer flex items-center">
-
-                                        <div class="flex-shrink-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-
-                                        <span class="whitespace-normal break-words">
-                                            {{ $archive->file_name ?? '-' }}
-                                        </span>
-
-                                    </a>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        @forelse ($assets as $asset)
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div
-                                            class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
-                                            {{ substr($archive->createdByUser->name ?? '?', 0, 1) }}
-                                        </div>
-                                        <div class="ml-2">
-                                            {{ $archive->createdByUser->name ?? '-' }}
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                {{ $asset->idassets }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                    <button onclick="openPdfInNewTab('{{ $archive->pdfblob }}')"
-                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 cursor-pointer">
-                                        View
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </button>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        {{ $asset->Department->name ?? '-' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $asset->subDepartment->name ?? '-' }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                                        {{ $asset->inv_type ?? '-' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ $asset->name ?? '-' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ number_format($asset->qty, 0) }} {{ $asset->unit ?? '-' }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        {{ $asset->mainBrand->name ?? '-' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $asset->modelBrand->name ?? '-' }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex gap-2 flex-wrap">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                                            {{ $asset->type ?? '-' }}
+                                        </span>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+                                            {{ $asset->color ?? '-' }}
+                                        </span>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
+                                            {{ $asset->part_number ?? '-' }}
+                                        </span>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="px-6 py-4 text-center">
-                                    <div class="flex flex-col items-center justify-center py-8">
+                                <td colspan="7" class="px-6 py-4 text-center">
+                                    <div class="flex flex-col items-center justify-center py-12">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        <h3 class="mt-2 text-sm font-medium text-gray-900">No documents found</h3>
-                                        <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter to
-                                            find what you're looking for.</p>
+                                        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No assets
+                                            found</h3>
+                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by adding
+                                            a new asset.</p>
+                                        <div class="mt-6">
+                                            <button class="btn-primary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2"
+                                                    viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Add Asset
+                                            </button>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -462,10 +439,10 @@
                 </table>
             </div>
 
-            <!-- Modern Pagination -->
+            <!-- Pagination and Items Per Page -->
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
                 <div class="px-6 py-4">
-                    {{ $archives->onEachSide(1)->links('vendor.pagination.tailwind') }}
+                    {{ $assets->links() }}
                 </div>
             </div>
         </div>
@@ -548,239 +525,5 @@
                 }
             }));
         });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const departmentSelect = document.getElementById('dep');
-            const subDepartmentSelect = document.getElementById('sub_dep');
-
-            departmentSelect.addEventListener('change', function() {
-                const departmentId = this.value;
-
-                // Clear existing options
-                subDepartmentSelect.innerHTML =
-                    '<option value="" disabled selected>Select Sub Department</option>';
-
-                if (departmentId) {
-                    fetch(`/archive/get-sub-departments/${departmentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            data.forEach(subDep => {
-                                const option = document.createElement('option');
-                                option.value = subDep.id;
-                                option.textContent = subDep.name;
-                                subDepartmentSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching sub-departments:', error);
-                        });
-                }
-            });
-        });
-
-        document.getElementById('id_document').addEventListener('input', function() {
-            const docNumber = this.value.trim();
-            const docTypeSelect = document.getElementById('type_docs_modal');
-            const selectedDocType = docTypeSelect.options[docTypeSelect.selectedIndex].value;
-
-            // Only check if document number is not empty and document type is selected
-            if (docNumber && selectedDocType) {
-                // Show loading indicator (optional)
-                this.classList.add('checking-number');
-
-                fetch(
-                        `/archive/check-document-number?id_document=${encodeURIComponent(docNumber)}&doc_type=${encodeURIComponent(selectedDocType)}`
-                    )
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.exists) {
-                            Toastify({
-                                text: "Document number already exists for this document type! Please use a different number.",
-                                duration: 3000,
-                                gravity: "top",
-                                position: "right",
-                                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                                stopOnFocus: true,
-                            }).showToast();
-
-                            // Optionally highlight the field
-                            this.classList.add('border-red-500');
-                        } else {
-                            this.classList.remove('border-red-500');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error checking document number:', error);
-                        Toastify({
-                            text: "Error checking document number availability",
-                            duration: 3000,
-                            gravity: "top",
-                            position: "right",
-                            backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                            stopOnFocus: true,
-                        }).showToast();
-                    })
-                    .finally(() => {
-                        this.classList.remove('checking-number');
-                    });
-            }
-        });
-
-        document.getElementById('suggest_id_document')?.addEventListener('click', function() {
-            // Get date input value and selected document type
-            const dateInput = document.getElementById('date_modal').value;
-            const docTypeSelect = document.getElementById('type_docs_modal');
-            const docType = docTypeSelect.options[docTypeSelect.selectedIndex].value;
-
-            // Disable button during request to prevent multiple clicks
-            const suggestButton = this;
-            suggestButton.disabled = true;
-            suggestButton.innerHTML = 'Generating...';
-
-            // Send request to backend
-            fetch('/archive/suggest-document-number', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({
-                        date: dateInput,
-                        doc_type: docType
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.suggested_id_document) {
-                        document.getElementById('id_document').value = data.suggested_id_document;
-                    } else {
-                        throw new Error('No suggestion received from server');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error suggesting Document Number:', error);
-                    Toastify({
-                        text: "Failed to generate Document number. Please try again or enter manually.",
-                        duration: 3000,
-                        gravity: "top",
-                        position: "right",
-                        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                        stopOnFocus: true,
-                    }).showToast();
-                })
-                .finally(() => {
-                    // Re-enable button regardless of success/failure
-                    suggestButton.disabled = false;
-                    suggestButton.innerHTML = '#';
-                });
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            let today = new Date();
-            let formattedDate = today.toISOString().split('T')[0];
-            document.getElementById("date_modal").value = formattedDate;
-        });
-
-        function openPdfInNewTab(base64Data) {
-            if (base64Data) {
-                const byteCharacters = atob(base64Data);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], {
-                    type: 'application/pdf'
-                });
-
-                const blobUrl = URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
-
-                URL.revokeObjectURL(blobUrl);
-            } else {
-                // Modern toast notification
-                const toast = document.createElement('div');
-                toast.className =
-                    'fixed top-4 right-4 z-50 px-4 py-2 rounded-md shadow-lg bg-red-500 text-white animate-fade-in-up';
-                toast.innerHTML = `
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                        </svg>
-                        <span>PDF data is missing or invalid</span>
-                    </div>
-                `;
-                document.body.appendChild(toast);
-
-                setTimeout(() => {
-                    toast.classList.remove('animate-fade-in-up');
-                    toast.classList.add('animate-fade-out');
-                    setTimeout(() => toast.remove(), 300);
-                }, 3000);
-            }
-        }
     </script>
-
-    <style>
-        .animate-fade-in-up {
-            animation: fadeInUp 0.3s ease-out forwards;
-        }
-
-        .animate-fade-out {
-            animation: fadeOut 0.3s ease-in forwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Custom scrollbar for table */
-        .overflow-x-auto::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .overflow-x-auto::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .overflow-x-auto::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 4px;
-        }
-
-        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-            background: #a1a1a1;
-        }
-    </style>
 </x-app-layout>

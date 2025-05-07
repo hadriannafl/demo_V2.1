@@ -33,14 +33,14 @@
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Document Type</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Created By</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Action</th>
                         </tr>
                     </thead>
@@ -51,17 +51,17 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $document->name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                         {{ $document->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                         {{ $document->status ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
                                     {{ $document->createdByUser->name ?? 'System' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
                                     <div x-data="modal({{ json_encode($document) }})">
                                         <button
                                             class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded cursor-pointer"
@@ -109,7 +109,7 @@
                                                     </div>
                                                 </div>
                                                 <!-- Modal content -->
-                                                <div class="modal-content text-xs px-5 py-4">
+                                                <div class="modal-content text-left text-xs px-5 py-4">
                                                     <form id="documentForm" method="POST"
                                                         action="{{ route('index.documentType.update', $document->id) }}"
                                                         enctype="multipart/form-data">

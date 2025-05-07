@@ -34,27 +34,27 @@
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Document Type</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status</th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Created By</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($documentTypes as $index => $document)
                             <tr class="{{ $index % 2 === 0 ? 'bg-white' : 'bg-gray-100' }}">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $document->code }}
+                                <td class="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-900">{{ $document->code }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $document->name }}
+                                <td class="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-900">{{ $document->name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $document->status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                         {{ $document->status }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
                                     {{ $document->createdByUser->name ?? 'System' }}
                                 </td>
                             </tr>

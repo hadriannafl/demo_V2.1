@@ -94,7 +94,7 @@
                                                 d="M9 6.855A3.502 3.502 0 0 0 8 0a3.5 3.5 0 0 0-1 6.855v1.656L5.534 9.65a3.5 3.5 0 1 0 1.229 1.578L8 10.267l1.238.962a3.5 3.5 0 1 0 1.229-1.578L9 8.511V6.855ZM6.5 3.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm4.803 8.095c.005-.005.01-.01.013-.016l.012-.016a1.5 1.5 0 1 1-.025.032ZM3.5 11c.474 0 .897.22 1.171.563l.013.016.013.017A1.5 1.5 0 1 1 3.5 11Z" />
                                         </svg>
                                         <span
-                                            class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Purchasing</span>
+                                            class="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200 @if (in_array(Request::segment(1), ['purchasing'])) text-white @endif">Purchasing</span>
                                     </div>
                                     <div
                                         class="flex shrink-0 ml-2 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
@@ -112,38 +112,38 @@
                                         <li class="mb-1 last:mb-0" x-data="{ openPR: {{ in_array(Request::segment(2), ['purchase-request']) ? 1 : 0 }} }">
                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
                                                 href="#0" @click.prevent="openPR = !openPR">
-                                                <span class="text-sm font-medium">Purchase Request</span>
+                                                <span class="text-sm font-medium @if (Route::is('index.pr', 'indexNew.pr', 'formNew.pr', 'indexEdit.pr', 'indexDelete.pr')) {{ 'text-white' }} @endif">Purchase Request</span>
                                             </a>
                                             <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['purchase-request'])) {{ 'hidden' }} @endif"
                                                 :class="openPR ? 'block!' : 'hidden'">
                                                 @can('list_purchase_request')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
-                                                            href="">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.pr')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('index.pr') }}">
                                                             <span class="text-sm font-medium">List</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('create_purchase_request')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
-                                                            href="">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexNew.pr', 'formNew.pr')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('indexNew.pr') }}">
                                                             <span class="text-sm font-medium">New</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('edit_purchase_request')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
-                                                            href="">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexEdit.pr')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('indexEdit.pr') }}">
                                                             <span class="text-sm font-medium">Edit</span>
                                                         </a>
                                                     </li>
                                                 @endcan
                                                 @can('submit_purchase_request')
                                                     <li class="mb-1 last:mb-0">
-                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
-                                                            href="">
+                                                        <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexDelete.pr')) {{ 'text-violet-500!' }} @endif"
+                                                            href="{{ route('indexDelete.pr') }}">
                                                             <span class="text-sm font-medium">Submit</span>
                                                         </a>
                                                     </li>
@@ -1162,6 +1162,64 @@
                                     <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['master'])) {{ 'hidden' }} @endif"
                                         :class="open ? 'block!' : 'hidden'">
                                         @can('view_master_department')
+                                            <li class="mb-1 last:mb-0" x-data="{ openVendor: {{ in_array(Request::segment(2), ['inventory-assets']) ? 1 : 0 }} }">
+                                                <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
+                                                    href="#0" @click.prevent="openVendor = !openVendor">
+                                                    <span
+                                                        class="text-sm font-medium @if (Route::is('indexCatalogue.inventory-assets', 'index.inventory-assets', 'indexNew.inventory-assets', 'indexEdit.vendor', 'indexDelete.vendor')) {{ 'text-white' }} @endif">Asset
+                                                        Code</span>
+                                                </a>
+                                                <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['inventory-assets'])) {{ 'hidden' }} @endif"
+                                                    :class="openVendor ? 'block!' : 'hidden'">
+                                                     @can('list_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexCatalogue.inventory-assets')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexCatalogue.inventory-assets') }}">
+                                                                <span class="text-sm font-medium">Catalogue</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('list_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.inventory-assets')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('index.inventory-assets') }}">
+                                                                <span class="text-sm font-medium">List</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('create_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexNew.inventory-assets')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexNew.inventory-assets') }}">
+                                                                <span class="text-sm font-medium">New</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('edit_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexEdit.vendor')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexEdit.vendor') }}">
+                                                                <span class="text-sm font-medium">Edit</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('delete_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexDelete.vendor')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexDelete.vendor') }}">
+                                                                <span class="text-sm font-medium">Delete</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                </ul>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </div>
+                                <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                    <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['master'])) {{ 'hidden' }} @endif"
+                                        :class="open ? 'block!' : 'hidden'">
+                                        @can('view_master_department')
                                             <li class="mb-1 last:mb-0" x-data="{ openDepartment: {{ in_array(Request::segment(2), ['department']) ? 1 : 0 }} }">
                                                 <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
                                                     href="#0" @click.prevent="openDepartment = !openDepartment">
@@ -1215,14 +1273,15 @@
                                                 <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
                                                     href="#0" @click.prevent="openDoc_type = !openDoc_type">
                                                     <span
-                                                        class="text-sm font-medium @if (Route::is('index.documentType', 'indexNew.documentType', 'indexEdit.documentType', 'indexDelete.documentType')) {{ 'text-white' }} @endif">Document Type</span>
+                                                        class="text-sm font-medium @if (Route::is('index.documentType', 'indexNew.documentType', 'indexEdit.documentType', 'indexDelete.documentType')) {{ 'text-white' }} @endif">Document
+                                                        Type</span>
                                                 </a>
                                                 <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['documentType'])) {{ 'hidden' }} @endif"
                                                     :class="openDoc_type ? 'block!' : 'hidden'">
                                                     @can('list_master_department')
                                                         <li class="mb-1 last:mb-0">
                                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.documentType')) {{ 'text-violet-500!' }} @endif"
-                                                                href="{{ route('index.documentType')}}">
+                                                                href="{{ route('index.documentType') }}">
                                                                 <span class="text-sm font-medium">List</span>
                                                             </a>
                                                         </li>
@@ -1230,7 +1289,7 @@
                                                     @can('create_master_department')
                                                         <li class="mb-1 last:mb-0">
                                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexNew.documentType')) {{ 'text-violet-500!' }} @endif"
-                                                                href="{{ route('indexNew.documentType')}}">
+                                                                href="{{ route('indexNew.documentType') }}">
                                                                 <span class="text-sm font-medium">New</span>
                                                             </a>
                                                         </li>
@@ -1238,7 +1297,7 @@
                                                     @can('edit_master_department')
                                                         <li class="mb-1 last:mb-0">
                                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexEdit.documentType')) {{ 'text-violet-500!' }} @endif"
-                                                                href="{{ route('indexEdit.documentType')}}">
+                                                                href="{{ route('indexEdit.documentType') }}">
                                                                 <span class="text-sm font-medium">Edit</span>
                                                             </a>
                                                         </li>
@@ -1246,7 +1305,56 @@
                                                     @can('delete_master_department')
                                                         <li class="mb-1 last:mb-0">
                                                             <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexDelete.documentType')) {{ 'text-violet-500!' }} @endif"
-                                                                href="{{ route('indexDelete.documentType')}}">
+                                                                href="{{ route('indexDelete.documentType') }}">
+                                                                <span class="text-sm font-medium">Delete</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                </ul>
+                                            </li>
+                                        @endcan
+                                    </ul>
+                                </div>
+                                <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                    <ul class="pl-8 mt-1 @if (!in_array(Request::segment(1), ['master'])) {{ 'hidden' }} @endif"
+                                        :class="open ? 'block!' : 'hidden'">
+                                        @can('view_master_department')
+                                            <li class="mb-1 last:mb-0" x-data="{ openVendor: {{ in_array(Request::segment(2), ['vendor']) ? 1 : 0 }} }">
+                                                <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate"
+                                                    href="#0" @click.prevent="openVendor = !openVendor">
+                                                    <span
+                                                        class="text-sm font-medium @if (Route::is('index.vendor', 'indexNew.vendor', 'indexEdit.vendor', 'indexDelete.vendor')) {{ 'text-white' }} @endif">Vendor</span>
+                                                </a>
+                                                <ul class="pl-4 mt-1 @if (!in_array(Request::segment(2), ['vendor'])) {{ 'hidden' }} @endif"
+                                                    :class="openVendor ? 'block!' : 'hidden'">
+                                                    @can('list_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('index.vendor')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('index.vendor') }}">
+                                                                <span class="text-sm font-medium">List</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('create_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexNew.vendor')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexNew.vendor') }}">
+                                                                <span class="text-sm font-medium">New</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('edit_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexEdit.vendor')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexEdit.vendor') }}">
+                                                                <span class="text-sm font-medium">Edit</span>
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('delete_master_department')
+                                                        <li class="mb-1 last:mb-0">
+                                                            <a class="block text-gray-400 hover:text-white hover:text-gray-700 dark:hover:text-gray-200 transition truncate @if (Route::is('indexDelete.vendor')) {{ 'text-violet-500!' }} @endif"
+                                                                href="{{ route('indexDelete.vendor') }}">
                                                                 <span class="text-sm font-medium">Delete</span>
                                                             </a>
                                                         </li>

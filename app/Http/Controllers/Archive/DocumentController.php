@@ -18,15 +18,15 @@ class DocumentController extends Controller
 {
     public function index(Request $request)
     {
-
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
+        $sortField = $request->input('sort_field', 'date'); // Default sort by date
+        $sortDirection = $request->input('sort_direction', 'desc'); // Default descending
 
-        // Query untuk TArchive dengan relasi ajuDetails dan aju
-        $archives = TArchive::with(['ajuDetails', 'aju'])
+        $archives = TArchive::with(['ajuDetails', 'aju', 'subDepartment.parent', 'createdByUser'])
             ->where('active_y_n', 'Y');
 
-        // Jika ada pencarian
+        // Search functionality
         if ($search) {
             $archives->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(doc_type) LIKE ?', ['%' . strtolower($search) . '%'])
@@ -38,12 +38,32 @@ class DocumentController extends Controller
             });
         }
 
+        // Sorting functionality
+        $validSortFields = [ 'date', 'doc_type', 'description', 'no_document', 'sub_department_id', 'department_id', 'file_name', 'created_by' ];
+
+        if (in_array($sortField, $validSortFields)) {
+            // Handle special cases for relationships
+            if ($sortField === 'sub_department_id') {
+                $archives->join('m_departments as sub_dep', 't_archives.sub_department_id', '=', 'sub_dep.id')
+                    ->orderBy('sub_dep.name', $sortDirection);
+            } elseif ($sortField === 'department_id') {
+                $archives->join('m_departments as sub_dep', 't_archives.sub_department_id', '=', 'sub_dep.id')
+                    ->join('m_departments as dep', 'sub_dep.parent_id', '=', 'dep.id')
+                    ->orderBy('dep.name', $sortDirection);
+            } elseif ($sortField === 'created_by') {
+                $archives->join('users', 't_archives.created_by', '=', 'users.id')
+                    ->orderBy('users.name', $sortDirection);
+            } else {
+                $archives->orderBy($sortField, $sortDirection);
+            }
+        }
+
         $archives = $archives->paginate($perPage);
 
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
-        return view('pages.archive.document.index_list', compact('archives', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.document.index_list', compact('archives', 'deps', 'subDeps', 'perPage', 'sortField', 'sortDirection'));
     }
     // NEW
     public function indexNewDocument(Request $request)
@@ -149,18 +169,6 @@ class DocumentController extends Controller
         return response()->json(['suggested_id_document' => $suggestedDocumentNumber]);
     }
 
-    public function indexForm($id_aju)
-    {
-
-        $archive = TArchive::where('id_aju', $id_aju)
-            ->where('active_y_n', 'Y')
-            ->get();
-        $ajuDocs = TAju::where('id_aju', $id_aju)->first();
-
-
-        return view('pages.archive.document.input.form', compact('archive', 'ajuDocs'));
-    }
-
     public function store(Request $request)
     {
 
@@ -252,9 +260,9 @@ class DocumentController extends Controller
 
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
+        $documentTypes = MDocumentType::where('status', 'active')->get();
 
-
-        return view('pages.archive.document.index_edit', compact('archives', 'deps', 'subDeps', 'perPage', 'users'));
+        return view('pages.archive.document.index_edit', compact('archives', 'deps', 'subDeps', 'perPage', 'users', 'documentTypes'));
     }
 
     public function indexFormEdit($id_aju)

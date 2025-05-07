@@ -1,151 +1,262 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-semibold">AJU Management</h2>
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+                <h1
+                    class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                    AJU Management</h1>
+                <p class="text-gray-500 mt-1">Manage and view all AJU documents</p>
+            </div>
         </div>
 
-        <div id="containerAccount" class="bg-white shadow-md rounded-lg overflow-hidden mt-8">
-            <div class="flex justify-between items-center px-6 py-4 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-900">AJU List</h2>
-                <div class="flex items-center">
-                    <div class="relative">
+        <!-- Card Container -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Card Header -->
+            <div
+                class="px-6 py-4 border-b border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800">AJU Documents List</h2>
+                </div>
+                <!-- Search and Pagination -->
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mt-4 md:mt-0">
+                    <div class="relative group">
                         <form method="GET" action="{{ route('index.aju') }}">
-                            <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
-                                placeholder="Search..."
-                                class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48">
-                            <div class="absolute left-3 top-2.5">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-all duration-300 group-focus-within:text-indigo-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
+                            <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                                placeholder="Search No AJU..."
+                                class="block w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 placeholder-gray-400">
                         </form>
                     </div>
+
+                    <form method="GET" action="{{ route('index.aju') }}" class="flex items-center">
+                        <label for="per_page" class="text-sm text-gray-600 mr-2">Show:</label>
+                        <div class="relative">
+                            <select name="per_page" id="per_page" onchange="this.form.submit()"
+                                class="appearance-none bg-white border border-gray-200 rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm">
+                                <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
+                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                                <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
+                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                            </select>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table id="documentTable" class="min-w-full divide-y divide-gray-200">
+            <!-- Table Section -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                No</th>
+                                No
+                            </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Department</th>
+                                <a href="{{ route('index.aju', array_merge(request()->query(), ['sort_field' => 'department', 'sort_direction' => $sortField == 'department' && $sortDirection == 'asc' ? 'desc' : 'asc'])) }}"
+                                    class="flex items-center">
+                                    Department
+                                    @if ($sortField == 'department')
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="{{ $sortDirection == 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}" />
+                                        </svg>
+                                    @endif
+                                </a>
+                            </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Document Number</th>
+                                <a href="{{ route('index.aju', array_merge(request()->query(), ['sort_field' => 'document_number', 'sort_direction' => $sortField == 'document_number' && $sortDirection == 'asc' ? 'desc' : 'asc'])) }}"
+                                    class="flex items-center">
+                                    Document Number
+                                    @if ($sortField == 'document_number')
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="{{ $sortDirection == 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}" />
+                                        </svg>
+                                    @endif
+                                </a>
+                            </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Description</th>
+                                <a href="{{ route('index.aju', array_merge(request()->query(), ['sort_field' => 'description', 'sort_direction' => $sortField == 'description' && $sortDirection == 'asc' ? 'desc' : 'asc'])) }}"
+                                    class="flex items-center">
+                                    Description
+                                    @if ($sortField == 'description')
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="{{ $sortDirection == 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}" />
+                                        </svg>
+                                    @endif
+                                </a>
+                            </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created By</th>
+                                <a href="{{ route('index.aju', array_merge(request()->query(), ['sort_field' => 'created_by', 'sort_direction' => $sortField == 'created_by' && $sortDirection == 'asc' ? 'desc' : 'asc'])) }}"
+                                    class="flex items-center">
+                                    Created By
+                                    @if ($sortField == 'created_by')
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="{{ $sortDirection == 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}" />
+                                        </svg>
+                                    @endif
+                                </a>
+                            </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created At</th>
+                                <a href="{{ route('index.aju', array_merge(request()->query(), ['sort_field' => 'created_at', 'sort_direction' => $sortField == 'created_at' && $sortDirection == 'asc' ? 'desc' : 'asc'])) }}"
+                                    class="flex items-center">
+                                    Created At
+                                    @if ($sortField == 'created_at')
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="{{ $sortDirection == 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}" />
+                                        </svg>
+                                    @endif
+                                </a>
+                            </th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions</th>
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
+
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($ajus as $index => $aju)
-                            <tr class="hover:bg-gray-100 odd:bg-gray-100 even:bg-white">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ ($ajus->currentPage() - 1) * $ajus->perPage() + $index + 1 }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $aju->department->name ?? 'N/A' }}
+                        @forelse ($ajus as $index => $aju)
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ ($ajus->currentPage() - 1) * $ajus->perPage() + $index + 1 }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $aju->no_docs }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex items-center">
+                                        <div class="ml-4">
+                                            <div class="font-medium text-gray-900">
+                                                {{ $aju->department->name ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $aju->description }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
+                                    {{ $aju->no_docs }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                                    {{ $aju->description }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $aju->createdByUser->name }}
+                                    <div class="flex items-center">
+                                        <div
+                                            class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
+                                            {{ substr($aju->createdByUser->name ?? '?', 0, 1) }}
+                                        </div>
+                                        <div class="ml-2">
+                                            {{ $aju->createdByUser->name ?? '-' }}
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ \Carbon\Carbon::parse($aju->created_at)->format('Y-m-d') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    @if (optional($aju->archives)->where('pdfblob', '!=', null)->isNotEmpty())
-                                        <div x-data="modal()">
-                                            <button
-                                                class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 transition duration-150 cursor-pointer"
-                                                type="button"
-                                                @click.prevent="modalOpenDetail = true; loadDetails(@js($aju->details))"
-                                                aria-controls="feedback-modal1">
-                                                View
-                                            </button>
-                                            <!-- Modal backdrop -->
-                                            <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity"
-                                                x-show="modalOpenDetail"
-                                                x-transition:enter="transition ease-out duration-200"
-                                                x-transition:enter-start="opacity-0"
-                                                x-transition:enter-end="opacity-100"
-                                                x-transition:leave="transition ease-out duration-100"
-                                                x-transition:leave-start="opacity-100"
-                                                x-transition:leave-end="opacity-0" aria-hidden="true" x-cloak></div>
-                                            <!-- Modal dialog -->
-                                            <div id="feedback-modal1"
-                                                class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6"
-                                                role="dialog" aria-modal="true" x-show="modalOpenDetail"
-                                                x-transition:enter="transition ease-in-out duration-200"
-                                                x-transition:enter-start="opacity-0 translate-y-4"
-                                                x-transition:enter-end="opacity-100 translate-y-0"
-                                                x-transition:leave="transition ease-in-out duration-200"
-                                                x-transition:leave-start="opacity-100 translate-y-0"
-                                                x-transition:leave-end="opacity-0 translate-y-4" x-cloak>
-                                                <div class="bg-white rounded shadow-lg overflow-auto w-3/4 max-h-full"
-                                                    @click.outside="modalOpenDetail = false"
-                                                    @keydown.escape.window="modalOpenDetail = false">
-                                                    <!-- Modal header -->
-                                                    <div class="px-5 py-3 border-b border-slate-200"
-                                                        id="modalAddLpjDetail">
-                                                        <div class="flex justify-between items-center">
-                                                            <div class="font-semibold text-slate-800">View AJU Document
-                                                                {{ $aju->no_docs }}</div>
-                                                            <button type="button"
-                                                                class="text-slate-400 hover:text-slate-500 cursor-pointer"
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ \Carbon\Carbon::parse($aju->created_at)->format('M d, Y') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                                    <div class="flex justify-center space-x-2">
+                                        @if (optional($aju->archives)->where('pdfblob', '!=', null)->isNotEmpty())
+                                            <div x-data="modal()">
+                                                <!-- Tombol buka modal -->
+                                                <button
+                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 cursor-pointer"
+                                                    type="button"
+                                                    @click.prevent="modalOpenDetail = true; loadDetails(@js($aju->details))"
+                                                    aria-controls="modalDetail">
+                                                    View
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                </button>
+
+                                                <!-- Backdrop -->
+                                                <div class="fixed inset-0 bg-black/40 z-40" x-show="modalOpenDetail"
+                                                    x-transition:enter="transition-opacity ease-out duration-200"
+                                                    x-transition:enter-start="opacity-0"
+                                                    x-transition:enter-end="opacity-100"
+                                                    x-transition:leave="transition-opacity ease-in duration-100"
+                                                    x-transition:leave-start="opacity-100"
+                                                    x-transition:leave-end="opacity-0" x-cloak>
+                                                </div>
+
+                                                <!-- Dialog -->
+                                                <div id="modalDetail"
+                                                    class="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6 py-8"
+                                                    x-show="modalOpenDetail"
+                                                    x-transition:enter="transition ease-out duration-200"
+                                                    x-transition:enter-start="opacity-0 translate-y-8"
+                                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                                    x-transition:leave="transition ease-in duration-150"
+                                                    x-transition:leave-start="opacity-100 translate-y-0"
+                                                    x-transition:leave-end="opacity-0 translate-y-8" role="dialog"
+                                                    aria-modal="true" x-cloak>
+                                                    <div class="bg-white rounded-xl shadow-xl max-w-3xl w-full overflow-auto max-h-full"
+                                                        @click.outside="modalOpenDetail = false"
+                                                        @keydown.escape.window="modalOpenDetail = false">
+                                                        <!-- Header -->
+                                                        <div
+                                                            class="flex items-center justify-between px-6 py-4 border-b">
+                                                            <h2 class="text-lg font-semibold text-gray-800">
+                                                                Dokumen AJU - {{ $aju->no_docs }}
+                                                            </h2>
+                                                            <button class="text-gray-500 hover:text-gray-700"
                                                                 @click="modalOpenDetail = false">
-                                                                <div class="sr-only">Close</div>
-                                                                <svg class="w-4 h-4 fill-current">
-                                                                    <path
-                                                                        d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
+                                                                <svg class="w-6 h-6" fill="none"
+                                                                    viewBox="0 0 24 24" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round">
+                                                                    <path d="M6 18L18 6M6 6l12 12" />
                                                                 </svg>
                                                             </button>
                                                         </div>
-                                                    </div>
-                                                    <!-- Modal content -->
-                                                    <div class="modal-content text-xs px-5 py-4">
-                                                        <!-- Display file names -->
-                                                        <div id="file-names" class="mt-4 text-sm text-gray-700">
+
+                                                        <!-- Isi modal -->
+                                                        <div class="px-6 py-5 space-y-4 text-sm text-gray-700">
                                                             <template x-for="(detail, index) in details"
                                                                 :key="index">
                                                                 <template x-if="detail.archive">
                                                                     <div
-                                                                        class="relative w-full flex items-center justify-between rounded-lg bg-[#e3f2fd] p-4 border border-[#90caf9] mb-4">
-                                                                        <!-- Icon Folder -->
-                                                                        <svg class="w-8 h-8 text-[#1976d2] mr-4"
-                                                                            xmlns="http://www.w3.org/2000/svg"
-                                                                            fill="none" viewBox="0 0 24 24"
-                                                                            stroke="currentColor">
-                                                                            <path stroke-linecap="round"
-                                                                                stroke-linejoin="round"
-                                                                                stroke-width="2"
-                                                                                d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
-                                                                        </svg>
-                                                                        <!-- Nama File -->
-                                                                        <span
-                                                                            class="truncate text-sm font-medium text-[#07074D] flex-1">
+                                                                        class="flex items-center justify-between bg-blue-50 border border-blue-300 rounded-lg p-4">
+                                                                        <div
+                                                                            class="flex items-center gap-3 overflow-hidden">
+                                                                            <svg class="w-6 h-6 text-blue-600"
+                                                                                fill="none" stroke="currentColor"
+                                                                                viewBox="0 0 24 24" stroke-width="2"
+                                                                                stroke-linecap="round"
+                                                                                stroke-linejoin="round">
+                                                                                <path
+                                                                                    d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+                                                                            </svg>
                                                                             <span
+                                                                                class="truncate font-medium text-blue-800"
                                                                                 x-text="detail.archive.file_name"></span>
-                                                                        </span>
-                                                                        <!-- Tombol View PDF -->
+                                                                        </div>
                                                                         <button
-                                                                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+                                                                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-xs font-medium rounded-md transition"
                                                                             @click="openPdfInNewTab(detail.archive.pdfblob)">
                                                                             View File
                                                                         </button>
@@ -156,60 +267,34 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @else
-                                        <a
-                                            class="bg-red-50 text-red-800 px-2 py-1 rounded text-sm hover:bg-red-100 transition duration-150">
-                                            No File available
-                                        </a>
-                                    @endif
-
+                                        @else
+                                            <div class="flex space-x-2">
+                                                <span
+                                                    class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-red-800 bg-red-100 w-full">
+                                                    No File
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                                    No documents found
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="bg-gray-50 rounded p-4">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <form method="GET" action="{{ route('index.aju') }}">
-                        <div class="flex items-center">
-                            <label for="per_page" class="mr-2">Show:</label>
-                            <select name="per_page" id="per_page" onchange="this.form.submit()"
-                                class="border border-gray-300 rounded px-4 py-2 w-32">
-                                <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5</option>
-                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
-                                <option value="15" {{ $perPage == 15 ? 'selected' : '' }}>15</option>
-                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
 
-                <div class="px-6 py-4">
-                    {{ $ajus->links() }}
-                </div>
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50/50">
+                {{ $ajus->links() }}
             </div>
-
         </div>
     </div>
-    @if (session('success'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Toastify({
-                    text: "{{ session('success') }}",
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "linear-gradient(to right, #00b09b, #96c93d)"
-                    },
-                    stopOnFocus: true,
-                }).showToast();
-            });
-        </script>
-    @endif
-
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('modal', () => ({

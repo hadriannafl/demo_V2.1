@@ -8,7 +8,8 @@ use App\Models\MDepartment;
 use App\Models\TAjuDetail;
 use App\Models\TArchive;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Models\MDocumentType;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +21,13 @@ class AjuController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
+        $sortField = $request->input('sort_field', 'created_at'); // default sorting
+        $sortDirection = $request->input('sort_direction', 'desc'); // default descending
 
-        // Ambil data dari model Aju dengan relasi ke Archive & Department
+        // Validasi kolom yang bisa diurutkan
+        $validSortFields = ['no_docs', 'created_at', 'department_id', 'created_by'];
+
+        // Query awal
         $ajus = TAju::with([
             'department',
             'createdByUser',
@@ -36,7 +42,7 @@ class AjuController extends Controller
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
 
-        // Jika ada pencarian
+        // Pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
@@ -46,13 +52,29 @@ class AjuController extends Controller
             });
         }
 
-        $ajus = $ajus->paginate($perPage);
+        // Sorting
+        if (in_array($sortField, $validSortFields)) {
+            if ($sortField === 'department_id') {
+                $ajus->join('m_departments as dep', 't_aju.department_id', '=', 'dep.id')
+                    ->orderBy('dep.name', $sortDirection);
+            } elseif ($sortField === 'created_by') {
+                $ajus->join('users', 't_aju.created_by', '=', 'users.id')
+                    ->orderBy('users.name', $sortDirection);
+            } else {
+                $ajus->orderBy($sortField, $sortDirection);
+            }
+        }
 
+        // Pagination
+        $ajus = $ajus->select('t_aju.*')->paginate($perPage);
+
+        // Department & SubDepartment
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
-        return view('pages.archive.AJU.index_list', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_list', compact('ajus', 'deps', 'subDeps', 'perPage', 'sortField', 'sortDirection'));
     }
+
 
 
     // NEW
@@ -60,8 +82,13 @@ class AjuController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
+        $sortField = $request->input('sort_field', 'created_at'); // default sorting
+        $sortDirection = $request->input('sort_direction', 'desc'); // default descending
 
-        // Ambil data dari model Aju dengan relasi ke Archive & Department
+        // Validasi kolom yang bisa diurutkan
+        $validSortFields = ['no_docs', 'created_at', 'department_id', 'created_by'];
+
+        // Query awal
         $ajus = TAju::with([
             'department',
             'createdByUser',
@@ -76,7 +103,7 @@ class AjuController extends Controller
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
 
-        // Jika ada pencarian
+        // Pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
@@ -86,13 +113,28 @@ class AjuController extends Controller
             });
         }
 
-        $ajus = $ajus->paginate($perPage);
+        // Sorting
+        if (in_array($sortField, $validSortFields)) {
+            if ($sortField === 'department_id') {
+                $ajus->join('m_departments as dep', 't_aju.department_id', '=', 'dep.id')
+                    ->orderBy('dep.name', $sortDirection);
+            } elseif ($sortField === 'created_by') {
+                $ajus->join('users', 't_aju.created_by', '=', 'users.id')
+                    ->orderBy('users.name', $sortDirection);
+            } else {
+                $ajus->orderBy($sortField, $sortDirection);
+            }
+        }
 
+        // Pagination
+        $ajus = $ajus->select('t_aju.*')->paginate($perPage);
+
+        // Department & SubDepartment
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
 
-        return view('pages.archive.AJU.index_new', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_new', compact('ajus', 'deps', 'subDeps', 'perPage', 'sortField', 'sortDirection'));
     }
     public function formNew(Request $request)
     {
@@ -108,7 +150,9 @@ class AjuController extends Controller
 
         $users = User::all();
 
-        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives', 'users'));
+        $documentTypes = MDocumentType::where('status', 'active')->get();
+
+        return view('pages.archive.AJU.input.formNew', compact('deps', 'subDeps', 'ajuDetails', 'aju', 'archives', 'users', 'documentTypes'));
     }
 
 
@@ -328,8 +372,13 @@ class AjuController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
+        $sortField = $request->input('sort_field', 'created_at'); // default sorting
+        $sortDirection = $request->input('sort_direction', 'desc'); // default descending
 
-        // Ambil data dari model Aju dengan relasi ke Archive & Department
+        // Validasi kolom yang bisa diurutkan
+        $validSortFields = ['no_docs', 'created_at', 'department_id', 'created_by'];
+
+        // Query awal
         $ajus = TAju::with([
             'department',
             'createdByUser',
@@ -344,7 +393,7 @@ class AjuController extends Controller
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
 
-        // Jika ada pencarian
+        // Pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
@@ -354,12 +403,27 @@ class AjuController extends Controller
             });
         }
 
-        $ajus = $ajus->paginate($perPage);
+        // Sorting
+        if (in_array($sortField, $validSortFields)) {
+            if ($sortField === 'department_id') {
+                $ajus->join('m_departments as dep', 't_aju.department_id', '=', 'dep.id')
+                    ->orderBy('dep.name', $sortDirection);
+            } elseif ($sortField === 'created_by') {
+                $ajus->join('users', 't_aju.created_by', '=', 'users.id')
+                    ->orderBy('users.name', $sortDirection);
+            } else {
+                $ajus->orderBy($sortField, $sortDirection);
+            }
+        }
 
+        // Pagination
+        $ajus = $ajus->select('t_aju.*')->paginate($perPage);
+
+        // Department & SubDepartment
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
-        return view('pages.archive.AJU.index_edit', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_edit', compact('ajus', 'deps', 'subDeps', 'perPage', 'sortField', 'sortDirection'));
     }
 
     public function update(Request $request, $id)
@@ -587,8 +651,13 @@ class AjuController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
+        $sortField = $request->input('sort_field', 'created_at'); // default sorting
+        $sortDirection = $request->input('sort_direction', 'desc'); // default descending
 
-        // Ambil data dari model Aju dengan relasi ke Archive & Department
+        // Validasi kolom yang bisa diurutkan
+        $validSortFields = ['no_docs', 'created_at', 'department_id', 'created_by'];
+
+        // Query awal
         $ajus = TAju::with([
             'department',
             'createdByUser',
@@ -603,7 +672,7 @@ class AjuController extends Controller
                 $query->whereNotNull('pdfblob')->where('pdfblob', '!=', '');
             });
 
-        // Jika ada pencarian
+        // Pencarian
         if ($search) {
             $ajus->where(function ($query) use ($search) {
                 $query->whereRaw('LOWER(no_docs) LIKE ?', ['%' . strtolower($search) . '%'])
@@ -613,13 +682,28 @@ class AjuController extends Controller
             });
         }
 
-        $ajus = $ajus->paginate($perPage);
+        // Sorting
+        if (in_array($sortField, $validSortFields)) {
+            if ($sortField === 'department_id') {
+                $ajus->join('m_departments as dep', 't_aju.department_id', '=', 'dep.id')
+                    ->orderBy('dep.name', $sortDirection);
+            } elseif ($sortField === 'created_by') {
+                $ajus->join('users', 't_aju.created_by', '=', 'users.id')
+                    ->orderBy('users.name', $sortDirection);
+            } else {
+                $ajus->orderBy($sortField, $sortDirection);
+            }
+        }
 
+        // Pagination
+        $ajus = $ajus->select('t_aju.*')->paginate($perPage);
+
+        // Department & SubDepartment
         $deps = MDepartment::getDepartments();
         $subDeps = MDepartment::getSubDepartments();
 
 
-        return view('pages.archive.AJU.index_delete', compact('ajus', 'deps', 'subDeps', 'perPage'));
+        return view('pages.archive.AJU.index_delete', compact('ajus', 'deps', 'subDeps', 'perPage', 'sortField', 'sortDirection'));
     }
 
     public function softDelete($id)

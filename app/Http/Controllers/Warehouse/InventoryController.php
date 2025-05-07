@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Warehouse;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
-use App\Models\Inventory;
+use App\Models\MBrand;
+use App\Models\MInventoryAsset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -19,7 +19,7 @@ class InventoryController extends Controller
 
         $perPage = $request->input('per_page', 5);
 
-        $query = Inventory::query();
+        $query = MInventoryAsset::query();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -39,28 +39,39 @@ class InventoryController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
-        $query = Inventory::query();
+
+        $query = MInventoryAsset::with(['brand', 'modelBrand']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('id_inventory', 'like', '%' . $search . '%')
                     ->orWhere('name', 'like', '%' . $search . '%')
                     ->orWhere('unit', 'like', '%' . $search . '%')
-                    ->orWhere('price_list', 'like', '%' . $search . '%');
+                    ->orWhere('price_list', 'like', '%' . $search . '%')
+                    ->orWhereHas('brand', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('modelName', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
             });
         }
 
         $inventories = $query->paginate($perPage);
-        $brands = Brand::all();
+        $brands = MBrand::where('p_id_brand', 0)
+            ->select('id_brand', 'name')
+            ->get();
 
         return view('pages/warehouse/inventory/index_new', compact('inventories', 'perPage', 'brands'));
     }
+
+
 
     public function indexEdit(Request $request)
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
-        $query = Inventory::query();
+        $query = MInventoryAsset::query();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -80,7 +91,7 @@ class InventoryController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
-        $query = Inventory::query();
+        $query = MInventoryAsset::query();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -95,16 +106,16 @@ class InventoryController extends Controller
 
         return view('pages/warehouse/inventory/index_delete', compact('inventories', 'perPage'));
     }
-    
+
 
     public function store(Request $request)
     {
         try {
 
-            $msrp = preg_replace('/\D/', '', $request->msrp);
+            $msrp = preg_replace('/\D/', '', $request->msrp_input);
 
-            Inventory::create([
-                'id_inventory' => $request->id_inventory ?? Str::uuid(),
+            MInventoryAsset::create([
+                'id_inventory' => $request->id_inventory_input ?? Str::uuid(),
                 'qty' => "1",
                 'hpp' => "0",
                 'automargin' => "0",
@@ -115,14 +126,14 @@ class InventoryController extends Controller
                 'ws_price' => "0",
                 'plu' => "0",
                 'id_supplier' => "0",
-                'category' => $request->category,
-                'name' => $request->name,
-                'unit' => $request->unit,
-                'brand' => $request->brand,
-                'model' => $request->model,
-                'variant' => $request->variant,
-                'net_weight' => $request->nett_weight,
-                'w_unit' => $request->weight_unit,
+                'category' => $request->category_input,
+                'name' => $request->name_input,
+                'unit' => $request->unit_input,
+                'brand' => $request->brand_input,
+                'model' => $request->model_input,
+                'variant' => $request->variant_input,
+                'net_weight' => $request->nett_weight_input,
+                'w_unit' => $request->weight_unit_input,
                 'aktif_y_n' => "y",
                 'price_list' => $msrp ?? null,
             ]);
@@ -133,6 +144,13 @@ class InventoryController extends Controller
         }
     }
 
+    public function getModels($brand_id)
+    {
+
+        $models = MBrand::where('p_id_brand', $brand_id)->get();
+
+        return response()->json($models);
+    }
 
     public function destroy($id)
     {
@@ -142,7 +160,7 @@ class InventoryController extends Controller
         }
 
         // Find the inventory item by ID
-        $inventory = Inventory::find($id);
+        $inventory = MInventoryAsset::find($id);
 
         if (!$inventory) {
             return response()->json(['success' => false, 'message' => 'Inventory item not found'], 404);
@@ -175,7 +193,7 @@ class InventoryController extends Controller
         }
 
         // Find the inventory item by ID
-        $inventory = Inventory::find($id);
+        $inventory = MInventoryAsset::find($id);
 
         if (!$inventory) {
             return redirect()->back()->with('error', 'Inventory item not found.');

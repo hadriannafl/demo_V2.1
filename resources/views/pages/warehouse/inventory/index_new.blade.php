@@ -49,7 +49,7 @@
                                 @csrf
                                 <div class="grid md:grid-cols-2 md:gap-6">
                                     <div class="relative z-0 w-full mb-5 group">
-                                        <select name="category" id="category"
+                                        <select name="category_input" id="category_input"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             required onchange="checkCategory()">
                                             <option value="" disabled selected>Select Category</option>
@@ -58,16 +58,16 @@
                                             <option value="Office Supply">Office Supply</option>
                                             <option value="Others">Others..</option>
                                         </select>
-                                        <label for="category"
+                                        <label for="category_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                             Category</label>
                                     </div>
 
                                     <div class="relative z-0 w-full mb-5 group">
-                                        <input name="id_inventory" id="id_inventory" autocomplete="off"
+                                        <input name="id_inventory_input" id="id_inventory_input" autocomplete="off"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             placeholder=" " required />
-                                        <label for="id_inventory"
+                                        <label for="id_inventory_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Inventory
                                             Code</label>
                                     </div>
@@ -78,67 +78,70 @@
                                         placeholder="Enter category">
                                 </div>
                                 <div class="relative z-0 w-full mb-5 group">
-                                    <input name="name" id="name" autocomplete="off"
+                                    <input name="name_input" id="name_input" autocomplete="off"
                                         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                         placeholder=" " required />
 
-                                    <label for="name"
+                                    <label for="name_input"
                                         class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
                                 </div>
 
                                 <!-- New fields for brand, model, and variant arranged horizontally -->
                                 <div class="grid md:grid-cols-3 md:gap-6 mb-5">
                                     <div class="relative z-0 w-full group">
-                                        <select name="brand" id="brand"
+                                        <select name="brand_input" id="brand_input"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             required>
                                             <option value="" disabled selected>Select Brand</option>
-                                            <!-- Loop through the brands and add them as options -->
                                             @foreach ($brands as $brand)
-                                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                                @if ($brand->p_id_brand == 0)
+                                                    <option value="{{ $brand->id_brand }}">{{ $brand->name }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
 
-                                        <label for="brand"
+                                        <label for="brand_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Brand</label>
                                     </div>
 
                                     <div class="relative z-0 w-full group">
-                                        <input name="model" id="model" autocomplete="off"
+                                        <select name="model_input" id="model_input"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                            placeholder=" " required />
-                                        <label for="model"
-                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Model</label>
+                                            required>
+                                            <option value="" disabled selected>Select Model</option>
+                                        </select>
+                                        <label for="model_input"
+                                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Model</label>
                                     </div>
 
                                     <div class="relative z-0 w-full group">
-                                        <input name="variant" id="variant" autocomplete="off"
+                                        <input name="variant_input" id="variant_input" autocomplete="off"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             placeholder=" " required />
-                                        <label for="variant"
+                                        <label for="variant_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Variant</label>
                                     </div>
                                 </div>
                                 <div class="grid md:grid-cols-4 md:gap-6 mb-5">
                                     <div class="relative z-0 w-full mb-5 group">
-                                        <input type="text" name="unit" id="unit" autocomplete="off"
+                                        <input type="text" name="unit_input" id="unit_input" autocomplete="off"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             placeholder=" " required />
-                                        <label for="unit"
+                                        <label for="unit_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Unit
                                             (pcs/meter/box)</label>
                                     </div>
                                     <div class="relative z-0 w-full mb-5 group">
-                                        <input type="number" name="nett_weight" id="nett_weight"
+                                        <input type="number" name="nett_weight_input" id="nett_weight_input"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             placeholder=" " required min="0" step="any" />
-                                        <label for="nett_weight"
+                                        <label for="nett_weight_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nett
                                             Weight</label>
                                     </div>
 
                                     <div class="relative z-0 w-full mb-5 group">
-                                        <select name="weight_unit" id="weight_unit"
+                                        <select name="weight_unit_input" id="weight_unit_input"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             required>
                                             <option value="" disabled selected>Select Weight Unit
@@ -148,21 +151,21 @@
                                             <option value="kg">Kilogram (kg)</option>
                                             <option value="t">Ton (t)</option>
                                         </select>
-                                        <label for="weight_unit"
+                                        <label for="weight_unit_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Weight
                                             Unit</label>
                                     </div>
                                     <div class="relative z-0 w-full mb-5 group">
-                                        <input type="text" name="msrp" id="msrp" autocomplete="off"
+                                        <input type="text" name="msrp_input" id="msrp_input" autocomplete="off"
                                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                             placeholder=" " required oninput="formatRupiah(this)" />
-                                        <label for="msrp"
+                                        <label for="msrp_input"
                                             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
                                             Manufacturer's Suggested Retail Price</label>
                                     </div>
                                 </div>
                                 <!-- Modal footer -->
-                                <div class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
+                                <div class="px-5 py-3 border-t border-slate-200 flex justify-end mt-4">
                                     <button type="submit"
                                         class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">Submit</button>
                                 </div>
@@ -241,11 +244,13 @@
                                     {{ number_format($inventory->price_list, 0, '', '.') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-left">
                                     <div x-data="{ modalOpenDetail: false, modalData: {} }">
-                                        <button class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 transition duration-150 cursor-pointer"
+                                        <button
+                                            class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2 transition duration-150 cursor-pointer"
                                             type="button"
-                                            @click.prevent="modalOpenDetail = true; modalData = { id: '{{ $inventory->id_inventory }}', name: '{{ $inventory->name }}', brand: '{{ $inventory->brand }}', model: '{{ $inventory->model }}', variant: '{{ $inventory->variant }}', qty: '{{ number_format($inventory->qty, 0, '', '.') }} {{ $inventory->unit }}', weight: '{{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}', price: '{{ number_format($inventory->price_list, 0, '', '.') }}'}"
-                                            aria-controls="feedback-modal1">View
+                                            @click.prevent="modalOpenDetail = true; modalData = { id: '{{ $inventory->id_inventory }}', name: '{{ $inventory->name }}', brand_modal: '{{ $inventory->brand }}', model: '{{ $inventory->model }}', variant: '{{ $inventory->variant }}', qty: '{{ number_format($inventory->qty, 0, '', '.') }} {{ $inventory->unit }}', weight: '{{ number_format($inventory->net_weight, 0, '', '.') }} {{ $inventory->w_unit }}', price: '{{ number_format($inventory->price_list, 0, '', '.') }}'}"
+                                            aria-controls="view-modal-{{ $inventory->id_inventory }}">View
                                         </button>
+
                                         <!-- Modal backdrop -->
                                         <div class="fixed inset-0 backdrop-blur bg-opacity-30 z-50 transition-opacity"
                                             x-show="modalOpenDetail"
@@ -254,8 +259,9 @@
                                             x-transition:leave="transition ease-out duration-100"
                                             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                                             aria-hidden="true" x-cloak></div>
+
                                         <!-- Modal dialog -->
-                                        <div id="feedback-modal1"
+                                        <div id="view-modal-{{ $inventory->id_inventory }}"
                                             class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center px-4 sm:px-6"
                                             role="dialog" aria-modal="true" x-show="modalOpenDetail"
                                             x-transition:enter="transition ease-in-out duration-200"
@@ -269,8 +275,7 @@
                                                 @click.outside="modalOpenDetail = false"
                                                 @keydown.escape.window="modalOpenDetail = false">
                                                 <!-- Modal header -->
-                                                <div class="px-5 py-3 border-b border-slate-200"
-                                                    id="modalAddLpjDetail">
+                                                <div class="px-5 py-3 border-b border-slate-200">
                                                     <div class="flex justify-between items-center">
                                                         <div class="font-semibold text-slate-800">Inventory Details
                                                         </div>
@@ -285,92 +290,116 @@
                                                         </button>
                                                     </div>
                                                 </div>
+
                                                 <!-- Modal content -->
                                                 <div class="modal-content text-xs px-5 py-4">
                                                     <div class="p-4 space-y-4">
                                                         <div class="grid md:grid-cols-2 md:gap-6">
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="id_inventory" id="id_inventory"
+                                                                <input
+                                                                    name="id_inventory_modal_{{ $inventory->id_inventory }}"
+                                                                    id="id_inventory_modal_{{ $inventory->id_inventory }}"
                                                                     autocomplete="off" readonly
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     placeholder=" " readonly x-model="modalData.id" />
-                                                                <label for="id_inventory"
+                                                                <label
+                                                                    for="id_inventory_modal_{{ $inventory->id_inventory }}"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Inventory
                                                                     Code</label>
                                                             </div>
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="name" id="name"
+                                                                <input
+                                                                    name="name_modal_{{ $inventory->id_inventory }}"
+                                                                    id="name_modal_{{ $inventory->id_inventory }}"
                                                                     autocomplete="off"
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     placeholder=" " readonly
                                                                     x-model="modalData.name" />
-                                                                <label for="name"
+                                                                <label for="name_modal_{{ $inventory->id_inventory }}"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
                                                             </div>
                                                         </div>
+
                                                         <div class="grid md:grid-cols-3 md:gap-6">
+                                                            <!-- Brand -->
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="brand" id="brand"
+                                                                <input
+                                                                    name="brand_modal_{{ $inventory->id_inventory }}"
+                                                                    id="brand_modal_{{ $inventory->id_inventory }}"
                                                                     autocomplete="off"
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     placeholder=" " readonly
-                                                                    x-model="modalData.brand" />
-                                                                <label for="brand"
+                                                                    x-model="modalData.brand_modal"/>
+                                                                <label
+                                                                    for="brand_modal_{{ $inventory->id_inventory }}"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Brand</label>
                                                             </div>
+
+                                                            <!-- Model -->
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="model" id="model"
+                                                                <input name="model_{{ $inventory->id_inventory }}"
+                                                                    id="model_{{ $inventory->id_inventory }}"
                                                                     autocomplete="off"
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                    placeholder=" " readonly
-                                                                    x-model="modalData.model" />
-                                                                <label for="model"
+                                                                    placeholder=" " readonly x-model="modalData.model"/>
+                                                                <label for="model_{{ $inventory->id_inventory }}"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Model</label>
                                                             </div>
+
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input name="variant" id="variant"
+                                                                <input name="variant_{{ $inventory->id_inventory }}"
+                                                                    id="variant_{{ $inventory->id_inventory }}"
                                                                     autocomplete="off"
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     placeholder=" " readonly
                                                                     x-model="modalData.variant" />
-                                                                <label for="variant"
+                                                                <label for="variant_{{ $inventory->id_inventory }}"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Variant</label>
                                                             </div>
                                                         </div>
+
                                                         <div class="grid md:grid-cols-2 md:gap-6">
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input type="text" name="unit" id="unit"
+                                                                <input type="text"
+                                                                    name="unit_{{ $inventory->id_inventory }}"
+                                                                    id="unit_{{ $inventory->id_inventory }}"
                                                                     autocomplete="off"
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     placeholder=" " readonly
                                                                     x-model="modalData.qty" />
-                                                                <label for="unit"
+                                                                <label for="unit_{{ $inventory->id_inventory }}"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Quantity</label>
                                                             </div>
                                                             <div class="relative z-0 w-full mb-5 group">
-                                                                <input type="text" name="nett_weight"
-                                                                    id="nett_weight"
+                                                                <input type="text"
+                                                                    name="nett_weight_{{ $inventory->id_inventory }}"
+                                                                    id="nett_weight_{{ $inventory->id_inventory }}"
                                                                     class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                                                     placeholder=" " readonly
                                                                     x-model="modalData.weight" />
-                                                                <label for="nett_weight"
+                                                                <label
+                                                                    for="nett_weight_{{ $inventory->id_inventory }}"
                                                                     class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Weight</label>
                                                             </div>
                                                         </div>
+
                                                         <div class="relative z-0 w-full mb-5 group">
-                                                            <input type="text" name="msrp" id="msrp"
+                                                            <input type="text"
+                                                                name="msrp_{{ $inventory->id_inventory }}"
+                                                                id="msrp_{{ $inventory->id_inventory }}"
                                                                 autocomplete="off"
                                                                 class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                                                placeholder=" " readonly x-model="modalData.price"
-                                                                oninput="formatRupiah(this)" />
-                                                            <label for="msrp"
+                                                                placeholder=" " readonly x-model="modalData.price" />
+                                                            <label for="msrp_{{ $inventory->id_inventory }}"
                                                                 class="peer-focus:font-medium absolute text-sm text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Price
                                                                 List</label>
                                                         </div>
                                                     </div>
+
                                                     <!-- Modal footer -->
                                                     <div
                                                         class="px-5 py-3 border-t border-slate-200 flex justify-between mt-4">
+                                                        <!-- Footer content here -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -406,7 +435,7 @@
     </div>
     <script>
         function checkCategory() {
-            var categorySelect = document.getElementById("category");
+            var categorySelect = document.getElementById("category_input");
             var otherCategoryDiv = document.getElementById("otherCategoryDiv");
 
             if (categorySelect.value === "Others") {
@@ -420,13 +449,52 @@
             @if (session('success'))
                 Toastify({
                     text: "{{ session('success') }}",
-                    duration: 3000, // Duration in milliseconds
+                    duration: 3000,
                     close: true,
-                    gravity: "top", // `top` or `bottom`
-                    position: 'right', // `left`, `center` or `right`
+                    gravity: "top",
+                    position: 'right',
                     backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
                 }).showToast();
             @endif
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const brandSelect = document.getElementById('brand_input');
+            const modelSelect = document.getElementById('model_input');
+
+            if (!brandSelect) {
+                console.error('Brand select element not found!');
+                return;
+            }
+
+            brandSelect.addEventListener('change', function() {
+                const brandId = this.value;
+                modelSelect.innerHTML = '<option value="" disabled selected>Select Model</option>';
+
+                if (!brandId) {
+                    return;
+                }
+
+                fetch(`/warehouse/get-models/${brandId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        data.forEach(model => {
+                            const option = document.createElement('option');
+                            option.value = model.id_brand;
+                            option.textContent = model.name;
+                            modelSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error in fetch operation:', error);
+                    });
+            });
+            brandSelect.dispatchEvent(new Event('change'));
         });
     </script>
 </x-app-layout>
