@@ -2,18 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
     public function run(): void
     {
+        if (User::count() > 0) {
+            $this->command->info('Data already exists, skipping seed.');
+            return;
+        }
 
         $this->call([
             AccountAdminSeeder::class,

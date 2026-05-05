@@ -3,38 +3,23 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 
 class AccountAdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        User::insert([
-            [
-                'name' => 'Admin',
-                'email' => 'admin_tsno@gmail.com',
-                'password' => bcrypt('DigitaLL24$$'),
-                'role_id' => 1, // Admin
-            ],
-            [
-                'name' => 'User',
-                'email' => 'user_tsno@gmail.com',
-                'password' => bcrypt('DigitaLL24$$'),
-                'role_id' => 2, // User
-            ],
-            [
-                'name' => 'Purchasing User',
-                'email' => 'purchasing_tsno@gmail.com',
-                'password' => bcrypt('DigitaLL24$$'),
-                'role_id' => 3, // Purchasing
-            ],
-        ]);
+        $accounts = [
+            ['name' => 'Admin',          'email' => 'admin_tsno@gmail.com',      'role_id' => 1],
+            ['name' => 'User',           'email' => 'user_tsno@gmail.com',       'role_id' => 2],
+            ['name' => 'Purchasing User','email' => 'purchasing_tsno@gmail.com', 'role_id' => 3],
+        ];
+
+        foreach ($accounts as $account) {
+            User::firstOrCreate(
+                ['email' => $account['email']],
+                ['name' => $account['name'], 'password' => bcrypt('user123'), 'role_id' => $account['role_id']]
+            );
+        }
     }
 }
