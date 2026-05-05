@@ -21,7 +21,11 @@ class GlobalTitleServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $globalTitle = DB::table('global_title')->where('key', 'OS Name')->value('mark');
+        try {
+            $globalTitle = DB::table('global_title')->where('key', 'OS Name')->value('mark');
+        } catch (\Exception $e) {
+            $globalTitle = null;
+        }
 
         View::share('globalTitle', $globalTitle);
     }

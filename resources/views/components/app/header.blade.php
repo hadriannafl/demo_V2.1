@@ -3,8 +3,13 @@
         <div class="flex items-center justify-between h-16 {{ $variant === 'v2' || $variant === 'v3' ? '' : 'lg:border-b border-gray-200 dark:border-gray-700/60' }}">
 
             <!-- Header: Left side -->
-            <div class="flex">
-                
+            <div class="flex items-center gap-3">
+
+                <!-- DEMO Badge -->
+                <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-indigo-600 text-white tracking-wider">
+                    DEMO
+                </span>
+
                 <!-- Hamburger button -->
                 <button
                     class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 lg:hidden"
