@@ -15,7 +15,7 @@ class GlobalTitleSeeder extends Seeder
     {
         DB::table('global_title')->insert([
             'key' => 'OS Name',
-            'mark' => 'DEMO V2',
+            'mark' => 'ERP',
         ]);
     }
 }
