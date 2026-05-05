@@ -19,23 +19,13 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
         /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
     && a2enmod rewrite headers
 
-# Listen on Railway PORT
-RUN sed -i 's/Listen 80/Listen ${PORT:-80}/' /etc/apache2/ports.conf \
-    && sed -i 's/<VirtualHost \*:80>/<VirtualHost *:${PORT:-80}>/' \
-        /etc/apache2/sites-available/000-default.conf
-
 WORKDIR /var/www/html
 
-# Install PHP dependencies
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# Install Node dependencies & build assets
-COPY package.json package-lock.json ./
-RUN npm ci
-
+# Copy semua file dulu baru install (artisan harus ada sebelum composer post-scripts)
 COPY . .
-RUN npm run build
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN npm ci && npm run build
 
 # Fix permissions
 RUN chown -R www-data:www-data storage bootstrap/cache \
