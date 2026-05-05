@@ -1,6 +1,6 @@
 /.phpunit.cache
 /node_modules
-/public/build
+# /public/build — dicommit untuk deployment Railway
 /public/hot
 /public/storage
 /storage/*.key
