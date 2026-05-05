@@ -628,7 +628,7 @@ class SidebarItemsTableSeeder extends Seeder
         $Archive = SidebarItem::create([
             'name' => 'Archive',
             'route' => null,
-            'permission_id' => Permission::where('name', 'AJU')->first()->id,
+            'permission_id' => Permission::where('name', 'aju')->first()->id,
             'parent_id' => null,
             'order' => 10, 
         ]);
@@ -701,7 +701,7 @@ class SidebarItemsTableSeeder extends Seeder
         SidebarItem::create([
             'name' => 'Edit',
             'route' => 'document.edit',
-            'permission_id' => Permission::where('name', 'delete_document')->first()->id,
+            'permission_id' => Permission::where('name', 'edit_document')->first()->id,
             'parent_id' => $document->id,
             'order' => 3,
         ]);
@@ -709,7 +709,7 @@ class SidebarItemsTableSeeder extends Seeder
         SidebarItem::create([
             'name' => 'Delete',
             'route' => 'document.delete',
-            'permission_id' => Permission::where('name', 'delete_facilities')->first()->id,
+            'permission_id' => Permission::where('name', 'delete_document')->first()->id,
             'parent_id' => $document->id,
             'order' => 4,
         ]);
